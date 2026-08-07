@@ -1,0 +1,7 @@
+<!-- TODO: placeholder logo — replace with final PASRR brand artwork -->
+<svg width="278" height="74" viewBox="0 0 278 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="22" y="42" fill="#5A5A5A" font-family="'Open Sans', Helvetica, Arial, sans-serif" font-size="18" font-weight="700">MDCT</text>
+  <line x1="90.5" y1="18" x2="90.5" y2="56" stroke="#D9D9D9"/>
+  <text x="100" y="34" fill="#5A5A5A" font-family="'Open Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="600">Preadmission Screening and</text>
+  <text x="100" y="50" fill="#5A5A5A" font-family="'Open Sans', Helvetica, Arial, sans-serif" font-size="11" font-weight="600">Resident Review (PASRR)</text>
+</svg>
