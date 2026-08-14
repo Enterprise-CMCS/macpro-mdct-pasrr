@@ -75,6 +75,17 @@ describe("Authentication methods", () => {
       expect(() => parseUserFromToken(badRoleToken)).toThrow();
     });
 
+    // TODO: temporary stopgap — remove along with normalizeCmsRole once
+    // PASRR has its own Cognito user pool with mdctpasrr-* roles.
+    test("should accept RHTP roles from the borrowed RHTP user pool", () => {
+      const rhtpRoleToken = {
+        ...mockToken,
+        "custom:cms_roles": "other-role,mdctrhtp-state-user",
+      };
+      const user = parseUserFromToken(rhtpRoleToken);
+      expect(user.role).toBe(UserRoles.STATE_USER);
+    });
+
     test("should succeed with no state if user has none", () => {
       const noStateToken = { ...mockToken };
       delete noStateToken["custom:cms_state"];

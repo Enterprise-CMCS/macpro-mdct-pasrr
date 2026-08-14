@@ -9,3 +9,14 @@ export enum UserRoles {
 export const isUserRole = (role: string): role is UserRoles => {
   return Object.values(UserRoles).includes(role as UserRoles);
 };
+
+/**
+ * TODO: temporary stopgap — remove once PASRR has its own Cognito user pool.
+ * Local dev currently authenticates against the RHTP user pool (pasrr_secrets
+ * mirrors rhtp_secrets), so tokens carry mdctrhtp-* roles. Translate them to
+ * their mdctpasrr-* equivalents so role parsing works until PASRR's own
+ * Cognito/IDM roles exist.
+ */
+export const normalizeCmsRole = (role: string): string => {
+  return role.replace(/^mdctrhtp-/, "mdctpasrr-");
+};

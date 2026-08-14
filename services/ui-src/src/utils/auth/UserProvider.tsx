@@ -15,7 +15,7 @@ import config from "config";
 import { initAuthManager, updateTimeout, getExpiration, useStore } from "utils";
 import { PRODUCTION_HOST_DOMAIN } from "../../constants";
 import { User, UserContextShape } from "types/users";
-import { UserRoles } from "@pasrr/shared";
+import { normalizeCmsRole, UserRoles } from "@pasrr/shared";
 import { useFlags } from "launchdarkly-react-client-sdk";
 
 type ExpectedTokenShape = {
@@ -91,7 +91,10 @@ export const UserProvider = ({ children }: Props) => {
       } = payload as ExpectedTokenShape;
 
       // "custom:cms_roles" is an string of concat roles so we need to check for the one applicable to PASRR
-      const userRole = cms_role.split(",").find((r) => r.includes("mdctpasrr"));
+      const userRole = cms_role
+        .split(",")
+        .map(normalizeCmsRole)
+        .find((r) => r.includes("mdctpasrr"));
       const full_name = [given_name, " ", family_name].join("");
       const adminCanEditReport = flags?.adminCanEditReport ?? false;
       const userIsAdmin =

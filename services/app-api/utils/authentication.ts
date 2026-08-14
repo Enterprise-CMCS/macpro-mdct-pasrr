@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, User } from "../types/types";
 import jwtDecode from "jwt-decode";
-import { isStateAbbr, isUserRole } from "@pasrr/shared";
+import { isStateAbbr, isUserRole, normalizeCmsRole } from "@pasrr/shared";
 import { logger } from "../libs/debug-lib";
 
 export interface DecodedToken {
@@ -49,7 +49,7 @@ const parseRoleFromToken = (token: DecodedToken) => {
     throw new Error(`Token is missing key "custom:cms_roles"`);
   }
   const rolesString = token["custom:cms_roles"] as string;
-  const role = rolesString.split(",").find(isUserRole);
+  const role = rolesString.split(",").map(normalizeCmsRole).find(isUserRole);
   if (!role) {
     throw new Error(`No PASRR role defined: ${rolesString}`);
   }
