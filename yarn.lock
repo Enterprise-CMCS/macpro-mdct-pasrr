@@ -7056,6 +7056,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"datadog-cdk-constructs-v2@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "datadog-cdk-constructs-v2@npm:5.1.0"
+  dependencies:
+    loglevel: "npm:^1.9.2"
+  peerDependencies:
+    aws-cdk-lib: ^2.261.0
+    constructs: ^10.5.1
+  checksum: 10c0/83859be8d4f0cd8e1168b95c4026344903f46445c8ce16a50226bbdb5471c2957eb1713a80b45c5400b092d25bc4885a63acd8e89964223d871839d4b72b01d3
+  languageName: node
+  linkType: hard
+
 "date-fns-tz@npm:^3.2.0":
   version: 3.2.0
   resolution: "date-fns-tz@npm:3.2.0"
@@ -8980,6 +8992,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"loglevel@npm:^1.9.2":
+  version: 1.9.2
+  resolution: "loglevel@npm:1.9.2"
+  checksum: 10c0/1e317fa4648fe0b4a4cffef6de037340592cee8547b07d4ce97a487abe9153e704b98451100c799b032c72bb89c9366d71c9fb8192ada8703269263ae77acdc7
+  languageName: node
+  linkType: hard
+
 "loose-envify@npm:^1.4.0":
   version: 1.4.0
   resolution: "loose-envify@npm:1.4.0"
@@ -9098,6 +9117,7 @@ __metadata:
     aws-cdk-lib: "npm:^2.261.0"
     aws-cdk-local: "npm:~3.0.4"
     constructs: "npm:~10.5.0"
+    datadog-cdk-constructs-v2: "npm:^5.1.0"
     dotenv: "npm:^17.2.3"
     esbuild: "npm:^0.28.1"
     jsdom: "npm:^29.1.1"

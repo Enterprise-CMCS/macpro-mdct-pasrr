@@ -1,3 +1,4 @@
+import { isDatadogEnabled } from "./utils/datadog-env.ts";
 import { isLocalStack } from "./local/util.ts";
 import { getSecret } from "./utils/secrets-manager.ts";
 
@@ -18,6 +19,7 @@ export interface DeploymentConfigProperties {
   vpcName: string;
   kafkaAuthorizedSubnetIds: string;
   brokerString: string;
+  datadogApiKey?: string;
 }
 
 export const determineDeploymentConfig = async (stage: string) => {
@@ -87,6 +89,15 @@ function validateConfig(
   if (invalidKeys.length > 0) {
     throw new Error(
       `The following deployment config keys are missing or invalid: ${invalidKeys}`
+    );
+  }
+
+  if (
+    isDatadogEnabled(config.stage) &&
+    (!config.datadogApiKey || typeof config.datadogApiKey !== "string") // pragma: allowlist secret
+  ) {
+    throw new Error(
+      "datadogApiKey is missing or invalid in the project default secret; it is required for val and production stages"
     );
   }
 }

@@ -18,6 +18,7 @@ import { isLocalStack } from "../local/util.ts";
 import { createUploadsComponents } from "./uploads.ts";
 import { getSubnets } from "../utils/vpc.ts";
 import { createTopicsComponents } from "./topics.ts";
+import { instrumentLambdasWithDatadog } from "../constructs/datadog.ts";
 
 export class ParentStack extends Stack {
   constructor(
@@ -31,6 +32,7 @@ export class ParentStack extends Stack {
       stage,
       vpcName,
       kafkaAuthorizedSubnetIds,
+      datadogApiKey,
     } = props;
 
     super(scope, id, {
@@ -113,6 +115,11 @@ export class ParentStack extends Stack {
       ...commonProps,
       vpc,
       kafkaAuthorizedSubnets,
+    });
+
+    instrumentLambdasWithDatadog(this, {
+      stage,
+      datadogApiKey,
     });
 
     if (isDev) {

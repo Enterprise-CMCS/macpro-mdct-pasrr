@@ -42,6 +42,7 @@
     "@aws-sdk/client-support": "~3.1032.0",
     "aws-cdk-lib": "^2.261.0",
     "constructs": "~10.5.0",
+    "datadog-cdk-constructs-v2": "^5.1.0",
     "jsdom": "^29.1.1",
     "source-map-support": "^0.5.21"
   },

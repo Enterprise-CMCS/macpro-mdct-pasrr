@@ -156,6 +156,15 @@ export function createApiComponents(props: CreateApiComponentsProps) {
     defaultCorsPreflightOptions: {
       allowOrigins: apigateway.Cors.ALL_ORIGINS,
       allowMethods: apigateway.Cors.ALL_METHODS,
+      allowHeaders: [
+        ...apigateway.Cors.DEFAULT_HEADERS,
+        "x-datadog-origin",
+        "x-datadog-parent-id",
+        "x-datadog-sampling-priority",
+        "x-datadog-trace-id",
+        "traceparent",
+        "tracestate",
+      ],
     },
   });
 
