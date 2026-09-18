@@ -6,7 +6,6 @@ import { useBreakpoint } from "utils";
 export const HelpPage = () => {
   const { isDesktop } = useBreakpoint();
   // TODO: add the real PASRR reporting guide PDF to services/ui-src/public/
-  const helpfile = "PASRR_State Reporting Expectations_Guide V7_6.12.26.pdf";
   return (
     <PageTemplate>
       <Box>
@@ -30,17 +29,7 @@ export const HelpPage = () => {
         </HelpCard>
         <HelpCard icon="spreadsheet">
           <Text sx={sx.bodyText}>For questions about the online form:</Text>
-          <Text sx={sx.emailText}>
-            Contact your Project Officer or refer to the{" "}
-            <Link
-              href={`${window.location.origin}/${helpfile}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              fontWeight="bold"
-            >
-              State Reporting Guide
-            </Link>
-          </Text>
+          <Text sx={sx.emailText}>Placeholder</Text>
         </HelpCard>
       </Flex>
     </PageTemplate>
