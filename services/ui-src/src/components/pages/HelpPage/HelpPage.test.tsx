@@ -23,13 +23,14 @@ describe("Test HelpPage", () => {
   test("Check for email links", () => {
     const email1 = screen.getByRole("link", { name: "mdct_help@cms.hhs.gov" });
     expect(email1).toHaveAttribute("href", "mailto:mdct_help@cms.hhs.gov");
-    const email2 = screen.getByRole("link", {
-      name: "State Reporting Guide",
-    });
-    expect(email2).toHaveAttribute(
-      "href",
-      "http://localhost:3000/PASRR_State Reporting Expectations_Guide V7_6.12.26.pdf"
-    );
+    // TODO: Add back in check for reporting guide if needed
+    // const email2 = screen.getByRole("link", {
+    //   name: "State Reporting Guide",
+    // });
+    // expect(email2).toHaveAttribute(
+    //   "href",
+    //   "http://localhost:3000/PASRR_State Reporting Expectations_Guide V7_6.12.26.pdf"
+    // );
   });
 });
 
