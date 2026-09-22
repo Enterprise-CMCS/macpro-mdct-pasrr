@@ -162,8 +162,10 @@ export function createApiComponents(props: CreateApiComponentsProps) {
         "x-datadog-parent-id",
         "x-datadog-sampling-priority",
         "x-datadog-trace-id",
+        "x-datadog-tags",
         "traceparent",
         "tracestate",
+        "baggage",
       ],
     },
   });
