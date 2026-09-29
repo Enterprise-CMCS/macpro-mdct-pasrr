@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Medicaid Data Collection Tool" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Preadmission Screening and Resident Review</title>
+    <script src="/env-config.js"></script>
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/favicon-32x32.svg"
+      sizes="any"
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/favicon-16x16.svg"
+      sizes="16x16"
+    />
+    <script>
+      const stage = window._env_ && window._env_.STAGE;
+      const analyticsEnv = stage === "production" ? "prod" : stage || "ephem";
+      (function (h, o, u, n, d) {
+        h = h[d] = h[d] || {
+          q: [],
+          onReady: function (c) {
+            h.q.push(c);
+          },
+        };
+        d = o.createElement(u);
+        d.async = 1;
+        d.src = n;
+        d.crossOrigin = "";
+        n = o.getElementsByTagName(u)[0];
+        n.parentNode.insertBefore(d, n);
+      })(
+        window,
+        document,
+        "script",
+        "https://www.datadoghq-browser-agent.com/datadog-rum-v7.js",
+        "DD_RUM"
+      );
+      window.DD_RUM.onReady(function () {
+        window.DD_RUM.init({
+          applicationId: "e7e9afe7-0b50-49ae-bc17-1fcd1895554b",
+          clientToken: "pubdce578cf2294c30aab80ed0ed7a93d03", // gitleaks:allow pragma: allowlist secret
+          site: "ddog-gov.com",
+          service: "mdct-pasrr",
+          env: analyticsEnv,
+          version: "1.0.0",
+          sessionSampleRate: 100, // capture 100% of sessions
+          sessionReplaySampleRate: 20, // capture 20% of sessions with replay
+          trackResources: true, // Enable Resource tracking
+          trackUserInteractions: true, // Enable Action tracking
+          trackLongTasks: true, // Enable Long Tasks tracking
+          defaultPrivacyLevel: "mask-user-input", // 'mask-user-input' | 'allow' | 'mask'
+          allowedTracingUrls: [
+            {
+              match: window._env_.API_URL,
+              propagatorTypes: ["datadog", "tracecontext"],
+            },
+          ],
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
