@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { useFlags } from "launchdarkly-react-client-sdk";
 import { Link as RouterLink } from "react-router";
-import { Stack, Box, Button, Spinner, Image, Flex } from "@chakra-ui/react";
+import {
+  Stack,
+  Box,
+  Button,
+  Spinner,
+  Image,
+  Flex,
+  Divider,
+} from "@chakra-ui/react";
 import { submittableMetricsSelector } from "utils/state/selectors";
 import { submitReport, useStore, reportBasePath } from "utils";
 import { SubmitReportModal } from "./SubmitReportModal";
@@ -72,54 +80,62 @@ export const SubmissionBar = () => {
   };
 
   return (
-    <Stack
-      direction="row"
-      width="100%"
-      display="flex"
-      justifyContent="space-between"
-      mt={5}
-    >
-      <Box>
-        {isPdfActive && (
-          <Button
-            as={RouterLink}
-            to={reportBasePath(report) + "/export"}
-            target="_blank"
-            colorScheme="blue"
-            variant={isSubmitted ? "primary" : "outline"}
-            marginRight="spacer4"
-            leftIcon={
-              <Image src={isSubmitted ? whitePDFPrimary : lookupIconPrimary} />
-            }
-          >
-            {isSubmitted ? "Download" : "Review"} PDF
-          </Button>
-        )}
-        <Button
-          colorScheme="blue"
-          variant={isSubmitted ? "outline" : "link"}
-          fontWeight="bold"
-          onClick={async () => zipModal()}
-          disabled={isZipLoading}
-        >
-          {isZipLoading && (
-            <Flex justify="center">
-              <Spinner size="md" marginRight="spacer2" />
-            </Flex>
+    <>
+      <Stack
+        direction="row"
+        width="100%"
+        display="flex"
+        justifyContent="space-between"
+        marginY={5}
+      >
+        <Box>
+          {isPdfActive && (
+            <Button
+              as={RouterLink}
+              to={reportBasePath(report) + "/export"}
+              target="_blank"
+              colorScheme="blue"
+              variant={isSubmitted ? "primary" : "outline"}
+              marginRight="spacer4"
+              leftIcon={
+                <Image
+                  src={isSubmitted ? whitePDFPrimary : lookupIconPrimary}
+                />
+              }
+            >
+              {isSubmitted ? "Download" : "Review"} PDF
+            </Button>
           )}
-          ZIP Attachment Files
-        </Button>
-      </Box>
+          <Button
+            colorScheme="blue"
+            variant={isSubmitted ? "outline" : "link"}
+            fontWeight="bold"
+            onClick={async () => zipModal()}
+            disabled={isZipLoading}
+          >
+            {isZipLoading && (
+              <Flex justify="center">
+                <Spinner size="md" marginRight="spacer2" />
+              </Flex>
+            )}
+            ZIP Attachment Files
+          </Button>
+        </Box>
+      </Stack>
       {user?.userIsEndUser && !isSubmitted && (
-        <Button
-          alignSelf="flex-end"
-          onClick={async () => displayModal()}
-          disabled={!submittableMetrics?.submittable || submitting}
-        >
-          {submitting && <Spinner size="sm" marginRight="spacer2" />}
-          {`Submit ${report.type} Report`}
-        </Button>
+        <>
+          <Divider></Divider>
+          <Button
+            marginTop={"2rem"}
+            alignSelf="flex-end"
+            onClick={async () => displayModal()}
+            disabled={!submittableMetrics?.submittable || submitting}
+          >
+            {submitting && <Spinner size="sm" marginRight="spacer2" />}
+            {`Submit ${report.type} Report`}
+          </Button>
+        </>
       )}
-    </Stack>
+    </>
   );
 };

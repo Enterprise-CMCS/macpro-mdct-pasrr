@@ -1,4 +1,3 @@
-import { batchPutComments, queryComments } from "../../storage/comments";
 import { getReport as getReportFromDatabase } from "../../storage/reports";
 import {
   PageElement,
@@ -6,7 +5,6 @@ import {
   PasrrSubType,
   AccordionGroupItem,
   AccordionGroupTemplate,
-  Comment,
   ElementType,
   PageStatus,
 } from "@pasrr/shared";
@@ -83,7 +81,7 @@ const copyAnswer = (
   }
 };
 
-export const copyAttachmentsAndTheirComments = async (newReport: Report) => {
+export const copyAttachments = async (newReport: Report) => {
   const { pages, copyFromReportId, state, type, id } = newReport;
   const uploadsToCopy = [];
 
@@ -114,10 +112,8 @@ export const copyAttachmentsAndTheirComments = async (newReport: Report) => {
   }
 
   const uploadsToBatchPut: UploadData[] = [];
-  const commentsToBatchPut: Comment[] = [];
 
   // Update uploads in DynamoDB and copy files in S3
-  // and prepare its comments to be copied
   for (const upload of uploadsToCopy) {
     const results = await queryUpload(
       upload.previousFileId,
@@ -141,21 +137,9 @@ export const copyAttachmentsAndTheirComments = async (newReport: Report) => {
       CopySource: `${process.env.attachmentsBucketName}/${type}/${state}/${copyFromReportId}/${previousUpload.fileId}`,
       Key: `${type}/${state}/${id}/${upload.fileId}`,
     });
-
-    const comments = await queryComments(previousUpload.fileId, true);
-    if (comments && comments.length > 0) {
-      for (const comment of comments) {
-        commentsToBatchPut.push({
-          ...comment,
-          contextId: upload.fileId,
-          parentReportId: id,
-        });
-      }
-    }
   }
 
   await batchPutUploads(uploadsToBatchPut);
-  await batchPutComments(commentsToBatchPut);
 };
 
 export const copyReport = async (newReport: Report) => {
@@ -183,5 +167,5 @@ export const copyReport = async (newReport: Report) => {
     }
   }
 
-  await copyAttachmentsAndTheirComments(newReport);
+  await copyAttachments(newReport);
 };

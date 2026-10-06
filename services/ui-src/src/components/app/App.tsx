@@ -9,10 +9,17 @@ import {
   PostLogoutRedirect,
   Footer,
   Timeout,
+  SkipNav,
 } from "components";
 import { Container, Divider, Flex, Heading, Stack } from "@chakra-ui/react";
 import { ErrorBoundary } from "react-error-boundary";
-import { makeMediaQueryClasses, UserContext, useStore } from "utils";
+import {
+  getTabTitle,
+  makeMediaQueryClasses,
+  UserContext,
+  useStore,
+} from "utils";
+import { currentPageSelector } from "utils/state/selectors";
 
 export const App = () => {
   const mqClasses = makeMediaQueryClasses();
@@ -20,8 +27,9 @@ export const App = () => {
   const { logout } = context;
   const { user, showLocalLogins, setSidebar } = useStore();
   const { pathname } = useLocation();
+  const currentPage = useStore(currentPageSelector);
 
-  //there are now two export pages due to the addition of the obligated and spent funds export zip
+  // the report export (PDF) page renders without the app header
   const isExportPage = pathname !== "/export" && pathname.includes("/export");
 
   useEffect(() => {
@@ -37,10 +45,16 @@ export const App = () => {
     localStorage.setItem("ReturnURL", pathname);
   }, []);
 
+  useEffect(() => {
+    //setting tab title for each page
+    document.title = getTabTitle(pathname, currentPage);
+  }, [pathname, currentPage]);
+
   const authenticatedRoutes = (
     <>
       {user && (
         <Flex sx={sx.appLayout}>
+          <SkipNav />
           <Timeout />
           {!isExportPage && <Header handleLogout={logout} />}
           <Container sx={sx.appContainer}>
@@ -52,20 +66,23 @@ export const App = () => {
         </Flex>
       )}
       {!user && showLocalLogins && (
-        <main>
-          <Container sx={sx.appContainer}>
-            <Heading as="h1" fontSize="heading_3xl" variant="login">
-              PASRR
-            </Heading>
-          </Container>
-          <Container sx={sx.loginContainer}>
-            <Stack spacing={8}>
-              <LoginIDM />
-              <Divider />
-              <LoginCognito />
-            </Stack>
-          </Container>
-        </main>
+        <>
+          <SkipNav />
+          <main id="main-content" tabIndex={-1} style={sx.loginMain}>
+            <Container sx={sx.appContainer}>
+              <Heading as="h1" fontSize="heading_3xl" variant="login">
+                PASRR
+              </Heading>
+            </Container>
+            <Container sx={sx.loginContainer}>
+              <Stack spacing={8}>
+                <LoginIDM />
+                <Divider />
+                <LoginCognito />
+              </Stack>
+            </Container>
+          </main>
+        </>
       )}
     </>
   );
@@ -103,5 +120,8 @@ const sx = {
     maxWidth: "25rem",
     height: "full",
     marginY: "auto",
+  },
+  loginMain: {
+    display: "block",
   },
 };

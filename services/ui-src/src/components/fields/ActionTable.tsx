@@ -1,4 +1,4 @@
-import { Flex, Button, Image, Heading, Stack } from "@chakra-ui/react";
+import { Flex, Button, Image, Heading, Stack, Text } from "@chakra-ui/react";
 import { ActionModal } from "components/modals/ActionModal";
 import { PageElementProps } from "components/report/Elements";
 import { JSX, useState } from "react";
@@ -37,6 +37,9 @@ const generateAriaLabel = (header: string, answer: ActionAnswerShape) => {
   return `${label} ${header}`;
 };
 
+const buildEmptyErrorMessages = (answer: ActionAnswerShape) =>
+  new Map<string, string>(answer.map((item) => [item.id, ""]));
+
 const buildRows = (
   rows: ActionRowElement[],
   answer: ActionAnswerShape[],
@@ -72,7 +75,7 @@ const buildRows = (
           (value) =>
             onChange(value, answerRowIndex, column.id, formattedCol.type),
           generateAriaLabel(column.header, answerRow),
-          errorMessages[answerRowIndex].get(column.id)
+          errorMessages[answerRowIndex]?.get(column.id)
         );
         rowElement.push(value || "--");
       }
@@ -94,27 +97,9 @@ const buildRows = (
   return formattedRows;
 };
 
-const adjustElement = (element: ActionTableTemplate) => {
-  const newElement = structuredClone(element);
-  //if prevValue has no values in any row, it will hide the whole column
-  if (element.rows.some((row) => row.id === "prevValue")) {
-    const countFilledPrevValue = element.answer
-      ?.flat()
-      .filter(
-        (answer) => answer.id === "prevValue" && answer.value != ""
-      ).length;
-
-    if (countFilledPrevValue != undefined && countFilledPrevValue === 0) {
-      newElement.rows = newElement.rows.filter((row) => row.id !== "prevValue");
-    }
-  }
-
-  return newElement;
-};
-
 export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
   const { disabled, element } = props;
-  const { id, label, hintText, modal, rows, answer } = adjustElement(element);
+  const { heading, helperText, label, modal, rows, answer } = element;
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const { userIsAdmin: canAddOrChangeStatus } = useStore().user ?? {};
   const { report } = useStore();
@@ -124,7 +109,6 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
   ) as FormPageTemplate;
   const actionsDisabled =
     disabled || element.disabled || parentPage?.status === PageStatus.ABANDONED;
-  const pluralLabel = `${label}s`;
 
   const dropdownIds = modal.elements
     .filter((element) => element.type === ElementType.Dropdown)
@@ -148,11 +132,20 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
 
   const [errorMessages, setErrorMessages] = useState<
     Array<Map<string, string>>
-  >(
-    answer?.map(
-      (row) => new Map<string, string>(row.map((item) => [item.id, ""]))
-    ) ?? []
-  );
+  >(answer?.map((row) => buildEmptyErrorMessages(row)) ?? []);
+
+  const modalErrorMessageIndex = modalData.index ?? 0;
+  const modalErrorMessages =
+    errorMessages[modalErrorMessageIndex] ??
+    buildEmptyErrorMessages(modalData.data);
+
+  const updateModalErrorMessages = (rowErrorMessages: Map<string, string>) => {
+    setErrorMessages((current) => {
+      const newErrorMessages = [...current];
+      newErrorMessages[modalErrorMessageIndex] = rowErrorMessages;
+      return newErrorMessages;
+    });
+  };
 
   const formatAnswers = (
     data: ActionAnswerShape,
@@ -185,7 +178,6 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
     const newErrorMessages = [...errorMessages];
     const rowIndex = newAnswer[index].findIndex((answer) => answer.id === id);
     const errorMessage = getErrorMessage(type, false, value);
-
     newErrorMessages[index].set(id, errorMessage);
     setErrorMessages(newErrorMessages);
     const formattedValue = formatAnswers(
@@ -201,6 +193,12 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
   const onModalEdit = (index: number) => {
     if (!answer) return;
     setModalData({ data: structuredClone(answer[index]), index });
+    setErrorMessages((current) => {
+      if (current[index]) return current;
+      const newErrorMessages = [...current];
+      newErrorMessages[index] = buildEmptyErrorMessages(answer[index]);
+      return newErrorMessages;
+    });
     setModalOpen(true);
   };
 
@@ -217,6 +215,10 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
   const onSave = (data: ActionAnswerShape) => {
     const newData = formatAnswers(data, "modal");
     if (modalData.index === undefined) {
+      setErrorMessages((current) => [
+        ...current.slice(0, answer?.length ?? 0),
+        buildEmptyErrorMessages(newData),
+      ]);
       props.updateElement({ answer: [...(answer ?? []), newData] });
     } else {
       const newAnswer = [...answer!];
@@ -231,23 +233,26 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
   return (
     <Flex gap="1.25rem" flexDirection="column" width="100%">
       <Heading as="h2" variant="subHeader">
-        {optionalTag({ label: pluralLabel, required: element.required })}
+        {optionalTag({ label: heading, required: element.required })}
       </Heading>
-      <p id={id}>{parseHtml(hintText)}</p>
+      {helperText && <Text color="gray_dark">{parseHtml(helperText)}</Text>}
       {canAddOrChangeStatus ? (
         <Button
           aria-label={`add ${label}`}
           variant="outline"
           alignSelf="flex-start"
           leftIcon={
-            <Image
-              src={actionsDisabled ? addGray : addPrimary}
-              alt="Add icon"
-            />
+            <Image src={actionsDisabled ? addGray : addPrimary} alt="Add" />
           }
           onClick={() => {
             setModalOpen(true);
             setModalData({ data: initial, index: undefined });
+            setErrorMessages((current) => {
+              const newErrorMessages = current.slice(0, answer?.length ?? 0);
+              newErrorMessages[answer?.length ?? 0] =
+                buildEmptyErrorMessages(initial);
+              return newErrorMessages;
+            });
           }}
           disabled={actionsDisabled}
         >
@@ -259,6 +264,8 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
         modal={modal}
         form={modalData}
         onSave={onSave}
+        errorMessages={modalErrorMessages}
+        setErrorMessages={updateModalErrorMessages}
         modalDisclosure={{
           isOpen: isModalOpen,
           onClose: () => {
@@ -272,17 +279,8 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
 };
 
 export const ActionTableExport = (element: ActionTableTemplate) => {
-  const showPrevValue = element.answer
-    ?.flat()
-    .filter((item) => item.id === "prevValue")
-    .every((item) => item.value !== "");
-
-  const filteredRows = showPrevValue
-    ? element.rows
-    : element.rows.filter((row) => row.id != "prevValue");
-
-  const headers = filteredRows.map((row) => ({ label: row.header }));
-  const ids = filteredRows.map((row) => row.id);
+  const headers = element.rows.map((row) => ({ label: row.header }));
+  const ids = element.rows.map((row) => row.id);
 
   const buildRow = (element: ActionAnswerShape, index: number) => {
     return ids.map((id) => {

@@ -155,6 +155,10 @@ export const DashboardPage = () => {
                   the state for revisions or additional information after
                   submission.
                 </li>
+                <li>
+                  <strong>Accepted:</strong> The report has been submitted and
+                  accepted by CMS after review.
+                </li>
               </ul>
             </Box>
           </AccordionItem>
@@ -164,7 +168,7 @@ export const DashboardPage = () => {
         <Flex alignItems="flex-end" gap="spacer3">
           <CmsdsDropdownField
             name="budgetPeriodFilter"
-            label="Budget Period"
+            label="Filter by Budget Period"
             value={budgetPeriodFilter}
             onChange={handleBudgetPeriodChange}
             options={budgetPeriodFilterOptions}

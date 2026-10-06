@@ -1,4 +1,4 @@
-import { Accordion } from "@chakra-ui/react";
+import { Accordion, Link, Text } from "@chakra-ui/react";
 import { AccordionItem, ReportIntroCard } from "components";
 import { ReportIntroCardActions } from "./ReportIntroCardActions";
 import { ReportType } from "@pasrr/shared";
@@ -10,13 +10,13 @@ import { ReportType } from "@pasrr/shared";
 export const PasrrIntroductionCard = () => {
   return (
     <ReportIntroCard title="PASRR Report">
-      <p>
+      <Text>
         The{" "}
-        <a href="https://www.medicaid.gov/medicaid/long-term-services-supports/preadmission-screening-and-resident-review">
+        <Link href="https://www.medicaid.gov/medicaid/long-term-services-supports/preadmission-screening-and-resident-review">
           Preadmission Screening and Resident Review (PASRR)
-        </a>{" "}
+        </Link>{" "}
         {/* TODO: replace placeholder copy with final PASRR program language */}
-      </p>
+      </Text>
       <ReportIntroCardActions reportType={ReportType.PASRR} />
       <Accordion allowToggle={true} defaultIndex={[-1]}>
         <AccordionItem label="When is the PASRR Report Due?">

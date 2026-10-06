@@ -9,7 +9,7 @@ test.describe("state user home page", () => {
   test("should render a visible PASRR report link", async ({ statePage }) => {
     await expect(
       statePage.page.getByRole("link", {
-        name: "Enter PASRR Report online",
+        name: "Enter PASRR Report",
         exact: true,
       })
     ).toBeVisible();

@@ -84,9 +84,7 @@ export enum PageStatus {
 
 export enum CommentType {
   REPORT = "report",
-  SUBMIT_FOR_REVIEW = "submit_for_review",
-  ATTACHMENT = "attachment",
-  ATTACHMENT_STATUS = "attachment_status",
+  REQUEST_FEEDBACK = "request_feedback",
 }
 
 export type Comment = {
@@ -97,9 +95,8 @@ export type Comment = {
   authorEmail: string;
   isInternal: boolean;
   type: CommentType;
-  parentReportId?: string;
   comment?: string;
-  statusChange?: AttachmentStatus | ReportStatus;
+  statusChange?: ReportStatus;
 };
 
 export interface Report extends ReportOptions {
@@ -192,7 +189,7 @@ export enum ElementType {
   AttachmentArea = "attachmentArea",
   AccordionGroup = "accordionGroup",
   ActionTable = "actionTable",
-  SubmitForReview = "submitForReview",
+  RequestFeedbackButton = "requestFeedbackButton",
 }
 
 export type PageElement =
@@ -216,7 +213,7 @@ export type PageElement =
   | AccordionGroupTemplate
   | AttachmentAreaTemplate
   | ActionTableTemplate
-  | SubmitForReviewTemplate;
+  | RequestFeedbackButtonTemplate;
 
 export type HideCondition = {
   controllerElementId: string;
@@ -271,6 +268,12 @@ interface DisplayElementTemplate {
   text: string;
 }
 
+interface HelperTextLink {
+  link: string;
+  label: string;
+  text: string;
+}
+
 export interface HeaderTemplate extends DisplayElementTemplate {
   type: ElementType.Header;
   icon?: HeaderIcon;
@@ -280,6 +283,7 @@ export interface ParagraphTemplate extends DisplayElementTemplate {
   type: ElementType.Paragraph;
   title?: string;
   style?: string;
+  helperTextLink?: HelperTextLink;
 }
 
 export interface StatusAlertTemplate extends DisplayElementTemplate {
@@ -300,11 +304,13 @@ interface InputElementTemplate {
   id: string;
   label: string;
   helperText?: string;
-  helperTextLink?: { link: string; label: string; text: string };
+  helperTextLink?: HelperTextLink;
   required: boolean;
   quarterly?: boolean;
   disabled?: boolean;
-  editByRole?: string[];
+  onlyCmsAdminCanEdit?: boolean;
+  cmsAdminCanEditInSubmitted?: boolean;
+  skipOptionalTag?: boolean;
 }
 
 export interface CheckboxTemplate extends InputElementTemplate {
@@ -358,6 +364,7 @@ export interface TextboxTemplate extends InputElementTemplate {
   type: ElementType.Textbox;
   answer?: string;
   hideCondition?: HideCondition;
+  mask?: MaskType;
 }
 
 export interface AttachmentAreaTemplate extends InputElementTemplate {
@@ -375,22 +382,10 @@ export interface AccordionGroupTemplate {
   answer?: boolean[];
 }
 
-export enum AttachmentStatus {
-  PENDING_REVIEW = "Pending Review", // State driven
-  NEEDS_REVISION = "Needs Revision", // CMS driven
-  LOCKED_FOR_SCORING = "Locked for Scoring", // CMS driven
-  INFORMATIONAL = "Informational",
-  ARCHIVED = "Archived",
-}
-
-export const FileStatusOptions = Object.values(AttachmentStatus).map(
-  (status) => {
-    return { label: status, value: status };
-  }
-);
-
 export enum MaskType {
   CommaSeparated = "CommaSeparated",
+  MagicNumber = "MagicNumber",
+  NumberNA = "NumberNA",
 }
 
 export interface ActionElement {
@@ -410,16 +405,13 @@ export interface ActionModalElement extends ActionElement {
   editOnly?: boolean;
   children?: { label: string; value: string }[];
   required: boolean;
-  mask?: MaskType;
 }
 
 export type ActionAnswerShape = { id: string; value: string | number }[];
 
-export interface ActionTableTemplate {
+export interface ActionTableTemplate extends InputElementTemplate {
   type: ElementType.ActionTable;
-  id: string;
-  label: string;
-  hintText: string;
+  heading: string;
   modal: {
     title: string;
     hintText?: string;
@@ -427,13 +419,10 @@ export interface ActionTableTemplate {
   };
   rows: ActionRowElement[];
   answer?: ActionAnswerShape[];
-  quarterly?: boolean;
-  disabled?: boolean;
-  required: boolean;
 }
 
-export interface SubmitForReviewTemplate {
-  type: ElementType.SubmitForReview;
+export interface RequestFeedbackButtonTemplate {
+  type: ElementType.RequestFeedbackButton;
   id: string;
 }
 

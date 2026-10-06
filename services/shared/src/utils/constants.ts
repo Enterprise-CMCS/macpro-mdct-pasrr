@@ -1,6 +1,13 @@
 //Shared constants between frontend and backend
 
 // STATES
+
+// NOTE: this is the thing we would need to remove to allow a ZZ IDM user to exist if it is requested
+const isProdEnv =
+  (typeof window !== "undefined" &&
+    window.location.hostname === "mdctpasrr.cms.gov") ||
+  (typeof process !== "undefined" && process.env.STAGE === "production");
+
 export const StateNames = {
   AL: "Alabama",
   AK: "Alaska",
@@ -52,7 +59,8 @@ export const StateNames = {
   WV: "West Virginia",
   WI: "Wisconsin",
   WY: "Wyoming",
-} as const;
+  ...(!isProdEnv && { ZZ: "Test State ZZ" }),
+};
 
 export const dropdownEmptyOption = { label: "- Select an option -", value: "" };
 
@@ -93,6 +101,14 @@ export const acceptedFileTypes = [
   ".xltx",
   ".xls",
 ];
+
+export const tabTitleMap = {
+  "/": "Preadmission Screening and Resident Review",
+  "/help": "How can we help you? - PASRR",
+  "/profile": "My Account - PASRR",
+  "/admin": "Banner Admin - PASRR",
+  "/403": "Access Denied",
+};
 
 export const getExtension = (filename: string): string | undefined => {
   const lastDot = filename.lastIndexOf(".");

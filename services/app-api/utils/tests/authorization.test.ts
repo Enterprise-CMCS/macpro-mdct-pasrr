@@ -4,7 +4,6 @@ import {
   canReleaseReport,
   canRequestZip,
   canWriteBanner,
-  canWriteInitiatives,
   canWriteState,
 } from "../authorization";
 import { User } from "../../types/types";
@@ -74,19 +73,6 @@ describe("Authorization functions", () => {
     test("should reject other roles", () => {
       expect(canWriteState(internalUser, "CO")).toBe(false);
       expect(canWriteState(helpDeskUser, "CO")).toBe(false);
-    });
-  });
-
-  describe("canWriteInitiatives", () => {
-    test("should allow admins and approvers", () => {
-      expect(canWriteInitiatives(adminUser)).toBe(true);
-      expect(canWriteInitiatives(approverUser)).toBe(true);
-    });
-
-    test("should not allow state users, help desk, and internal users", () => {
-      expect(canWriteInitiatives(stateUser)).toBe(false);
-      expect(canWriteInitiatives(helpDeskUser)).toBe(false);
-      expect(canWriteInitiatives(internalUser)).toBe(false);
     });
   });
 

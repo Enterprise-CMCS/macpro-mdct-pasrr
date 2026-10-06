@@ -24,6 +24,9 @@ const baseStyles = {
         paddingRight: 0,
       },
     },
+    ".ds-c-inline-error": {
+      color: "error_dark !important",
+    },
   },
 };
 
@@ -187,35 +190,6 @@ const metricVariant = {
   },
 };
 
-const initiativeVariant = {
-  table: {
-    th: {
-      "&:last-of-type": {
-        textAlign: "right",
-      },
-      "&:first-of-type": {
-        minWidth: "56px",
-      },
-    },
-    td: {
-      "&:last-of-type": {
-        display: "flex",
-        justifyContent: "end",
-        textAlign: "right",
-      },
-      ".chakra-link": {
-        width: "5rem",
-      },
-      ".chakra-button": {
-        padding: "0 1rem",
-      },
-      img: {
-        width: "24px",
-      },
-    },
-  },
-};
-
 const pdfVariant = {
   table: {
     th: {
@@ -235,7 +209,6 @@ const variants = {
   export: exportVariant,
   reportDetails: reportDetailsVariant,
   metric: metricVariant,
-  initiative: initiativeVariant,
   pdf: pdfVariant,
 };
 

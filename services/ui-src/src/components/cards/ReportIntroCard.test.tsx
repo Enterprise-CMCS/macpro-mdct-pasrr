@@ -42,7 +42,7 @@ describe("<ReportTypeCard />", () => {
     });
 
     test("PASRR ReportTypeCard image is visible on desktop", () => {
-      const imageAltText = "Spreadsheet icon";
+      const imageAltText = "Spreadsheet";
       expect(screen.getByAltText(imageAltText)).toBeVisible();
     });
   });

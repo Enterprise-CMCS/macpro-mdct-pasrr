@@ -27,6 +27,14 @@ import {
 } from "@pasrr/shared";
 import { error } from "./constants";
 
+const helperTextLinkSchema = object()
+  .shape({
+    link: string(),
+    label: string(),
+    text: string(),
+  })
+  .notRequired();
+
 const hideConditionSchema = object()
   .shape({
     controllerElementId: string().required(),
@@ -56,23 +64,20 @@ const paragraphTemplateSchema = object().shape({
   text: string().required(),
   title: string().notRequired(),
   style: string().notRequired(),
+  helperTextLink: helperTextLinkSchema,
 });
 
 const inputElementSchema = {
   id: string().required(),
   label: string().required(),
   helperText: string().notRequired(),
-  helperTextLink: object()
-    .shape({
-      link: string(),
-      label: string(),
-      text: string(),
-    })
-    .notRequired(),
+  helperTextLink: helperTextLinkSchema,
   required: boolean().required(),
   quarterly: boolean().notRequired(),
   disabled: boolean().notRequired(),
-  editByRole: array().of(string()).notRequired(),
+  onlyCmsAdminCanEdit: boolean().notRequired(),
+  cmsAdminCanEditInSubmitted: boolean().notRequired(),
+  skipOptionalTag: boolean().notRequired(),
 };
 
 const textboxTemplateSchema = object().shape({
@@ -80,6 +85,7 @@ const textboxTemplateSchema = object().shape({
   ...inputElementSchema,
   answer: string().notRequired(),
   hideCondition: hideConditionSchema,
+  mask: string().notRequired(),
 });
 
 const listInputTemplateSchema = object().shape({
@@ -208,8 +214,8 @@ const pageElementSchema = lazy((value: PageElement): Schema => {
       return accordionGroupTemplateSchema;
     case ElementType.ActionTable:
       return actionTableSchema;
-    case ElementType.SubmitForReview:
-      return submitForReviewSchema;
+    case ElementType.RequestFeedbackButton:
+      return requestFeedbackButtonSchema;
     default:
       throw new Error("Page Element type is not valid");
   }
@@ -286,9 +292,8 @@ const ActionElementsSchema = {
 
 const actionTableSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.ActionTable)),
-  id: string().required(),
-  label: string().required(),
-  hintText: string().required(),
+  ...inputElementSchema,
+  heading: string().required(),
   modal: object()
     .shape({
       title: string().required(),
@@ -323,9 +328,6 @@ const actionTableSchema = object().shape({
     )
     .required(),
   answer: array().of(mixed()).notRequired(),
-  quarterly: boolean().notRequired(),
-  disabled: boolean().notRequired(),
-  required: boolean().required(),
 });
 
 const dividerSchema = object().shape({
@@ -375,8 +377,10 @@ const reviewSubmitTemplateSchema = formPageTemplateSchema.shape({
   submittedView: array().of(pageElementSchema).required(),
 });
 
-const submitForReviewSchema = object().shape({
-  type: string().required().matches(new RegExp(ElementType.SubmitForReview)),
+const requestFeedbackButtonSchema = object().shape({
+  type: string()
+    .required()
+    .matches(new RegExp(ElementType.RequestFeedbackButton)),
   id: string().required(),
 });
 
@@ -466,7 +470,6 @@ const commentSchema = object().shape({
   type: mixed<CommentType>().oneOf(Object.values(CommentType)).required(),
   comment: string().notRequired(),
   statusChange: string().notRequired(),
-  parentReportId: string().notRequired(),
 });
 
 const reportValidateSchema = object().shape({

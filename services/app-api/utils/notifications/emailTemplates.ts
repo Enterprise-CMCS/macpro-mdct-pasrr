@@ -9,14 +9,8 @@ export const getEmailTemplate = (emailTrigger: EMAIL_TRIGGERS, data: any) => {
       return getReportCommentTemplate(data);
     case EMAIL_TRIGGERS.REPORT_STATUS_CHANGE:
       return getReportStatusChangeTemplate(data);
-    case EMAIL_TRIGGERS.SUBMIT_FOR_REVIEW:
-      return getSubmitForReviewTemplate(data);
-    case EMAIL_TRIGGERS.ATTACHMENT_COMMENT:
-      return getAttachmentCommentTemplate(data);
-    case EMAIL_TRIGGERS.ATTACHMENT_STATUS_CHANGE_LOCKED:
-      return getAttachmentStatusLockedChangeTemplate(data);
-    case EMAIL_TRIGGERS.ATTACHMENT_STATUS_CHANGE_NEEDS_REVISION:
-      return getAttachmentStatusRevisionChangeTemplate(data);
+    case EMAIL_TRIGGERS.REQUEST_FEEDBACK:
+      return getRequestFeedbackTemplate(data);
   }
 };
 
@@ -101,7 +95,7 @@ If you believe this status change was made in error, or if you have questions re
   },
 });
 
-const getSubmitForReviewTemplate = ({
+const getRequestFeedbackTemplate = ({
   reportName,
   recipients,
 }: {
@@ -139,154 +133,6 @@ Please follow the steps below to navigate to the comment within the portal:
 If you believe this notification was sent in error, or if you have questions, please reach out to the PASRR support desk.
 
     Sincerely,
-`,
-      },
-    },
-  },
-});
-
-const getAttachmentCommentTemplate = ({
-  reportName,
-  recipients,
-  attachmentName,
-}: {
-  reportName: string;
-  recipients: string[];
-  attachmentName: string;
-}) => ({
-  Source: FROM_ADDRESS,
-  Destination: {
-    ToAddresses: recipients,
-  },
-  Message: {
-    Subject: { Data: `PASRR: Attachment ${attachmentName} has a new comment` },
-    Body: {
-      Text: {
-        Data: `
-This is an automated notification that a comment has been added to an attachment within the MDCT Preadmission Screening and Resident Review (PASRR) platform.
-
-Update Summary
-
-    Report name: ${reportName}
-
-    Attachment name: ${attachmentName}
-
-    Activity: New comment added
-
-    Date of Change: ${new Date().toDateString()}
-
-    Please follow the steps below to navigate to the comment within the portal:
-
-    1. Log in to the PASRR Portal: https://mdctpasrr.cms.gov
-    2. Open ${reportName}
-    3. Select Initiative Attachments.
-    4. Find ${attachmentName} and select Manage.
-
-    If you believe this notification was sent in error, or if you have questions, please reach out to the PASRR support desk.
-
-    Sincerely,
-
-    The PASRR Team
-`,
-      },
-    },
-  },
-});
-
-const getAttachmentStatusLockedChangeTemplate = ({
-  reportName,
-  recipients,
-  attachmentName,
-}: {
-  reportName: string;
-  recipients: string[];
-  attachmentName: string;
-}) => ({
-  Source: FROM_ADDRESS,
-  Destination: {
-    ToAddresses: recipients,
-  },
-  Message: {
-    Subject: {
-      Data: `PASRR: Attachment ${attachmentName} status changed to Locked for Scoring`,
-    },
-    Body: {
-      Text: {
-        Data: `
-This is an automated notification that the status of an attachment has changed within the MDCT Preadmission Screening and Resident Review (PASRR) platform. CMS has locked this document for scoring. When in this status, attachments are locked and cannot be edited or deleted.
-
-Update Summary
-
-    Report name: ${reportName}
-
-    Attachment name: ${attachmentName}
-
-    New status: Locked for Scoring
-
-    Date of Change: ${new Date().toDateString()}
-
-    No further action is required for this attachment. If you wish to view the locked attachment within the portal, please follow the steps below:
-
-    1. Log in to the PASRR Portal: https://mdctpasrr.cms.gov
-    2. Find ${reportName}
-    3. Select Initiative Attachments.
-    4. Find ${attachmentName} to view its status.
-
-    If you believe this status change was made in error or have questions, please reach out to the PASRR support desk.
-
-    Sincerely,
-
-    The PASRR Team
-`,
-      },
-    },
-  },
-});
-
-const getAttachmentStatusRevisionChangeTemplate = ({
-  reportName,
-  recipients,
-  attachmentName,
-}: {
-  reportName: string;
-  recipients: string[];
-  attachmentName: string;
-}) => ({
-  Source: FROM_ADDRESS,
-  Destination: {
-    ToAddresses: recipients,
-  },
-  Message: {
-    Subject: {
-      Data: `PASRR: Attachment ${attachmentName} status changed to Needs Revision`,
-    },
-    Body: {
-      Text: {
-        Data: `
-This is an automated notification that the status of an attachment has changed within the MDCT Preadmission Screening and Resident Review (PASRR) platform. CMS has determined that this attachment requires updates or corrections.
-
-Update Summary
-
-    Report name: ${reportName}
-
-    Attachment name: ${attachmentName}
-
-    New status: Needs Revision
-
-    Date of Change: ${new Date().toDateString()}
-
-    Please follow the steps below to review the feedback and upload a revised version within the portal:
-
-    1. Log in to the PASRR Portal: https://mdctpasrr.cms.gov
-    2. Find ${reportName}
-    3. Select Initiative Attachments.
-    4. Find ${attachmentName} and select Manage to review CMS feedback.
-
-    If you believe this status change was made in error, or if you have questions regarding the requirements for this attachment, please reach out to the PASRR support desk.
-
-    Sincerely,
-
-    The PASRR Team
 `,
       },
     },
