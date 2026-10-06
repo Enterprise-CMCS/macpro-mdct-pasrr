@@ -7,12 +7,12 @@ import { Modal } from "components/modals/Modal";
 import { useStore } from "utils";
 import { createComment } from "utils/api/requestMethods/commentMethods";
 
-export const SubmitForReview = () => {
+export const RequestFeedbackButton = () => {
   const [displayValue, setDisplayValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmittedForReview, setIsSubmittedForReview] = useState(false);
+  const [didRequestFeedback, setDidRequestFeedback] = useState(false);
   const { userIsEndUser } = useStore()?.user ?? {};
   const { report } = useStore();
 
@@ -36,7 +36,7 @@ export const SubmitForReview = () => {
     try {
       await createComment(report.id, report.state, {
         comment: displayValue,
-        type: CommentType.SUBMIT_FOR_REVIEW,
+        type: CommentType.REQUEST_FEEDBACK,
         isInternal: false,
       });
     } catch (error) {
@@ -50,14 +50,14 @@ export const SubmitForReview = () => {
 
     setDisplayValue("");
     setErrorMessage("");
-    setIsSubmittedForReview(true);
+    setDidRequestFeedback(true);
     setModalOpen(false);
     setIsSubmitting(false);
   };
 
   return (
     <Stack width={"100%"}>
-      {isSubmittedForReview ? (
+      {didRequestFeedback ? (
         <Alert title={"Submitted for Review"} status={AlertTypes.SUCCESS}>
           Your submission was sent to CMS for preliminary review of the details
           entered to date. You can still edit the report in preparation for

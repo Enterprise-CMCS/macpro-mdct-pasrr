@@ -728,5 +728,34 @@
         "Value": "mdctpasrr-project-officer"
       }
     ]
+  },
+  {
+    "username": "stateuserZZ@test.com",
+    "attributes": [
+      {
+        "Name": "email",
+        "Value": "stateuserZZ@test.com"
+      },
+      {
+        "Name": "given_name",
+        "Value": "Zeez"
+      },
+      {
+        "Name": "family_name",
+        "Value": "State"
+      },
+      {
+        "Name": "email_verified",
+        "Value": "true"
+      },
+      {
+        "Name": "custom:cms_roles",
+        "Value": "mdctpasrr-state-user"
+      },
+      {
+        "Name": "custom:cms_state",
+        "Value": "ZZ"
+      }
+    ]
   }
 ]

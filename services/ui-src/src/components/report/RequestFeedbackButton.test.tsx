@@ -1,6 +1,6 @@
 import { MockedFunction } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { SubmitForReview } from "./SubmitForReview";
+import { RequestFeedbackButton } from "./RequestFeedbackButton";
 import { useStore } from "utils";
 import { mockUseStore } from "utils/testing/setupTest";
 import userEvent from "@testing-library/user-event";
@@ -30,10 +30,10 @@ const openAndCompleteFormWithText = async (text: string) => {
   await userEvent.click(submitButton);
 };
 
-describe("SubmitForReview component", () => {
+describe("RequestFeedbackButton component", () => {
   test("does not render when no report in store", () => {
     mockedUseStore.mockReturnValue({});
-    const { container } = render(<SubmitForReview />);
+    const { container } = render(<RequestFeedbackButton />);
     expect(container).toBeEmptyDOMElement();
   });
 
@@ -41,7 +41,7 @@ describe("SubmitForReview component", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       mockedUseStore.mockReturnValue(mockUseStore);
-      render(<SubmitForReview />);
+      render(<RequestFeedbackButton />);
     });
     test("renders", () => {
       expect(screen.getAllByText("Submit for Review")).toHaveLength(2);
@@ -82,7 +82,7 @@ describe("SubmitForReview component", () => {
         mockUseStore.report?.state,
         {
           comment: "Please review",
-          type: "submit_for_review",
+          type: "request_feedback",
           isInternal: false,
         }
       );

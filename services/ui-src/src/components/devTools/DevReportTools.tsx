@@ -63,11 +63,19 @@ export const DevReportTools = () => {
       }
       if (element.type === "actionTable")
         return { ...element, answer: fillActionTable(element) };
-      else
+      else {
+        const answer =
+          "answer" in element &&
+          element.answer != "" &&
+          element.answer != undefined
+            ? element.answer
+            : undefined;
+
         return {
           ...element,
-          answer: getAnswerByType(element.type, element.id),
+          answer: answer ?? getAnswerByType(element.type, element.id),
         };
+      }
     });
   };
 

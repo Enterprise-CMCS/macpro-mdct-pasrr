@@ -61,8 +61,8 @@ const reviewAndSubmit: ReviewSubmitTemplate = {
       text: "Review & Submit",
     },
     {
-      type: ElementType.SubmitForReview,
-      id: "review-submit-for-review",
+      type: ElementType.RequestFeedbackButton,
+      id: "review-request-feedback",
     },
     {
       type: ElementType.Paragraph,

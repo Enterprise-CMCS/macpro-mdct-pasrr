@@ -149,10 +149,18 @@ export const elementSatisfiesRequired = (
         )
       )
       .flat();
-    const answers = activeElements.filter(
-      (column) => column.id != "prevValue" && column.id != "no"
+
+    const requiredAnswers = activeElements.filter((column) => {
+      if (column.id === "prevValue" || column.id === "no") return false;
+      const modalElement = element.modal.elements.find(
+        (modalElement) => modalElement.id === column.id
+      );
+      return modalElement?.required !== false;
+    });
+
+    return requiredAnswers.every(
+      (column) => column.value && column.value !== ""
     );
-    return answers.every((column) => column.value !== "");
   }
   if (element.id.includes("email") && typeof element.answer === "string") {
     return isEmail(element.answer);

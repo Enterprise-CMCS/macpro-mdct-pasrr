@@ -31,7 +31,7 @@ import {
 import { useStore } from "utils";
 import { SubmissionParagraph } from "./SubmissionParagraph";
 import { AttachmentArea } from "components/fields/AttachmentArea";
-import { SubmitForReview } from "./SubmitForReview";
+import { RequestFeedbackButton } from "./RequestFeedbackButton";
 
 interface Props {
   id: string;
@@ -110,8 +110,8 @@ export const Page = ({ id, setElements, elements }: Props) => {
         return <AccordionGroup {...{ updateElement, disabled, element }} />;
       case ElementType.ActionTable:
         return <ActionTable {...{ updateElement, disabled, element }} />;
-      case ElementType.SubmitForReview:
-        return <SubmitForReview />;
+      case ElementType.RequestFeedbackButton:
+        return <RequestFeedbackButton />;
       default:
         assertExhaustive(element);
         return null;

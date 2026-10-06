@@ -196,6 +196,12 @@ PASRR pipes updates from the dynamodb tables to BigMac for downstream consumptio
 - `services/topics/config.js` - Declare the new topic name.
 - `deployment/stacks/api.ts` - Add the dynamo table to the Lambda event source for `postKafkaData`
 
+### Test State (ZZ)
+
+`ZZ` is a fake state that exists in lower environments. It is used for testing and exists in the Cognito user pool (`stateuserZZ@test.com`). It does not represent a real state and **its data is not real data**.
+
+**`ZZ` must never flow to Data Connect.** Any report data, submissions, or other records associated with the `ZZ` state are test artifacts and must be excluded from downstream analytics consumers. As new integrations are added, they **must filter out `ZZ`** so that test data never leaks into real-world systems or metrics. See postKafkaData.ts for a reference filter.
+
 ## Architecture
 
 ![Architecture Diagram](./.images/architecture.png?raw=true)

@@ -1,6 +1,7 @@
 import {
   DateField,
   DropdownField,
+  ListInput,
   RadioField,
   TextAreaField,
   TextField,
@@ -11,6 +12,9 @@ import {
   StatusTableElement,
   StatusAlert,
   CheckboxField,
+  AttachmentArea,
+  AccordionGroup,
+  ActionTable,
 } from "components";
 import {
   ButtonLinkElement,
@@ -33,9 +37,14 @@ import {
   textAreaSection,
   numberFieldSection,
   radioFieldSection,
+  listFieldSection,
+  attachmentAreaSection,
+  accordionGroupSection,
+  actionTableSection,
 } from "./pdfElementSectionHelpers";
 import { formatMonthDayYear } from "utils";
 import { SubmissionParagraph } from "components/report/SubmissionParagraph";
+import { RequestFeedbackButton } from "components/report/RequestFeedbackButton";
 
 const logNewElement = (el: Partial<PageElement>) => console.log("Updated:", el);
 
@@ -375,5 +384,144 @@ export const elementObject: {
       />,
     ],
     pdfVariants: ["Checkbox currently not used in PDFs"],
+  },
+  [ElementType.ListInput]: {
+    description: "A field for adding a series of inputs",
+    id: "id-listinput",
+    variants: [
+      <ListInput
+        updateElement={logNewElement}
+        element={{
+          type: ElementType.ListInput,
+          id: "id-listinput",
+          buttonText: "Add list input",
+          required: true,
+          fieldLabel: "input",
+          label: "List Input",
+        }}
+      ></ListInput>,
+    ],
+    pdfVariants: [<ExportedReportWrapper section={listFieldSection} />],
+  },
+  [ElementType.AttachmentArea]: {
+    description: "An area for uploading files.",
+    id: "id-attachment",
+    variants: [
+      <AttachmentArea
+        updateElement={logNewElement}
+        element={{
+          type: ElementType.AttachmentArea,
+          id: "id-attachment",
+          label: "label",
+          required: true,
+          answer: [
+            {
+              name: "mock-file.txt",
+              size: 100,
+              fileId: "mock-id",
+            },
+          ],
+        }}
+      ></AttachmentArea>,
+    ],
+    pdfVariants: [<ExportedReportWrapper section={attachmentAreaSection} />],
+  },
+  [ElementType.AccordionGroup]: {
+    description:
+      "Accordion groups that can have an array of fields inside the accordion",
+    id: "id-accordion-group",
+    variants: [
+      <AccordionGroup
+        element={{
+          type: ElementType.AccordionGroup,
+          id: "id-accordion-group",
+          accordions: [
+            {
+              label: "Accordiong Group 1",
+              elements: [
+                {
+                  type: ElementType.Textbox,
+                  id: "",
+                  label: "",
+                  required: false,
+                },
+              ],
+            },
+            {
+              label: "Accordiong Group 2",
+              elements: [
+                {
+                  type: ElementType.Textbox,
+                  id: "",
+                  label: "",
+                  required: false,
+                },
+              ],
+            },
+          ],
+          required: true,
+        }}
+        updateElement={logNewElement}
+      ></AccordionGroup>,
+    ],
+    pdfVariants: [<ExportedReportWrapper section={accordionGroupSection} />],
+  },
+  [ElementType.ActionTable]: {
+    description:
+      "Generic table that has a the ability to add more columns if you're an admin user",
+    id: "id-action-table",
+    variants: [
+      <ActionTable
+        element={{
+          type: ElementType.ActionTable,
+          id: "id-action-table",
+          label: "Action Table",
+          heading: "Action Table",
+          helperText: "hint text",
+          modal: {
+            title: "Modal",
+            elements: [],
+          },
+          rows: [
+            {
+              header: "Text Field",
+              id: "row-1",
+              type: ElementType.Paragraph,
+            },
+            {
+              header: "Textbox Field",
+              id: "row-2",
+              type: ElementType.Textbox,
+            },
+            {
+              header: "Date Field",
+              id: "row-3",
+              type: ElementType.Date,
+            },
+          ],
+          answer: [
+            [
+              { id: "row-1", value: "1" },
+              { id: "row-2", value: "textbox 1" },
+              { id: "row-3", value: "01/01/2021" },
+            ],
+            [
+              { id: "row-1", value: "2" },
+              { id: "row-2", value: "textbox 2" },
+              { id: "row-3", value: "02/02/2022" },
+            ],
+          ],
+          required: true,
+        }}
+        updateElement={logNewElement}
+      ></ActionTable>,
+    ],
+    pdfVariants: [<ExportedReportWrapper section={actionTableSection} />],
+  },
+  [ElementType.RequestFeedbackButton]: {
+    description: "A field that allows the user to send comments to the CMS PO.",
+    id: "id-request-feedback-button",
+    variants: [<RequestFeedbackButton></RequestFeedbackButton>],
+    pdfVariants: ["Request Feedback button currently not used in PDFs"],
   },
 };

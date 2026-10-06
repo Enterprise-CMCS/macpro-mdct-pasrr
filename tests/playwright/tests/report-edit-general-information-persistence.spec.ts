@@ -9,7 +9,6 @@ import {
   GENERAL_INFORMATION_SECTION,
   getReportTestRunId,
   REVIEW_SUBMIT_SECTION,
-  waitForAutosaveWithSectionRefresh,
 } from "../utils/report-edit-shared-helpers";
 import {
   verifyFieldValue,
@@ -55,8 +54,7 @@ test.describe("Report Editing - General Information Persistence", () => {
     // Act
     await fillFields(editor, testDataMultiple);
     await editor.page.keyboard.press("Tab");
-    await waitForAutosaveWithSectionRefresh(
-      editor,
+    await editor.waitForAutosaveWithSectionRefresh(
       GENERAL_INFORMATION_SECTION,
       {
         timeoutMs: TIMEOUT_AUTOSAVE,

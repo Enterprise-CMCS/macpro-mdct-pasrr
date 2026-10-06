@@ -289,12 +289,49 @@ describe("elementSatisfiesRequired", () => {
       type: ElementType.ActionTable,
       id: "metrics-table",
       label: "action table",
-      hintText: "hint text",
+      heading: "Heading",
       modal: { title: "", elements: [] },
       rows: [{ id: "row", type: ElementType.Paragraph, header: "" }],
       answer: [[{ id: "row", value: "2" as string }]],
       required: true,
     } as ActionTableTemplate;
+    expect(elementSatisfiesRequired(element, [element])).toBeTruthy();
+  });
+
+  test("ignores optional and system Metrics Table columns", () => {
+    const element = {
+      type: ElementType.ActionTable,
+      id: "metrics-table",
+      label: "action table",
+      heading: "Heading",
+      modal: {
+        title: "",
+        elements: [
+          {
+            id: "required-column",
+            type: ElementType.Textbox,
+            required: true,
+          },
+          {
+            id: "optional-column",
+            type: ElementType.Textbox,
+            required: false,
+          },
+        ],
+      },
+      rows: [{ id: "row", type: ElementType.Paragraph, header: "" }],
+      answer: [
+        [
+          { id: "status", value: "Active" },
+          { id: "required-column", value: "complete" },
+          { id: "optional-column", value: "" },
+          { id: "prevValue", value: "" },
+          { id: "no", value: "" },
+        ],
+      ],
+      required: true,
+    } as ActionTableTemplate;
+
     expect(elementSatisfiesRequired(element, [element])).toBeTruthy();
   });
 

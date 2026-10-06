@@ -1,7 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 import { ReportEditorPage } from "../tests/pageObjects/report-editor.page";
-import { TIMEOUT_AUTOSAVE } from "./timeouts";
 
 export type ReportEditLabel = string | RegExp;
 
@@ -52,7 +51,7 @@ const REPORT_TEST_RUN_ID = (() => {
 
 export const getReportTestRunId = (): string => REPORT_TEST_RUN_ID;
 
-export const createRunId = (): string =>
+export const createArtifactId = (): string =>
   randomUUID().replaceAll("-", "").slice(0, 10);
 
 export const createUniqueGeneralInfoFields = (
@@ -88,58 +87,11 @@ export const editGeneralInformationFields = async (
   }
 };
 
-type AutosaveRefreshOptions = {
-  timeoutMs?: number;
-  fallbackSectionId?: string;
-};
-
 type UploadViaDialogOptions = {
   filePath: string;
   fileInputSelector?: string;
   expectedFileName?: string | RegExp;
   timeoutMs?: number;
-};
-
-export const waitForAutosaveWithSectionRefresh = async (
-  editor: ReportEditorPage,
-  sectionId: string,
-  options: AutosaveRefreshOptions = {}
-): Promise<boolean> => {
-  const timeoutMs = options.timeoutMs ?? TIMEOUT_AUTOSAVE;
-  const fallbackSectionId = options.fallbackSectionId ?? REVIEW_SUBMIT_SECTION;
-
-  const waitForAutosaveVisible = async () =>
-    editor.saveStatusText
-      .waitFor({ state: "visible", timeout: timeoutMs })
-      .then(() => true)
-      .catch(() => false);
-
-  const autosaveVisible = await waitForAutosaveVisible();
-
-  if (autosaveVisible) {
-    return true;
-  }
-
-  const { reportType, state, reportId } = editor.getCurrentRouteParams();
-  if (fallbackSectionId !== sectionId) {
-    await editor.navigateToSection(
-      reportType,
-      state,
-      reportId,
-      fallbackSectionId
-    );
-  }
-  await editor.navigateToSection(reportType, state, reportId, sectionId);
-
-  return waitForAutosaveVisible();
-};
-
-export const confirmAutosaveIndicatorIsVisible = async (
-  editor: ReportEditorPage
-): Promise<void> => {
-  await expect(editor.saveStatusText).toBeVisible({
-    timeout: TIMEOUT_AUTOSAVE,
-  });
 };
 
 export const uploadFileViaDialog = async (
