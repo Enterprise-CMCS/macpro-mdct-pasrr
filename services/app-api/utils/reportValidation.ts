@@ -470,7 +470,6 @@ const commentSchema = object().shape({
   type: mixed<CommentType>().oneOf(Object.values(CommentType)).required(),
   comment: string().notRequired(),
   statusChange: string().notRequired(),
-  parentReportId: string().notRequired(),
 });
 
 const reportValidateSchema = object().shape({

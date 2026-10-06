@@ -151,7 +151,6 @@ export const elementSatisfiesRequired = (
       .flat();
 
     const requiredAnswers = activeElements.filter((column) => {
-      if (column.id === "prevValue" || column.id === "no") return false;
       const modalElement = element.modal.elements.find(
         (modalElement) => modalElement.id === column.id
       );

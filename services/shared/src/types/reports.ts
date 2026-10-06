@@ -85,8 +85,6 @@ export enum PageStatus {
 export enum CommentType {
   REPORT = "report",
   REQUEST_FEEDBACK = "request_feedback",
-  ATTACHMENT = "attachment",
-  ATTACHMENT_STATUS = "attachment_status",
 }
 
 export type Comment = {
@@ -97,9 +95,8 @@ export type Comment = {
   authorEmail: string;
   isInternal: boolean;
   type: CommentType;
-  parentReportId?: string;
   comment?: string;
-  statusChange?: AttachmentStatus | ReportStatus;
+  statusChange?: ReportStatus;
 };
 
 export interface Report extends ReportOptions {
@@ -384,20 +381,6 @@ export interface AccordionGroupTemplate {
   required: boolean;
   answer?: boolean[];
 }
-
-export enum AttachmentStatus {
-  PENDING_REVIEW = "Pending Review", // State driven
-  NEEDS_REVISION = "Needs Revision", // CMS driven
-  LOCKED_FOR_SCORING = "Locked for Scoring", // CMS driven
-  INFORMATIONAL = "Informational",
-  ARCHIVED = "Archived",
-}
-
-export const FileStatusOptions = Object.values(AttachmentStatus).map(
-  (status) => {
-    return { label: status, value: status };
-  }
-);
 
 export enum MaskType {
   CommaSeparated = "CommaSeparated",

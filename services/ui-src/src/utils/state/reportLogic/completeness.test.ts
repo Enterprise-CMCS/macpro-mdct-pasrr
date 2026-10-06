@@ -184,30 +184,6 @@ describe("pageIsCompletable", () => {
     } as Report;
     expect(pageIsCompletable(report, "my-id")).toBeTruthy();
   });
-  test("is completable when pageId is initiatives ", () => {
-    const report = {
-      pages: [
-        {
-          id: "initiatives",
-          status: PageStatus.IN_PROGRESS,
-          elements: [{}],
-        },
-        {
-          id: "init-123",
-          initiativeNumber: "123",
-          elements: [
-            {
-              id: "good-question",
-              type: ElementType.Textbox,
-              answer: "WOW",
-              required: true,
-            },
-          ],
-        },
-      ],
-    } as Report;
-    expect(pageIsCompletable(report, "initiatives")).toBeTruthy();
-  });
 });
 
 describe("elementSatisfiesRequired", () => {
@@ -298,7 +274,7 @@ describe("elementSatisfiesRequired", () => {
     expect(elementSatisfiesRequired(element, [element])).toBeTruthy();
   });
 
-  test("ignores optional and system Metrics Table columns", () => {
+  test("ignores optional Metrics Table columns", () => {
     const element = {
       type: ElementType.ActionTable,
       id: "metrics-table",
@@ -325,8 +301,6 @@ describe("elementSatisfiesRequired", () => {
           { id: "status", value: "Active" },
           { id: "required-column", value: "complete" },
           { id: "optional-column", value: "" },
-          { id: "prevValue", value: "" },
-          { id: "no", value: "" },
         ],
       ],
       required: true,

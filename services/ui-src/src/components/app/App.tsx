@@ -29,7 +29,7 @@ export const App = () => {
   const { pathname } = useLocation();
   const currentPage = useStore(currentPageSelector);
 
-  //there are now two export pages due to the addition of the obligated and spent funds export zip
+  // the report export (PDF) page renders without the app header
   const isExportPage = pathname !== "/export" && pathname.includes("/export");
 
   useEffect(() => {

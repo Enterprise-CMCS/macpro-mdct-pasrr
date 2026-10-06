@@ -10,10 +10,7 @@ export const ZipModal = (
 
   const content = (
     <div>
-      <p>
-        This ZIP file includes all Initiative Checkpoint attachments except
-        those with a status of “Informational” or “Archived”.
-      </p>
+      <p>This ZIP file includes all attachments uploaded to this report.</p>
       <br />
       <p>
         Once the download starts, you can safely navigate away from this page;

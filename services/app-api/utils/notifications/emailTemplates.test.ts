@@ -5,7 +5,6 @@ const genericData = {
   reportName: "State Annual Report 1",
   recipients: ["user1@test.com", "user2@test.com"],
   status: "Report status",
-  attachmentName: "Attachment name",
 };
 
 describe("emailTemplate util", () => {
@@ -58,63 +57,6 @@ describe("emailTemplate util", () => {
         Message: expect.objectContaining({
           Subject: {
             Data: `PASRR: ${genericData.reportName} sections ready for review`,
-          },
-        }),
-      })
-    );
-  });
-
-  test("returns attachment comment template for attachment comment trigger", () => {
-    const template = getEmailTemplate(
-      EMAIL_TRIGGERS.ATTACHMENT_COMMENT,
-      genericData
-    );
-    expect(template).toEqual(
-      expect.objectContaining({
-        Destination: {
-          ToAddresses: genericData.recipients,
-        },
-        Message: expect.objectContaining({
-          Subject: {
-            Data: `PASRR: Attachment ${genericData.attachmentName} has a new comment`,
-          },
-        }),
-      })
-    );
-  });
-
-  test("returns attachment locked template for attachment locked trigger", () => {
-    const template = getEmailTemplate(
-      EMAIL_TRIGGERS.ATTACHMENT_STATUS_CHANGE_LOCKED,
-      genericData
-    );
-    expect(template).toEqual(
-      expect.objectContaining({
-        Destination: {
-          ToAddresses: genericData.recipients,
-        },
-        Message: expect.objectContaining({
-          Subject: {
-            Data: `PASRR: Attachment ${genericData.attachmentName} status changed to Locked for Scoring`,
-          },
-        }),
-      })
-    );
-  });
-
-  test("returns attachment needs revision template for attachment needs revision trigger", () => {
-    const template = getEmailTemplate(
-      EMAIL_TRIGGERS.ATTACHMENT_STATUS_CHANGE_NEEDS_REVISION,
-      genericData
-    );
-    expect(template).toEqual(
-      expect.objectContaining({
-        Destination: {
-          ToAddresses: genericData.recipients,
-        },
-        Message: expect.objectContaining({
-          Subject: {
-            Data: `PASRR: Attachment ${genericData.attachmentName} status changed to Needs Revision`,
           },
         }),
       })

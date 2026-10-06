@@ -18,8 +18,7 @@ const mockComment = {
   authorEmail: "mockEmail",
   isInternal: false,
   comment: "Mock comment",
-  type: CommentType.ATTACHMENT,
-  parentReportId: "mockReportId",
+  type: CommentType.REPORT,
 } as Comment;
 
 describe("Test commentApi functions", () => {
@@ -29,7 +28,6 @@ describe("Test commentApi functions", () => {
     const result = await createComment(mockComment.contextId, "mockState", {
       type: mockComment.type,
       comment: mockComment.comment,
-      parentReportId: mockComment.parentReportId,
       isInternal: mockComment.isInternal,
     });
     expect(result).toEqual(mockComment);

@@ -32,8 +32,7 @@ const mockComment = {
   authorEmail: "mockEmail",
   isInternal: false,
   comment: "Mock comment",
-  type: CommentType.ATTACHMENT,
-  parentReportId: "mockReportId",
+  type: CommentType.REPORT,
 } as Comment;
 
 const testEvent: APIGatewayProxyEvent = {

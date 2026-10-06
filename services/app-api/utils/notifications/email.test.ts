@@ -5,12 +5,10 @@ import { User } from "../../types/types";
 import { saveNotifications } from "./notifications";
 import { queryRecipientsByState } from "../../storage/notificationRecipients";
 import {
-  AttachmentStatus,
   CommentType,
   NotificationRecipientRecord,
   UserRoles,
 } from "@pasrr/shared";
-import { queryUpload } from "../../storage/upload";
 import { getReport } from "../../storage/reports";
 import { getEmailTemplate } from "./emailTemplates";
 import { Mock } from "vitest";
@@ -33,9 +31,6 @@ mockQueryRecipients.mockResolvedValue([
     email: "njrecipient@user.com",
   } as NotificationRecipientRecord,
 ]);
-
-vi.mock("../../storage/upload");
-const mockQueryUpload = vi.mocked(queryUpload);
 
 vi.mock("../../storage/reports");
 const mockGetReport = vi.mocked(getReport);
@@ -75,18 +70,6 @@ const mockStateUser = {
   role: UserRoles.STATE_USER,
 } as User;
 
-const mockAttachmentComment = {
-  contextId: "file-1",
-  created: Date.now(),
-  id: "comment-id",
-  author: "mock user",
-  authorEmail: "mockuser@email.com",
-  isInternal: false,
-  type: CommentType.ATTACHMENT,
-  parentReportId: validReport.id,
-  comment: "New attachment comment",
-};
-
 const mockReportComment = {
   contextId: validReport.id,
   created: Date.now(),
@@ -110,62 +93,38 @@ describe("email utils", () => {
       expect(mockSaveNotifications).not.toHaveBeenCalled();
     });
 
-    test("should not issue a send email command for file with no record", async () => {
-      mockQueryUpload.mockResolvedValue({ Items: [] } as any);
-      await sendEmail({
-        state: "PA",
-        user: mockAdminUser,
-        comment: mockAttachmentComment,
-      });
-      expect(mockQueryUpload).toHaveBeenCalled();
-      expect(sesLib.sendSesEmail).not.toHaveBeenCalled();
-      expect(mockSaveNotifications).not.toHaveBeenCalled();
-    });
-
     test("should not issue a send email command when no report found", async () => {
-      mockQueryUpload.mockResolvedValue({
-        Items: [{ filename: "mockfile.pdf" }],
-      } as any);
       mockGetReport.mockResolvedValue(undefined);
       await sendEmail({
         state: "PA",
         user: mockAdminUser,
-        comment: mockAttachmentComment,
+        comment: mockReportComment,
       });
-      expect(mockQueryUpload).toHaveBeenCalled();
       expect(mockGetReport).toHaveBeenCalled();
       expect(sesLib.sendSesEmail).not.toHaveBeenCalled();
       expect(mockSaveNotifications).not.toHaveBeenCalled();
     });
 
     test("should not issue a send email command when no recipients found for admin user", async () => {
-      mockQueryUpload.mockResolvedValue({
-        Items: [{ filename: "mockfile.pdf" }],
-      } as any);
       mockGetReport.mockResolvedValue(validReport);
       await sendEmail({
         state: "PA",
         user: mockAdminUser,
-        comment: mockAttachmentComment,
+        comment: mockReportComment,
       });
-      expect(mockQueryUpload).toHaveBeenCalled();
       expect(mockGetReport).toHaveBeenCalled();
       expect(sesLib.sendSesEmail).not.toHaveBeenCalled();
       expect(mockSaveNotifications).not.toHaveBeenCalled();
     });
 
     test("should not issue a send email command when no recipients found for state user", async () => {
-      mockQueryUpload.mockResolvedValue({
-        Items: [{ filename: "mockfile.pdf" }],
-      } as any);
       mockGetReport.mockResolvedValue(validReport);
       mockQueryRecipients.mockResolvedValueOnce([]);
       await sendEmail({
         state: "PA",
         user: mockStateUser,
-        comment: mockAttachmentComment,
+        comment: mockReportComment,
       });
-      expect(mockQueryUpload).toHaveBeenCalled();
       expect(mockGetReport).toHaveBeenCalled();
       expect(mockQueryRecipients).toHaveBeenCalled();
       expect(sesLib.sendSesEmail).not.toHaveBeenCalled();
@@ -173,9 +132,6 @@ describe("email utils", () => {
     });
 
     test("should send an email for report comment", async () => {
-      mockQueryUpload.mockResolvedValue({
-        Items: [{ filename: "mockfile.pdf" }],
-      } as any);
       mockGetReport.mockResolvedValue(validReport);
       mockQueryRecipients.mockResolvedValueOnce([
         { email: "cms.user@test.com" } as NotificationRecipientRecord,
@@ -185,7 +141,6 @@ describe("email utils", () => {
         user: mockStateUser,
         comment: mockReportComment,
       });
-      expect(mockQueryUpload).not.toHaveBeenCalled();
       expect(mockGetReport).toHaveBeenCalled();
       expect(mockQueryRecipients).toHaveBeenCalled();
       expect(sesLib.sendSesEmail).toHaveBeenCalled();
@@ -193,9 +148,6 @@ describe("email utils", () => {
     });
 
     test("should send an email for report status change", async () => {
-      mockQueryUpload.mockResolvedValue({
-        Items: [{ filename: "mockfile.pdf" }],
-      } as any);
       mockGetReport.mockResolvedValue(validReport);
       mockQueryRecipients.mockResolvedValueOnce([
         { email: "cms.user@test.com" } as NotificationRecipientRecord,
@@ -205,7 +157,6 @@ describe("email utils", () => {
         user: mockStateUser,
         reportId: validReport.id,
       });
-      expect(mockQueryUpload).not.toHaveBeenCalled();
       expect(mockGetReport).toHaveBeenCalled();
       expect(mockQueryRecipients).toHaveBeenCalled();
       expect(sesLib.sendSesEmail).toHaveBeenCalled();
@@ -226,116 +177,14 @@ describe("email utils", () => {
         user: mockStateUser,
         comment: mockRequestFeedbackComment,
       });
-      expect(mockQueryUpload).not.toHaveBeenCalled();
       expect(mockGetReport).toHaveBeenCalled();
       expect(mockQueryRecipients).toHaveBeenCalled();
       expect(sesLib.sendSesEmail).toHaveBeenCalled();
       expect(mockSaveNotifications).toHaveBeenCalled();
-    });
-
-    test("should send an email for attachment comment", async () => {
-      mockQueryUpload.mockResolvedValue({
-        Items: [{ filename: "mockfile.pdf" }],
-      } as any);
-      mockGetReport.mockResolvedValue(validReport);
-      mockQueryRecipients.mockResolvedValueOnce([
-        { email: "cms.user@test.com" } as NotificationRecipientRecord,
-      ]);
-      await sendEmail({
-        state: "PA",
-        user: mockStateUser,
-        comment: mockAttachmentComment,
-      });
-      expect(mockQueryUpload).toHaveBeenCalled();
-      expect(mockGetReport).toHaveBeenCalled();
-      expect(mockQueryRecipients).toHaveBeenCalled();
-      expect(sesLib.sendSesEmail).toHaveBeenCalled();
-      expect(mockSaveNotifications).toHaveBeenCalled();
-    });
-
-    test("should send an email for attachment status changed to locked for scoring", async () => {
-      mockQueryUpload.mockResolvedValue({
-        Items: [{ filename: "mockfile.pdf" }],
-      } as any);
-      mockGetReport.mockResolvedValue(mockReportWithRecipients);
-      mockQueryRecipients.mockResolvedValueOnce([
-        { email: "cms.user@test.com" } as NotificationRecipientRecord,
-      ]);
-      const mockAttachmentStatusChange = {
-        ...mockAttachmentComment,
-        comment: undefined,
-        type: CommentType.ATTACHMENT_STATUS,
-        statusChange: AttachmentStatus.LOCKED_FOR_SCORING,
-      };
-      await sendEmail({
-        state: "PA",
-        user: mockAdminUser,
-        comment: mockAttachmentStatusChange,
-      });
-      expect(mockQueryUpload).toHaveBeenCalled();
-      expect(mockGetReport).toHaveBeenCalled();
-      expect(mockQueryRecipients).not.toHaveBeenCalled();
-      expect(sesLib.sendSesEmail).toHaveBeenCalled();
-      expect(mockSaveNotifications).toHaveBeenCalled();
-    });
-
-    test("should send an email for attachment status changed to needs revision", async () => {
-      mockQueryUpload.mockResolvedValue({
-        Items: [{ filename: "mockfile.pdf" }],
-      } as any);
-      mockGetReport.mockResolvedValue(mockReportWithRecipients);
-      mockQueryRecipients.mockResolvedValueOnce([
-        { email: "cms.user@test.com" } as NotificationRecipientRecord,
-      ]);
-      const mockAttachmentStatusChange = {
-        ...mockAttachmentComment,
-        type: CommentType.ATTACHMENT_STATUS,
-        comment: undefined,
-        statusChange: AttachmentStatus.NEEDS_REVISION,
-      };
-      await sendEmail({
-        state: "PA",
-        user: mockAdminUser,
-        comment: mockAttachmentStatusChange,
-      });
-      expect(mockQueryUpload).toHaveBeenCalled();
-      expect(mockGetReport).toHaveBeenCalled();
-      expect(mockQueryRecipients).not.toHaveBeenCalled();
-      expect(sesLib.sendSesEmail).toHaveBeenCalled();
-      expect(mockSaveNotifications).toHaveBeenCalled();
-    });
-
-    test("should not send an email for attachment status changed to informational", async () => {
-      mockQueryUpload.mockResolvedValue({
-        Items: [{ filename: "mockfile.pdf" }],
-      } as any);
-      mockGetReport.mockResolvedValue(validReport);
-      mockQueryRecipients.mockResolvedValueOnce([
-        { email: "cms.user@test.com" } as NotificationRecipientRecord,
-      ]);
-      const mockAttachmentStatusChange = {
-        ...mockAttachmentComment,
-        type: CommentType.ATTACHMENT_STATUS,
-        comment: undefined,
-        statusChange: AttachmentStatus.INFORMATIONAL,
-      };
-      await sendEmail({
-        state: "PA",
-        user: mockStateUser,
-        comment: mockAttachmentStatusChange,
-      });
-      expect(mockQueryUpload).not.toHaveBeenCalled();
-      expect(mockGetReport).not.toHaveBeenCalled();
-      expect(mockQueryRecipients).not.toHaveBeenCalled();
-      expect(sesLib.sendSesEmail).not.toHaveBeenCalled();
-      expect(mockSaveNotifications).not.toHaveBeenCalled();
     });
 
     test("should log an error if email command fails", async () => {
       (sesLib.sendSesEmail as Mock).mockThrowOnce("Error!");
-      mockQueryUpload.mockResolvedValue({
-        Items: [{ filename: "mockfile.pdf" }],
-      } as any);
       mockGetReport.mockResolvedValue(validReport);
       mockQueryRecipients.mockResolvedValueOnce([
         { email: "cms.user@test.com" } as NotificationRecipientRecord,
@@ -345,7 +194,6 @@ describe("email utils", () => {
         user: mockStateUser,
         reportId: validReport.id,
       });
-      expect(mockQueryUpload).not.toHaveBeenCalled();
       expect(mockGetReport).toHaveBeenCalled();
       expect(mockQueryRecipients).toHaveBeenCalled();
       expect(sesLib.sendSesEmail).toHaveBeenCalled();

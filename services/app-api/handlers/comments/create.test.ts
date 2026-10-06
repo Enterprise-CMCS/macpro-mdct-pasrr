@@ -4,12 +4,7 @@ import { proxyEvent } from "../../testing/proxyEvent";
 import { APIGatewayProxyEvent, User } from "../../types/types";
 import { createComment } from "./create";
 import { authenticatedUser } from "../../utils/authentication";
-import {
-  UserRoles,
-  Comment,
-  CommentType,
-  AttachmentStatus,
-} from "@pasrr/shared";
+import { UserRoles, Comment, CommentType } from "@pasrr/shared";
 import { putComment } from "../../storage/comments";
 import { canWriteComments } from "../../utils/authorization";
 import { sendEmail } from "../../utils/notifications/email";
@@ -41,8 +36,7 @@ const mockComment = {
   authorEmail: "mockuser@example.com",
   isInternal: false,
   comment: "Mock comment",
-  type: CommentType.ATTACHMENT,
-  parentReportId: "mockReportId",
+  type: CommentType.REQUEST_FEEDBACK,
 } as Comment;
 
 const testEvent: APIGatewayProxyEvent = {
@@ -55,7 +49,6 @@ const testEvent: APIGatewayProxyEvent = {
   body: JSON.stringify({
     type: mockComment.type,
     comment: mockComment.comment,
-    parentReportId: mockComment.parentReportId,
     isInternal: mockComment.isInternal,
   }),
 };
@@ -112,7 +105,6 @@ describe("Test createComment API method", () => {
       body: JSON.stringify({
         type: CommentType.REPORT,
         comment: mockComment.comment,
-        parentReportId: mockComment.parentReportId,
         isInternal: mockComment.isInternal,
       }),
     };
@@ -125,30 +117,6 @@ describe("Test createComment API method", () => {
       id: expect.any(String),
     });
     expect(mockPutComment).toHaveBeenCalled();
-    expect(mockSendEmail).toHaveBeenCalled();
-  });
-
-  test("Successful attachment status update triggers email but not putComment", async () => {
-    const mockAttachmentStatusEvent: APIGatewayProxyEvent = {
-      ...testEvent,
-      body: JSON.stringify({
-        type: CommentType.ATTACHMENT_STATUS,
-        statusChange: AttachmentStatus.NEEDS_REVISION,
-        isInternal: false,
-        parentReportId: mockComment.parentReportId,
-      }),
-    };
-    const res = await createComment(mockAttachmentStatusEvent);
-    expect(res.statusCode).toBe(StatusCodes.Created);
-    expect(JSON.parse(res.body as string)).toEqual({
-      ...mockComment,
-      comment: undefined,
-      statusChange: AttachmentStatus.NEEDS_REVISION,
-      type: CommentType.ATTACHMENT_STATUS,
-      created: expect.any(Number),
-      id: expect.any(String),
-    });
-    expect(mockPutComment).not.toHaveBeenCalled();
     expect(mockSendEmail).toHaveBeenCalled();
   });
 });

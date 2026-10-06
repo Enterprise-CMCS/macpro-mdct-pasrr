@@ -7,7 +7,7 @@ import { canWriteComments } from "../../utils/authorization";
 import { logger } from "../../libs/debug-lib";
 import { validateCommentPayload } from "../../utils/reportValidation";
 import { error } from "../../utils/constants";
-import { Comment, CommentType } from "@pasrr/shared";
+import { Comment } from "@pasrr/shared";
 import { sendEmail } from "../../utils/notifications/email";
 
 export const createComment = handler(
@@ -36,10 +36,7 @@ export const createComment = handler(
       return badRequest("Invalid request");
     }
 
-    // don't save a record for attachment status changes, just notify
-    if (comment.type !== CommentType.ATTACHMENT_STATUS) {
-      await putComment(validatedComment);
-    }
+    await putComment(validatedComment);
     await sendEmail({ comment, state, user });
     return created(validatedComment);
   }

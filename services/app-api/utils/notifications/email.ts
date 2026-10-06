@@ -1,5 +1,4 @@
 import {
-  AttachmentStatus,
   Comment,
   CommentType,
   ReportPages,
@@ -14,16 +13,12 @@ import { User } from "../../types/types";
 import { saveNotifications } from "./notifications";
 import { queryRecipientsByState } from "../../storage/notificationRecipients";
 import { getEmailTemplate } from "./emailTemplates";
-import { queryUpload } from "../../storage/upload";
 import { getReport } from "../../storage/reports";
 
 export enum EMAIL_TRIGGERS {
   REPORT_COMMENT = "REPORT_COMMENT",
   REPORT_STATUS_CHANGE = "REPORT_STATUS_CHANGE",
   REQUEST_FEEDBACK = "REQUEST_FEEDBACK",
-  ATTACHMENT_COMMENT = "ATTACHMENT_COMMENT",
-  ATTACHMENT_STATUS_CHANGE_LOCKED = "ATTACHMENT_STATUS_CHANGE_LOCKED",
-  ATTACHMENT_STATUS_CHANGE_NEEDS_REVISION = "ATTACHMENT_STATUS_CHANGE_NEEDS_REVISION",
 }
 
 const getRecipients = async (
@@ -60,8 +55,6 @@ export const sendEmail = async ({
   reportId?: string;
 }) => {
   let reportId: string | undefined;
-  let uploadId: string | undefined;
-  let attachmentName: string | undefined;
   let emailTrigger: EMAIL_TRIGGERS | undefined;
 
   // Report feedback requested
@@ -86,36 +79,6 @@ export const sendEmail = async ({
     reportId = comment.contextId;
   }
 
-  // New external comment on an attachment
-  if (
-    comment &&
-    comment.type === CommentType.ATTACHMENT &&
-    !comment.isInternal &&
-    comment.parentReportId &&
-    comment.comment
-  ) {
-    emailTrigger = EMAIL_TRIGGERS.ATTACHMENT_COMMENT;
-    reportId = comment.parentReportId;
-    uploadId = comment.contextId;
-  }
-
-  // Email-triggering status change on an attachment
-  if (
-    comment &&
-    comment.type === CommentType.ATTACHMENT_STATUS &&
-    comment.parentReportId &&
-    (comment.statusChange === AttachmentStatus.LOCKED_FOR_SCORING ||
-      comment.statusChange === AttachmentStatus.NEEDS_REVISION)
-  ) {
-    if (comment.statusChange === AttachmentStatus.LOCKED_FOR_SCORING) {
-      emailTrigger = EMAIL_TRIGGERS.ATTACHMENT_STATUS_CHANGE_LOCKED;
-    } else {
-      emailTrigger = EMAIL_TRIGGERS.ATTACHMENT_STATUS_CHANGE_NEEDS_REVISION;
-    }
-    reportId = comment.parentReportId;
-    uploadId = comment.contextId;
-  }
-
   // Email-triggering status change on a report
   if (!comment && reportIdProp) {
     emailTrigger = EMAIL_TRIGGERS.REPORT_STATUS_CHANGE;
@@ -123,17 +86,6 @@ export const sendEmail = async ({
   }
 
   if (!emailTrigger) return;
-
-  // If it's an attachment update, get the upload
-  if (uploadId) {
-    const results = await queryUpload(uploadId, state);
-    if (!results.Items || results.Items.length === 0) {
-      logger.error("Could not find matching file.");
-      return;
-    }
-    const document = results.Items[0];
-    attachmentName = document.filename;
-  }
 
   // get the report
   if (!reportId) return;
@@ -149,7 +101,6 @@ export const sendEmail = async ({
     reportName,
     recipients,
     status,
-    attachmentName,
   });
 
   // send email

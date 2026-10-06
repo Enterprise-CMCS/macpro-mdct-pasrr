@@ -4,7 +4,6 @@ import { Comment, CommentType } from "@pasrr/shared";
 
 interface createCommentParams {
   type: CommentType;
-  parentReportId?: string;
   comment?: string;
   statusChange?: string;
   isInternal: boolean;
