@@ -33,18 +33,17 @@ describe("<App />", () => {
     expect(
       screen.getByRole("button", { name: "Here's how you know" })
     ).toBeVisible();
-    // Unable to run assertions on collections
-    expect(screen.getAllByAltText("PASRR logo")).toBeTruthy();
-    expect(screen.getAllByAltText("Help")).toBeTruthy();
-    expect(screen.getAllByAltText("Account")).toBeTruthy();
-    expect(screen.getAllByAltText("Expand")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "my account" })).toBeVisible();
+    expect(screen.getAllByAltText("PASRR logo")).toHaveLength(2);
+    expect(screen.getByAltText("Help")).toBeVisible();
+    expect(screen.getByAltText("Account")).toBeVisible();
+    expect(screen.getByAltText("Expand")).toBeVisible();
     expect(
-      screen.getAllByAltText("Department of Health and Human Services, USA")
-    ).toBeTruthy();
+      screen.getByAltText("Department of Health and Human Services, USA")
+    ).toBeVisible();
     expect(
-      screen.getAllByAltText("Medicaid.gov: Keeping America Healthy")
-    ).toBeTruthy();
-    expect(screen.getAllByRole("button").length).toBe(3);
+      screen.getByAltText("Medicaid.gov: Keeping America Healthy")
+    ).toBeVisible();
   });
 
   test("App renders local logins if there is no user", async () => {

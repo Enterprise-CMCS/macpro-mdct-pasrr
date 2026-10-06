@@ -15,12 +15,19 @@ export const PasrrIntroductionCard = () => {
         <Link href="https://www.medicaid.gov/medicaid/long-term-services-supports/preadmission-screening-and-resident-review">
           Preadmission Screening and Resident Review (PASRR)
         </Link>{" "}
-        {/* TODO: replace placeholder copy with final PASRR program language */}
+        annual reporting application is used by state Medicaid agencies to
+        report the PASRR Level II resident review data required by section
+        1919(e)(7)(C)(iv) of the Social Security Act and described in State
+        Medicaid Director letter # XX-XXX.
       </Text>
       <ReportIntroCardActions reportType={ReportType.PASRR} />
       <Accordion allowToggle={true} defaultIndex={[-1]}>
-        <AccordionItem label="When is the PASRR Report Due?">
-          {/* TODO: replace with the real PASRR reporting schedule */}
+        <AccordionItem label="When is the PASRR report due?">
+          <Text>
+            Submit your annual report by March 31. Your submission must cover
+            data from January 1 through December 31 of the previous calendar
+            year.
+          </Text>
         </AccordionItem>
       </Accordion>
     </ReportIntroCard>

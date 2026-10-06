@@ -1,5 +1,6 @@
 import { Button, Flex, Image, Link } from "@chakra-ui/react";
-import nextIcon from "assets/icons/arrows/icon_arrow_next_white.svg";
+import downloadIcon from "assets/icons/download/icon_download_primary.svg";
+import rightIcon from "assets/icons/arrows/icon_arrow_right_white.svg";
 import { useNavigate } from "react-router";
 import { ReportType, isReportType } from "@pasrr/shared";
 import { useStore } from "utils";
@@ -12,6 +13,7 @@ export const ReportIntroCardActions = ({ reportType }: Props) => {
   const navigate = useNavigate();
   const state = useStore().user?.state;
   const dashboardRoute = `/report/${reportType}/${state}`;
+  const showDownloadButton = reportType === ReportType.PASRR;
 
   const getAbbreviation = (reportType: string) => {
     if (!isReportType(reportType)) return "";
@@ -22,7 +24,19 @@ export const ReportIntroCardActions = ({ reportType }: Props) => {
   };
 
   return (
-    <Flex sx={sx.actionsFlexEnd}>
+    <Flex sx={showDownloadButton ? sx.actionsFlex : sx.actionsFlexEnd}>
+      {showDownloadButton && (
+        <Button
+          variant={"link"}
+          onClick={(e) => {
+            e.preventDefault();
+            alert("TODO");
+          }}
+          leftIcon={<Image src={downloadIcon} alt="Download" height="1rem" />}
+        >
+          User Guide and Help File
+        </Button>
+      )}
       <Button
         as={Link}
         variant={"primary"}
@@ -31,10 +45,10 @@ export const ReportIntroCardActions = ({ reportType }: Props) => {
           e.preventDefault();
           navigate(dashboardRoute);
         }}
-        rightIcon={<Image src={nextIcon} alt="Link" height="1rem" />}
+        rightIcon={<Image src={rightIcon} alt="Link" height="1rem" />}
         sx={sx.link}
       >
-        Enter {getAbbreviation(reportType)} Report
+        Enter {getAbbreviation(reportType)} report
       </Button>
     </Flex>
   );
