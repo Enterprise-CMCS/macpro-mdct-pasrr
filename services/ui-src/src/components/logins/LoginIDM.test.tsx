@@ -8,6 +8,7 @@ import { getReturnUrl } from "utils";
 vi.mock("aws-amplify/auth");
 vi.mock("utils");
 const mockGetReturnUrl = vi.mocked(getReturnUrl);
+mockGetReturnUrl.mockReturnValue("/");
 
 const loginIDMComponent = (
   <RouterWrappedComponent>

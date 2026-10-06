@@ -38,7 +38,7 @@ export { AttachmentArea } from "./fields/AttachmentArea";
 export { AccordionGroup } from "./fields/AccordionGroup";
 export { ActionTable } from "./fields/ActionTable";
 // forms
-export { AdminBannerForm } from "./forms/AdminBannerForm";
+export { AdminBannerDrawer } from "./forms/AdminBannerDrawer";
 export { AdminDashboard } from "./forms/AdminDashboard";
 // logins
 export { LoginCognito } from "./logins/LoginCognito";
@@ -75,5 +75,7 @@ export { TableStatusIcon } from "./tables/TableStatusIcon";
 // dashboard
 export { DashboardPage } from "./pages/Dashboard/DashboardPage";
 export { DashboardTable } from "./pages/Dashboard/DashboardTable";
+// skipNav
+export { SkipNav } from "./skipNav/SkipNav";
 // component inventory
 export { ComponentInventory } from "./component-inventory/ComponentInventory";

@@ -12,8 +12,8 @@ import {
   ComponentInventory,
   NotificationsPage,
 } from "components";
-import { useStore } from "utils";
-import { useEffect } from "react";
+import { useStore, focusHeading } from "utils";
+import { useEffect, useRef } from "react";
 import { useFlags } from "launchdarkly-react-client-sdk";
 import { ReportAutosaveProvider } from "components/report/ReportAutosaveProvider";
 import { UserRoles } from "@pasrr/shared";
@@ -25,11 +25,17 @@ export const AppRoutes = () => {
   const isPdfActive = useFlags()?.viewPdf;
 
   const componentInventoryPageEnabled = useFlags()?.componentInventory;
+  const firstRouteRender = useRef(true);
 
   useEffect(() => {
-    const appWrapper = document.getElementById("app-wrapper")!;
-    appWrapper?.focus();
-    window.scrollTo(0, 0);
+    if (firstRouteRender.current) {
+      firstRouteRender.current = false;
+      return;
+    }
+
+    // Wait for the next paint
+    const rafId = requestAnimationFrame(focusHeading);
+    return () => cancelAnimationFrame(rafId);
   }, [pathname]);
 
   return (

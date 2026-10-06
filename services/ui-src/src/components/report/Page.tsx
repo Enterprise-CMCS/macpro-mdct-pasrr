@@ -9,7 +9,12 @@ import {
   DividerElement,
 } from "./Elements";
 import { assertExhaustive } from "types";
-import { ElementType, isCompleteStatus, PageElement } from "@pasrr/shared";
+import {
+  ElementType,
+  isCompleteStatus,
+  PageElement,
+  ReportStatus,
+} from "@pasrr/shared";
 import {
   DateField,
   DropdownField,
@@ -35,15 +40,24 @@ interface Props {
 }
 
 export const Page = ({ id, setElements, elements }: Props) => {
-  const { userIsEndUser, userRole } = useStore().user || {};
+  const { userIsEndUser, userIsAdmin } = useStore().user || {};
   const { report } = useStore();
 
   const buildElement = (element: PageElement, index: number) => {
     const roleCanEdit =
-      "editByRole" in element
-        ? element.editByRole!.includes(userRole!)
+      "onlyCmsAdminCanEdit" in element && element.onlyCmsAdminCanEdit
+        ? userIsAdmin
         : userIsEndUser;
-    const disabled = !roleCanEdit || isCompleteStatus(report?.status);
+
+    const statusAllowsEdit =
+      !isCompleteStatus(report?.status) ||
+      ("cmsAdminCanEditInSubmitted" in element &&
+        element.cmsAdminCanEditInSubmitted &&
+        userIsAdmin &&
+        report?.status === ReportStatus.SUBMITTED);
+
+    const disabled = !roleCanEdit || !statusAllowsEdit;
+
     const subType = report?.subType;
     const updateElement = (updatedElement: Partial<typeof element>) => {
       setElements([
