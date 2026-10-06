@@ -12,7 +12,10 @@ export const PasrrIntroductionCard = () => {
     <ReportIntroCard title="PASRR Report">
       <Text>
         The{" "}
-        <Link href="https://www.medicaid.gov/medicaid/long-term-services-supports/preadmission-screening-and-resident-review">
+        <Link
+          href="https://www.medicaid.gov/medicaid/long-term-services-supports/institutional-long-term-care/preadmission-screening-and-resident-review"
+          target="_blank"
+        >
           Preadmission Screening and Resident Review (PASRR)
         </Link>{" "}
         annual reporting application is used by state Medicaid agencies to
