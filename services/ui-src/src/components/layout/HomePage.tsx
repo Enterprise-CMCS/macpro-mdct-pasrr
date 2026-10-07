@@ -29,8 +29,7 @@ export const HomePage = () => {
             </Heading>
             <Text paddingBottom="spacer3">
               Get started by completing the PASRR reports for your state or
-              territory. Learn more about this new data collection tool from
-              CMS.
+              territory.
             </Text>
           </Box>
           <PasrrIntroductionCard />

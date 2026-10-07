@@ -1,7 +1,7 @@
 import { PasrrIntroductionCard } from "./PasrrIntroductionCard";
 import { render, screen } from "@testing-library/react";
 import { testA11yAct } from "utils/testing/commonTests";
-import { RouterWrappedComponent } from "utils/testing/mockRouter";
+import { RouterWrappedComponent } from "utils/testing/setupTest";
 
 const component = (
   <RouterWrappedComponent>

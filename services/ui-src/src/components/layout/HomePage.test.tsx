@@ -1,14 +1,14 @@
 import { HomePage } from "./HomePage";
 import { MockedFunction } from "vitest";
 import { act, render, screen } from "@testing-library/react";
+import { useStore } from "utils";
 import { testA11yAct } from "utils/testing/commonTests";
+import { mockReport, mockReport2 } from "utils/testing/mockForm";
 import {
   mockAdminUserStore,
   mockStateUserStore,
   RouterWrappedComponent,
 } from "utils/testing/setupTest";
-import { mockReport, mockReport2 } from "utils/testing/mockForm";
-import { useStore } from "utils";
 import { BannerAreas, BannerShape } from "@pasrr/shared";
 
 vi.mock("utils/auth/authLifecycle", () => ({

@@ -1,13 +1,13 @@
+import { App } from "components";
 import { MockedFunction } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { useStore, UserProvider } from "utils";
+import { testA11yAct } from "utils/testing/commonTests";
 import {
   RouterWrappedComponent,
   mockNoUserStore,
   mockUseStore,
 } from "utils/testing/setupTest";
-import { useStore, UserProvider } from "utils";
-import { App } from "components";
-import { testA11yAct } from "utils/testing/commonTests";
 
 vi.mock("utils/state/useStore");
 const mockedUseStore = useStore as unknown as MockedFunction<typeof useStore>;
