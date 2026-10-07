@@ -25,10 +25,11 @@ export const HomePage = () => {
         <PageTemplate>
           <Box>
             <Heading as="h1" variant="h1" paddingBottom="spacer3">
-              Preadmission Screening and Resident Review
+              Preadmission Screening and Resident Review Portal
             </Heading>
             <Text paddingBottom="spacer3">
-              Get started by completing the reports for your state or territory.
+              Get started by completing the PASRR reports for your state or
+              territory.
             </Text>
           </Box>
           <PasrrIntroductionCard />

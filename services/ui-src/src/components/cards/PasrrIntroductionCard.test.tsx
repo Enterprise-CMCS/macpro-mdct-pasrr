@@ -1,7 +1,7 @@
 import { PasrrIntroductionCard } from "./PasrrIntroductionCard";
 import { render, screen } from "@testing-library/react";
 import { testA11yAct } from "utils/testing/commonTests";
-import { RouterWrappedComponent } from "utils/testing/mockRouter";
+import { RouterWrappedComponent } from "utils/testing/setupTest";
 
 const component = (
   <RouterWrappedComponent>
@@ -9,12 +9,28 @@ const component = (
   </RouterWrappedComponent>
 );
 
-describe("PasrrIntroductionCard", () => {
-  test("should render", () => {
+describe("<PasrrIntroductionCard />", () => {
+  test("renders card content", () => {
     render(component);
     expect(
-      screen.getByText("When is the PASRR Report Due?", {
-        exact: false,
+      screen.getByRole("heading", {
+        level: 2,
+        name: "PASRR Report",
+      })
+    ).toBeVisible();
+    expect(
+      screen.getByRole("link", {
+        name: "Enter PASRR report",
+      })
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", {
+        name: "User Guide and Help File",
+      })
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", {
+        name: "When is the PASRR report due?",
       })
     ).toBeVisible();
   });
