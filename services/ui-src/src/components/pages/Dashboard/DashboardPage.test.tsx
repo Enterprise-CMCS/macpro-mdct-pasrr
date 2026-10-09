@@ -192,9 +192,9 @@ describe("DashboardPage with state user", () => {
       )
     ).toBeVisible();
 
-    // "one" is wrapped in <b>, so check the paragraph's full text content
-    const emphasizedOne = screen.getByText("one", { selector: "b" });
-    expect(emphasizedOne.parentElement).toHaveTextContent(
+    const secondParagraph = screen.getByText(/you should only submit/);
+    expect(secondParagraph).toBeVisible();
+    expect(secondParagraph).toHaveTextContent(
       "While this tool will not prevent you from creating multiple reports for the same reporting period, you should only submit one report per reporting period."
     );
   });
@@ -220,7 +220,7 @@ describe("DashboardPage with state user", () => {
       name: "Understanding report statuses",
     });
     expect(accordionButton).toHaveAttribute("aria-expanded", "false");
-    expect(screen.queryByText("Not started:")).not.toBeVisible();
+    expect(screen.getByText("Not started:")).not.toBeVisible();
   });
 
   test("should show statuses, contact note, and email notifications when the accordion is opened", async () => {
@@ -229,16 +229,17 @@ describe("DashboardPage with state user", () => {
       expect(getReportsForState).toHaveBeenCalled();
     });
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Understanding report statuses" })
-    );
+    const accordionButton = screen.getByRole("button", {
+      name: "Understanding report statuses",
+    });
+    await userEvent.click(accordionButton);
+    expect(accordionButton).toHaveAttribute("aria-expanded", "true");
 
     await waitFor(() => {
       expect(screen.getByText("Not started:")).toBeVisible();
     });
 
     // four statuses
-    expect(screen.getByText("Not started:")).toBeVisible();
     expect(screen.getByText("In progress:")).toBeVisible();
     expect(screen.getByText("Submitted:")).toBeVisible();
     expect(screen.getByText("In revision:")).toBeVisible();

@@ -120,17 +120,17 @@ export const DashboardPage = () => {
         <Heading as="h1" variant="h1">
           {fullStateName} {reportName}
         </Heading>
-        <Box marginTop="spacer4">
+        <Box marginTop="spacer4" sx={sx.introText}>
           <p>
             Select “Create {reportName} Report” to create a new report. Then you
             can use the dashboard below to edit the report name, fill it out,
             and monitor its status.
           </p>
-          <Text marginTop="spacer2">
+          <p>
             While this tool will not prevent you from creating multiple reports
-            for the same reporting period, you should only submit <b>one</b>{" "}
-            report per reporting period.
-          </Text>
+            for the same reporting period, you should only submit{" "}
+            <strong>one</strong> report per reporting period.
+          </p>
         </Box>
         <Accordion
           allowToggle={true}
@@ -142,7 +142,7 @@ export const DashboardPage = () => {
             sx={sx.accordionItem}
           >
             <Box sx={sx.accordionPanel}>
-              <ul>
+              <ul className="statusList">
                 <li>
                   <strong>Not started:</strong> The state created the report,
                   but hasn’t entered any data yet.
@@ -164,15 +164,18 @@ export const DashboardPage = () => {
               <p>
                 Note: If you need to make changes to a submitted report, reach
                 out to the CMS PASRR team at{" "}
-                <Link href="mailto:PASRR_Institutional_Coverage@cms.hhs.gov">
+                <Link
+                  sx={sx.emailLink}
+                  href="mailto:PASRR_Institutional_Coverage@cms.hhs.gov"
+                >
                   PASRR_Institutional_Coverage@cms.hhs.gov
                 </Link>{" "}
                 to have them unlock it.
               </p>
-              <Box as="p" marginTop="spacer4">
+              <p className="milestoneIntro">
                 The PASRR application automatically triggers email notifications
                 to your state team for these key milestones:
-              </Box>
+              </p>
               <ul>
                 <li>
                   <strong>When You Submit a Report:</strong> The moment your
@@ -263,6 +266,14 @@ const sx = {
     marginTop: "spacer5",
     marginX: "auto",
   },
+  introText: {
+    p: {
+      marginBottom: "spacer2",
+    },
+    "p:last-child": {
+      marginBottom: 0,
+    },
+  },
   bodyBox: {
     maxWidth: "55.25rem",
     margin: "0 auto",
@@ -295,17 +306,20 @@ const sx = {
     },
   },
   accordionPanel: {
-    "ul:first-of-type": {
+    ".statusList": {
       marginBottom: "spacer1",
     },
-    "ul:last-of-type": {
-      marginBottom: 0,
+    ".milestoneIntro": {
+      marginTop: "spacer4",
     },
-    a: {
-      overflowWrap: "anywhere",
+    "& > :last-child": {
+      marginBottom: 0,
     },
     ".mobile &": {
       paddingTop: "spacer2",
     },
+  },
+  emailLink: {
+    overflowWrap: "anywhere",
   },
 };
