@@ -121,11 +121,16 @@ export const DashboardPage = () => {
           {fullStateName} {reportName}
         </Heading>
         <Box marginTop="spacer4">
-          Click the <b>“Start {reportName} Report”</b> button to begin creating
-          your report. Refer to the reference guide "PASRR_State Reporting
-          Expectations_Guide" as needed for additional support. Prior to
-          submitting your report confirm all the information is complete and
-          accurate.
+          <p>
+            Select “Create {reportName} Report” to create a new report. Then you
+            can use the dashboard below to edit the report name, fill it out,
+            and monitor its status.
+          </p>
+          <Text marginTop="spacer2">
+            While this tool will not prevent you from creating multiple reports
+            for the same reporting period, you should only submit <b>one</b>{" "}
+            report per reporting period.
+          </Text>
         </Box>
         <Accordion
           allowToggle={true}
@@ -139,25 +144,50 @@ export const DashboardPage = () => {
             <Box sx={sx.accordionPanel}>
               <ul>
                 <li>
-                  <strong>Not started:</strong> The report has been created but
-                  no data has been entered or actions taken.
+                  <strong>Not started:</strong> The state created the report,
+                  but hasn’t entered any data yet.
                 </li>
                 <li>
-                  <strong>In progress:</strong> The report is actively being
-                  worked on, with some or all data entered.
+                  <strong>In progress:</strong> The state is actively working on
+                  the report, with some or all data entered.
                 </li>
                 <li>
-                  <strong>Submitted:</strong> The report has been completed and
-                  submitted to CMS for review.
+                  <strong>Submitted:</strong> The state submitted the report to
+                  CMS for review, and it is locked from editing.
                 </li>
                 <li>
-                  <strong>In revision:</strong> The report has been sent back to
+                  <strong>In revision:</strong> CMS has sent the report back to
                   the state for revisions or additional information after
                   submission.
                 </li>
+              </ul>
+              <p>
+                Note: If you need to make changes to a submitted report, reach
+                out to the CMS PASRR team at{" "}
+                <Link href="mailto:PASRR_Institutional_Coverage@cms.hhs.gov">
+                  PASRR_Institutional_Coverage@cms.hhs.gov
+                </Link>{" "}
+                to have them unlock it.
+              </p>
+              <Box as="p" marginTop="spacer4">
+                The PASRR application automatically triggers email notifications
+                to your state team for these key milestones:
+              </Box>
+              <ul>
                 <li>
-                  <strong>Accepted:</strong> The report has been submitted and
-                  accepted by CMS after review.
+                  <strong>When You Submit a Report:</strong> The moment your
+                  state team hits finalize, an immediate automated confirmation
+                  email is sent to your point-of-contact roster. This serves as
+                  your digital receipt and proof of timely completion.
+                </li>
+                <li>
+                  <strong>
+                    When a Report Status is “Unlocked for Revision”:
+                  </strong>{" "}
+                  If your initial submission requires adjustments, CMS will
+                  unlock the document. An automated notification will detail the
+                  necessary changes and grant you immediate data entry access
+                  again.
                 </li>
               </ul>
             </Box>
@@ -202,7 +232,7 @@ export const DashboardPage = () => {
           >
             {hasSubmittedReport
               ? `Copy ${reportName} Submission`
-              : `Start ${reportName} Report`}
+              : `Create ${reportName} Report`}
           </Button>
         </Flex>
       </Flex>
@@ -259,9 +289,21 @@ const sx = {
     color: "base",
   },
   accordionItem: {
-    marginBottom: "spacer3",
+    marginBottom: "spacer1",
+    ".chakra-accordion__panel": {
+      paddingBottom: 0,
+    },
   },
   accordionPanel: {
+    "ul:first-of-type": {
+      marginBottom: "spacer1",
+    },
+    "ul:last-of-type": {
+      marginBottom: 0,
+    },
+    a: {
+      overflowWrap: "anywhere",
+    },
     ".mobile &": {
       paddingTop: "spacer2",
     },

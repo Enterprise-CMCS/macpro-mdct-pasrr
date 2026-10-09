@@ -172,11 +172,108 @@ describe("DashboardPage with state user", () => {
     });
 
     const reportModalButton = screen.getByRole("button", {
-      name: "Start PASRR Report",
+      name: "Create PASRR Report",
     });
     expect(reportModalButton).toBeEnabled();
     await userEvent.click(reportModalButton);
 
     expect(screen.getByText("Add New PASRR Report")).toBeInTheDocument();
+  });
+
+  test("should render the new intro copy", async () => {
+    render(dashboardComponent);
+    await waitFor(() => {
+      expect(getReportsForState).toHaveBeenCalled();
+    });
+
+    expect(
+      screen.getByText(
+        "Select “Create PASRR Report” to create a new report. Then you can use the dashboard below to edit the report name, fill it out, and monitor its status."
+      )
+    ).toBeVisible();
+
+    // "one" is wrapped in <b>, so check the paragraph's full text content
+    const emphasizedOne = screen.getByText("one", { selector: "b" });
+    expect(emphasizedOne.parentElement).toHaveTextContent(
+      "While this tool will not prevent you from creating multiple reports for the same reporting period, you should only submit one report per reporting period."
+    );
+  });
+
+  test("should not reference the reporting expectations guide", async () => {
+    render(dashboardComponent);
+    await waitFor(() => {
+      expect(getReportsForState).toHaveBeenCalled();
+    });
+
+    expect(
+      screen.queryByText(/PASRR_State Reporting Expectations_Guide/)
+    ).not.toBeInTheDocument();
+  });
+
+  test("should render the accordion closed by default", async () => {
+    render(dashboardComponent);
+    await waitFor(() => {
+      expect(getReportsForState).toHaveBeenCalled();
+    });
+
+    const accordionButton = screen.getByRole("button", {
+      name: "Understanding report statuses",
+    });
+    expect(accordionButton).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText("Not started:")).not.toBeVisible();
+  });
+
+  test("should show statuses, contact note, and email notifications when the accordion is opened", async () => {
+    render(dashboardComponent);
+    await waitFor(() => {
+      expect(getReportsForState).toHaveBeenCalled();
+    });
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "Understanding report statuses" })
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Not started:")).toBeVisible();
+    });
+
+    // four statuses
+    expect(screen.getByText("Not started:")).toBeVisible();
+    expect(screen.getByText("In progress:")).toBeVisible();
+    expect(screen.getByText("Submitted:")).toBeVisible();
+    expect(screen.getByText("In revision:")).toBeVisible();
+    expect(screen.queryByText("Accepted:")).not.toBeInTheDocument();
+
+    // contact note with mailto link
+    expect(screen.getByText(/to have them unlock it/)).toBeVisible();
+    expect(
+      screen.getByRole("link", {
+        name: "PASRR_Institutional_Coverage@cms.hhs.gov",
+      })
+    ).toHaveAttribute(
+      "href",
+      "mailto:PASRR_Institutional_Coverage@cms.hhs.gov"
+    );
+
+    // email notification section and milestones
+    expect(
+      screen.getByText(/automatically triggers email notifications/)
+    ).toBeVisible();
+    expect(screen.getByText("When You Submit a Report:")).toBeVisible();
+    expect(
+      screen.getByText("When a Report Status is “Unlocked for Revision”:")
+    ).toBeVisible();
+  });
+
+  test("should not show the old Start PASRR Report button", async () => {
+    (getReportsForState as Mock).mockResolvedValue([]);
+    render(dashboardComponent);
+    await waitFor(() => {
+      expect(getReportsForState).toHaveBeenCalled();
+    });
+
+    expect(
+      screen.queryByRole("button", { name: "Start PASRR Report" })
+    ).not.toBeInTheDocument();
   });
 });
