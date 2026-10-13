@@ -193,6 +193,7 @@ export const mockReportStore: ReportState = {
     subType: PasrrSubType.ANNUAL,
     subTypeKey: "A1",
     budgetPeriod: 1,
+    reportingYear: 2026,
     pages: [
       {
         id: "root",

@@ -25,6 +25,7 @@ export const isReportType = (
 
 export interface CreateReportOptions {
   mockDate?: string;
+  reportingYear: number;
 }
 
 export interface ZipRequestBody {
@@ -47,6 +48,7 @@ export interface ReportOptions {
   subType: PasrrSubType;
   subTypeKey: string;
   budgetPeriod: number;
+  reportingYear: number;
   pages: ReportPages;
   copyFromReportId?: string;
 }

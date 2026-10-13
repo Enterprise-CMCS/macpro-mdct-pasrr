@@ -74,7 +74,7 @@ describe("Test Add Report Modal", () => {
   });
 
   test("Add Report Modal shows proper add contents", () => {
-    expect(screen.getByText("Add New PASRR Report")).toBeInTheDocument();
+    expect(screen.getByText("Create a PASRR Report")).toBeInTheDocument();
     expect(screen.getByText("Save")).toBeInTheDocument();
   });
 
@@ -114,7 +114,7 @@ describe("Test CreateReportModal types", () => {
           />
         </RouterWrappedComponent>
       );
-      expect(screen.getByText(`Add New ${text}`)).toBeInTheDocument();
+      expect(screen.getByText(`Create a ${text}`)).toBeInTheDocument();
     }
   );
 });

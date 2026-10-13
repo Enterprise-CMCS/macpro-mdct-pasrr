@@ -39,6 +39,7 @@ const StateDashboardTools = (
         subType: PasrrSubType.ANNUAL,
         subTypeKey: "",
         budgetPeriod: 0,
+        reportingYear: 2026,
       },
     ]}
   />

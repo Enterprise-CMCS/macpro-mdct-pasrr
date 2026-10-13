@@ -418,6 +418,7 @@ export const isCreateReportOptions = (
   const createReportOptionsValidationSchema = object()
     .shape({
       mockDate: string().notRequired(),
+      reportingYear: number().required(),
     })
     .required()
     .noUnknown();
@@ -496,6 +497,7 @@ const reportValidateSchema = object().shape({
   subType: mixed<PasrrSubType>().oneOf(Object.values(PasrrSubType)).required(),
   subTypeKey: string().required(),
   budgetPeriod: number().min(0).max(5).required(),
+  reportingYear: number().required(),
   submissionCount: number().required(),
   pages: pagesSchema,
 });
