@@ -13,6 +13,7 @@ import { ErrorMessages } from "../../constants";
 import {
   isEmail,
   isPhone,
+  isZipCode,
   maskByType,
   parseNumber,
   stringifyInput,
@@ -54,6 +55,9 @@ export const TextField = (
         break;
       case textbox.id.includes("phone") && !isPhone(defaultValueString):
         setErrorMessage(ErrorMessages.mustBeAPhone);
+      break;
+      case textbox.id.includes("zip") && !isZipCode(defaultValueString):
+        setErrorMessage(ErrorMessages.mustBeAZipCode);
         break;
     }
   }, []);
@@ -115,6 +119,10 @@ export const TextField = (
           {
             match: textbox.id.includes("phone") && !isPhone(rawValue),
             message: ErrorMessages.mustBeAPhone,
+          },
+          {
+            match: textbox.id.includes("zip") && !isZipCode(rawValue),
+            message: ErrorMessages.mustBeAZipCode,
           },
         ];
 

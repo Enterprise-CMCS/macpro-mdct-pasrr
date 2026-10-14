@@ -15,6 +15,7 @@ export const ErrorMessages = {
   mustBeACurrency: "Response must be a valid currency amount",
   mustBeALink: "Response must be a valid url",
   mustBeAPhone: "Enter a valid phone number.",
+  mustBeAZipCode: "Enter a valid Zip code.",
 } as const;
 
 export const PRODUCTION_HOST_DOMAIN = "mdctpasrr.cms.gov";
