@@ -1,5 +1,5 @@
 import { MockedFunction } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CreateReportModal } from "components";
 import {
@@ -52,12 +52,12 @@ describe("Test general modal functionality", () => {
   });
 
   test("Modal top close button can be clicked", async () => {
-    await userEvent.click(screen.getByText("Close"));
+    await userEvent.click(screen.getByRole("button", { name: /close/i }));
     expect(mockCloseHandler).toHaveBeenCalledTimes(1);
   });
 
   test("Modal bottom cancel button can be clicked", async () => {
-    await userEvent.click(screen.getByText("Cancel"));
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(mockCloseHandler).toHaveBeenCalledTimes(1);
   });
 });
@@ -73,9 +73,13 @@ describe("Test Add Report Modal", () => {
     vi.clearAllMocks();
   });
 
-  test("Add Report Modal shows proper add contents", () => {
-    expect(screen.getByText("Create a PASRR Report")).toBeInTheDocument();
-    expect(screen.getByText("Save")).toBeInTheDocument();
+  test("Add Report Modal shows proper add contents", async () => {
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: "Create a PASRR Report" }),
+      ).toBeVisible(),
+    );
+    expect(screen.getByRole("button", { name: "Save" })).toBeVisible();
   });
 
   testA11yAct(addModalComponent);
@@ -89,7 +93,7 @@ describe("Test submit", () => {
     await act(async () => {
       await render(addModalComponent);
     });
-    const submitBtn = screen.getByText("Save");
+    const submitBtn = screen.getByRole("button", { name: "Save" });
     await userEvent.click(submitBtn);
 
     expect(mockReportHandler).toHaveBeenCalled();
@@ -100,7 +104,7 @@ describe("Test submit", () => {
 describe("Test CreateReportModal types", () => {
   test.each([{ type: ReportType.PASRR, text: "PASRR Report" }])(
     "$type report type renders a title",
-    ({ type, text }) => {
+    async ({ type, text }) => {
       render(
         <RouterWrappedComponent>
           <CreateReportModal
@@ -112,9 +116,13 @@ describe("Test CreateReportModal types", () => {
             }}
             reportHandler={mockReportHandler}
           />
-        </RouterWrappedComponent>
+        </RouterWrappedComponent>,
       );
-      expect(screen.getByText(`Create a ${text}`)).toBeInTheDocument();
-    }
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: `Create a ${text}` }),
+        ).toBeVisible(),
+      );
+    },
   );
 });
