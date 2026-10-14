@@ -38,6 +38,13 @@ const generalInformation: FormPageTemplate = {
       required: true,
       helperText: "Enter the email address for the contact.",
     },
+    {
+      id: "contact-phone",
+      type: ElementType.Textbox,
+      label: "Phone number",
+      required: true,
+      helperText: "Enter phone number as ###-###-####.",
+    },
   ],
 };
 

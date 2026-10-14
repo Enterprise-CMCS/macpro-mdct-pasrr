@@ -95,6 +95,22 @@ describe("<TextField />", () => {
     ).not.toBeInTheDocument();
   });
 
+  test("TextField should render error on load for invalid phone", async () => {
+    const mockedPhoneField = {
+      ...mockedTextboxElement,
+      id: "mock-phone-field",
+      answer: "not-a-phone",
+    };
+    render(<TextFieldWrapper template={mockedPhoneField} />);
+    expect(screen.getByText("Enter a valid phone number.")).toBeVisible();
+    const textField = screen.getByRole("textbox");
+    await userEvent.clear(textField);
+    await userEvent.type(textField, "555-555-5555");
+    expect(
+      screen.queryByText("Enter a valid phone number.")
+    ).not.toBeInTheDocument();
+  });
+
   test("NumberField should render its initial value", () => {
     render(
       <TextFieldWrapper template={{ ...mockedNumberField, answer: 123 }} />

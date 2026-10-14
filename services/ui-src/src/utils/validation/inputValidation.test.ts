@@ -1,5 +1,6 @@
 import {
   isEmail,
+  isPhone,
   isUrl,
   magicNumberMask,
   makeEmptyStringCopyOf,
@@ -219,6 +220,37 @@ describe("Input validation utilities", () => {
       { input: "totally-plausible/email.3@test.coforma.io" },
     ])("should accept the string '$input'", ({ input }) => {
       expect(isEmail(input)).toBe(true);
+    });
+  });
+
+  describe("isPhone()", () => {
+    test("should reject undefined", () => {
+      expect(isPhone(undefined)).toBe(false);
+    });
+
+    test("should reject the empty string", () => {
+      expect(isPhone("")).toBe(false);
+    });
+
+    test.each([
+      { input: "hello" },
+      { input: "www.cms.gov" },
+      { input: "javascript:void(0)" },
+      { input: "https://www.cms.gov" },
+      { input: "hello@world.com" },
+      { input: "000-000" },
+      { input: "000-0000" },
+      { input: "0000000000" },
+    ])("should reject the string '$input'", ({ input }) => {
+      expect(isPhone(input)).toBe(false);
+    });
+
+    test.each([
+      { input: "000-000-0000" },
+      { input: "123-456-7890" },
+      { input: "555-555-5555" },
+    ])("should accept the string '$input'", ({ input }) => {
+      expect(isPhone(input)).toBe(true);
     });
   });
 
