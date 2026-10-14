@@ -42,23 +42,38 @@ export const TextField = (
 
   const hideElement = useElementIsHidden(textbox.hideCondition);
 
+  const textBoxValidations = (defaultValueString: string) => [
+    {
+      match: textbox.id.includes("email") && !isEmail(defaultValueString),
+      message: ErrorMessages.mustBeAnEmail,
+    },
+    {
+      match: textbox.id.includes("phone") && !isPhone(defaultValueString),
+      message: ErrorMessages.mustBeAPhone,
+    },
+    {
+      match: textbox.id.includes("zipCode") && !isZipCode(defaultValueString),
+      message: ErrorMessages.mustBeAPhone,
+    },
+  ];
+
   useEffect(() => {
     const defaultValueString = stringifyInput(displayValue);
     // Clear error message by default
     setErrorMessage("");
 
-    switch (true) {
-      case !defaultValueString:
-        break;
-      case textbox.id.includes("email") && !isEmail(defaultValueString):
-        setErrorMessage(ErrorMessages.mustBeAnEmail);
-        break;
-      case textbox.id.includes("phone") && !isPhone(defaultValueString):
-        setErrorMessage(ErrorMessages.mustBeAPhone);
-        break;
-      case textbox.id.includes("zipCode") && !isZipCode(defaultValueString):
-        setErrorMessage(ErrorMessages.mustBeAZipCode);
-        break;
+    // Order by match priority
+    const validations = [
+      {
+        match: !defaultValueString,
+        message: "",
+      },
+      ...textBoxValidations(defaultValueString),
+    ];
+
+    const failedValidation = validations.find((v) => v.match);
+    if (failedValidation) {
+      setErrorMessage(failedValidation.message);
     }
   }, []);
 
@@ -112,18 +127,7 @@ export const TextField = (
             match: !rawValue && textbox.required,
             message: ErrorMessages.requiredResponse,
           },
-          {
-            match: textbox.id.includes("email") && !isEmail(rawValue),
-            message: ErrorMessages.mustBeAnEmail,
-          },
-          {
-            match: textbox.id.includes("phone") && !isPhone(rawValue),
-            message: ErrorMessages.mustBeAPhone,
-          },
-          {
-            match: textbox.id.includes("zipCode") && !isZipCode(rawValue),
-            message: ErrorMessages.mustBeAZipCode,
-          },
+          ...textBoxValidations(rawValue),
         ];
 
         const failedValidation = validations.find((v) => v.match);
