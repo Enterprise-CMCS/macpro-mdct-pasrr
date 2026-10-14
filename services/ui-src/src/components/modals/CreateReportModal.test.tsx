@@ -76,8 +76,8 @@ describe("Test Add Report Modal", () => {
   test("Add Report Modal shows proper add contents", async () => {
     await waitFor(() =>
       expect(
-        screen.getByRole("heading", { name: "Create a PASRR Report" }),
-      ).toBeVisible(),
+        screen.getByRole("heading", { name: "Create a PASRR Report" })
+      ).toBeVisible()
     );
     expect(screen.getByRole("button", { name: "Save" })).toBeVisible();
   });
@@ -116,13 +116,13 @@ describe("Test CreateReportModal types", () => {
             }}
             reportHandler={mockReportHandler}
           />
-        </RouterWrappedComponent>,
+        </RouterWrappedComponent>
       );
       await waitFor(() =>
         expect(
-          screen.getByRole("heading", { name: `Create a ${text}` }),
-        ).toBeVisible(),
+          screen.getByRole("heading", { name: `Create a ${text}` })
+        ).toBeVisible()
       );
-    },
+    }
   );
 });

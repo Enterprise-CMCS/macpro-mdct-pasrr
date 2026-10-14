@@ -83,12 +83,12 @@ describe("DashboardPage with state user", () => {
     expect(
       screen.getByRole("heading", {
         name: "Colorado PASRR",
-      }),
+      })
     ).toBeVisible();
     expect(
       screen.getByText("once you start a report you can access it here", {
         exact: false,
-      }),
+      })
     ).toBeVisible();
   });
 
@@ -108,7 +108,7 @@ describe("DashboardPage with state user", () => {
 
     const table = container.querySelector("table")!;
     const columns = [...table.querySelectorAll("tr th")].map(
-      (th) => th.textContent!,
+      (th) => th.textContent!
     );
     const rows = [...table.querySelectorAll("tbody tr")].map((tr) => [
       ...tr.querySelectorAll("td"),
@@ -138,12 +138,12 @@ describe("DashboardPage with state user", () => {
     await userEvent.click(screen.getByText("Clear Filter"));
     await userEvent.selectOptions(
       screen.queryAllByLabelText("Filter by Budget Period")[0],
-      "Budget Period 1",
+      "Budget Period 1"
     );
 
     const table = container.querySelector("table")!;
     const columns = [...table.querySelectorAll("tr th")].map(
-      (th) => th.textContent!,
+      (th) => th.textContent!
     );
     const rows = [...table.querySelectorAll("tbody tr")].map((tr) => [
       ...tr.querySelectorAll("td"),
@@ -179,8 +179,8 @@ describe("DashboardPage with state user", () => {
 
     await waitFor(() =>
       expect(
-        screen.getByRole("heading", { name: "Create a PASRR Report" }),
-      ).toBeVisible(),
+        screen.getByRole("heading", { name: "Create a PASRR Report" })
+      ).toBeVisible()
     );
   });
 });
