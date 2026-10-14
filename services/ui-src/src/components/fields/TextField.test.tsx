@@ -87,9 +87,15 @@ describe("<TextField />", () => {
     expect(
       screen.getByText("Response must be a valid email address")
     ).toBeVisible();
+
     const textField = screen.getByRole("textbox");
     await userEvent.clear(textField);
+    expect(screen.getByText("A response is required")).toBeVisible();
+
     await userEvent.type(textField, "test@email.com");
+    expect(
+      screen.queryByText("A response is required")
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByText("Response must be a valid email address")
     ).not.toBeInTheDocument();
@@ -103,9 +109,15 @@ describe("<TextField />", () => {
     };
     render(<TextFieldWrapper template={mockedPhoneField} />);
     expect(screen.getByText("Enter a valid phone number.")).toBeVisible();
+
     const textField = screen.getByRole("textbox");
     await userEvent.clear(textField);
+    expect(screen.getByText("A response is required")).toBeVisible();
+
     await userEvent.type(textField, "555-555-5555");
+    expect(
+      screen.queryByText("A response is required")
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByText("Enter a valid phone number.")
     ).not.toBeInTheDocument();
@@ -163,6 +175,25 @@ describe("<TextField />", () => {
 
     const textField = screen.getByRole("textbox");
     expect(textField).toHaveValue("");
+  });
+
+  test("NumberField should render error for invalid number", async () => {
+    render(<TextFieldWrapper template={mockedNumberField} />);
+    const textField = screen.getByRole("textbox");
+    await userEvent.clear(textField);
+    await userEvent.type(textField, "test");
+    expect(screen.getByText("Response must be a number")).toBeVisible();
+
+    await userEvent.clear(textField);
+    expect(screen.getByText("A response is required")).toBeVisible();
+
+    await userEvent.type(textField, "12345");
+    expect(
+      screen.queryByText("A response is required")
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Response must be a number")
+    ).not.toBeInTheDocument();
   });
 
   test("Text field is hidden if its hide conditions' controlling element has a matching answer", async () => {
