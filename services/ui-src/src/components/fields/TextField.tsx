@@ -43,21 +43,19 @@ export const TextField = (
 
   useEffect(() => {
     const defaultValueString = stringifyInput(displayValue);
-    let errorMessage = "";
+    // Clear error message by default
+    setErrorMessage("");
 
     switch (true) {
       case !defaultValueString:
-        errorMessage = "";
         break;
       case textbox.id.includes("email") && !isEmail(defaultValueString):
-        errorMessage = ErrorMessages.mustBeAnEmail;
+        setErrorMessage(ErrorMessages.mustBeAnEmail);
         break;
       case textbox.id.includes("phone") && !isPhone(defaultValueString):
-        errorMessage = ErrorMessages.mustBeAPhone;
+        setErrorMessage(ErrorMessages.mustBeAPhone);
         break;
     }
-
-    setErrorMessage(errorMessage);
   }, []);
 
   useEffect(() => {
@@ -81,7 +79,6 @@ export const TextField = (
   ) => {
     const rawValue = event.target.value;
     setDisplayValue(rawValue);
-
     // Clear error message by default
     setErrorMessage("");
 
