@@ -42,17 +42,17 @@ export const TextField = (
 
   const hideElement = useElementIsHidden(textbox.hideCondition);
 
-  const textBoxValidations = (defaultValueString: string) => [
+  const textBoxValidations = (value: string) => [
     {
-      match: textbox.id.includes("email") && !isEmail(defaultValueString),
+      match: textbox.id.includes("email") && !isEmail(value),
       message: ErrorMessages.mustBeAnEmail,
     },
     {
-      match: textbox.id.includes("phone") && !isPhone(defaultValueString),
+      match: textbox.id.includes("phone") && !isPhone(value),
       message: ErrorMessages.mustBeAPhone,
     },
     {
-      match: textbox.id.includes("zipCode") && !isZipCode(defaultValueString),
+      match: textbox.id.includes("zipCode") && !isZipCode(value),
       message: ErrorMessages.mustBeAZipCode,
     },
   ];
