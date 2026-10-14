@@ -53,7 +53,7 @@ export const TextField = (
     },
     {
       match: textbox.id.includes("zipCode") && !isZipCode(defaultValueString),
-      message: ErrorMessages.mustBeAPhone,
+      message: ErrorMessages.mustBeAZipCode,
     },
   ];
 
