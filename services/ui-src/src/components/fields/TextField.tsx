@@ -83,20 +83,6 @@ export const TextField = (
     setErrorMessage("");
 
     switch (textbox.type) {
-      case ElementType.Textbox: {
-        const updateElement = (props as PageElementProps<TextboxTemplate>)
-          .updateElement;
-        updateElement({ answer: rawValue });
-
-        if (!rawValue && textbox.required) {
-          setErrorMessage(ErrorMessages.requiredResponse);
-        } else if (textbox.id.includes("email") && !isEmail(rawValue)) {
-          setErrorMessage(ErrorMessages.mustBeAnEmail);
-        } else if (textbox.id.includes("phone") && !isPhone(rawValue)) {
-          setErrorMessage(ErrorMessages.mustBeAPhone);
-        }
-        break;
-      }
       case ElementType.NumberField: {
         const updateElement = (props as PageElementProps<NumberFieldTemplate>)
           .updateElement;
@@ -108,6 +94,33 @@ export const TextField = (
           setErrorMessage(ErrorMessages.requiredResponse);
         } else if (valueIsNonNumeric) {
           setErrorMessage(ErrorMessages.mustBeANumber);
+        }
+        break;
+      }
+      case ElementType.Textbox: {
+        const updateElement = (props as PageElementProps<TextboxTemplate>)
+          .updateElement;
+        updateElement({ answer: rawValue });
+
+        // Order by match priority
+        const validations = [
+          {
+            match: !rawValue && textbox.required,
+            message: ErrorMessages.requiredResponse,
+          },
+          {
+            match: textbox.id.includes("email") && !isEmail(rawValue),
+            message: ErrorMessages.mustBeAnEmail,
+          },
+          {
+            match: textbox.id.includes("phone") && !isPhone(rawValue),
+            message: ErrorMessages.mustBeAPhone,
+          },
+        ];
+
+        const failedValidation = validations.find((v) => v.match);
+        if (failedValidation) {
+          setErrorMessage(failedValidation.message);
         }
         break;
       }
