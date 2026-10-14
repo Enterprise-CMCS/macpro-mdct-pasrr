@@ -99,7 +99,7 @@ export const isEmail = (value: string | undefined) => {
 export const isPhone = (value: string | undefined) => {
   const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
   return !!value && phonePattern.test(value);
-}
+};
 
 /** Determine whether the given value is a valid zip code */
 export const isZipCode = (value: string | undefined) => {

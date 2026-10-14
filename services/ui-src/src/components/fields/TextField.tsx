@@ -55,8 +55,8 @@ export const TextField = (
         break;
       case textbox.id.includes("phone") && !isPhone(defaultValueString):
         setErrorMessage(ErrorMessages.mustBeAPhone);
-      break;
-      case textbox.id.includes("zip") && !isZipCode(defaultValueString):
+        break;
+      case textbox.id.includes("zipCode") && !isZipCode(defaultValueString):
         setErrorMessage(ErrorMessages.mustBeAZipCode);
         break;
     }
@@ -121,7 +121,7 @@ export const TextField = (
             message: ErrorMessages.mustBeAPhone,
           },
           {
-            match: textbox.id.includes("zip") && !isZipCode(rawValue),
+            match: textbox.id.includes("zipCode") && !isZipCode(rawValue),
             message: ErrorMessages.mustBeAZipCode,
           },
         ];
