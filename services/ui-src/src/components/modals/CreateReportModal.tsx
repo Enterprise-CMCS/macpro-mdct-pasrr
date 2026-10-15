@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Modal } from "components";
-import { Spinner, Flex, Box } from "@chakra-ui/react";
-import { Dropdown as CmsdsDropdownField } from "@cmsgov/design-system";
+import { Spinner, Flex, Text } from "@chakra-ui/react";
 import {
   createReport,
   getReportsForState,
@@ -17,9 +16,8 @@ import { useStore } from "utils";
 
 const verbiage = {
   addReportHeader: "Create a PASRR Report",
-  reportingYearLabel: "Which reporting year does this report cover?",
-  reportingYearHint:
-    'Select the calendar year the data was collected (January 1 to December 31). For example, if you are submitting data for 2025, select "2025".',
+  reportingYearHint: (reportingYear: number) =>
+    `This report will be created for the previous calendar year (${reportingYear}), covering data collected from January 1 to December 31.`,
   copyReportHeader: (latestReport: LiteReport) => {
     const latestReportSubType = latestReport.subTypeKey;
     const latest = PasrrSubTypeMap[latestReportSubType];
@@ -42,20 +40,13 @@ export const CreateReportModal = ({
   const [errorAlert, setErrorAlert] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
   const [latestReport, setLatestReport] = useState<LiteReport | undefined>(
-    undefined
+    undefined,
   );
 
   const { devDate } = useStore();
 
   const currentYear = (devDate ? new Date(devDate) : new Date()).getFullYear();
-  const reportingYearOptions = [
-    { label: `${currentYear}`, value: `${currentYear}` },
-  ];
-  const [reportingYear, setReportingYear] = useState(`${currentYear}`);
-
-  const handleReportingYearChange = (evt: { target: { value: string } }) => {
-    setReportingYear(evt.target.value);
-  };
+  const reportingYear = currentYear - 1;
 
   useEffect(() => {
     (async () => {
@@ -78,7 +69,7 @@ export const CreateReportModal = ({
 
     const reportOptions: CreateReportOptions = {
       mockDate: devDate,
-      reportingYear: parseInt(reportingYear),
+      reportingYear,
     };
 
     try {
@@ -118,16 +109,7 @@ export const CreateReportModal = ({
             {errorAlert}
           </Alert>
         ) : null}
-        <Box sx={sx.reportingYearField}>
-          <CmsdsDropdownField
-            name="reportingYear"
-            label={verbiage.reportingYearLabel}
-            hint={verbiage.reportingYearHint}
-            value={reportingYear}
-            onChange={handleReportingYearChange}
-            options={reportingYearOptions}
-          />
-        </Box>
+        <Text>{verbiage.reportingYearHint(reportingYear)}</Text>
       </Flex>
     </Modal>
   );
@@ -142,11 +124,3 @@ interface Props {
   };
   reportHandler: (reportType: string, activeState: string) => void;
 }
-
-const sx = {
-  reportingYearField: {
-    ".ds-c-dropdown": {
-      maxWidth: "12rem",
-    },
-  },
-};

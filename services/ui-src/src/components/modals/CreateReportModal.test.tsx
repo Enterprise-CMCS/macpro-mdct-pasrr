@@ -18,7 +18,10 @@ const mockGetReportsForState = vi.fn();
 
 vi.mock("utils/state/useStore");
 const mockedUseStore = useStore as unknown as MockedFunction<typeof useStore>;
-mockedUseStore.mockReturnValue(mockStateUserStore);
+mockedUseStore.mockReturnValue({
+  ...mockStateUserStore,
+  devDate: "2026-10-15",
+});
 
 vi.mock("utils/api/requestMethods/report", () => ({
   updateReport: () => mockUpdateReport(),
@@ -76,10 +79,19 @@ describe("Test Add Report Modal", () => {
   test("Add Report Modal shows proper add contents", async () => {
     await waitFor(() =>
       expect(
-        screen.getByRole("heading", { name: "Create a PASRR Report" })
-      ).toBeVisible()
+        screen.getByRole("heading", { name: "Create a PASRR Report" }),
+      ).toBeVisible(),
     );
     expect(screen.getByRole("button", { name: "Save" })).toBeVisible();
+  });
+
+  test("Add Report Modal shows previous year hint and no dropdown", async () => {
+    const previousYear = 2025;
+    await waitFor(() =>
+      expect(screen.getByRole("paragraph")).toHaveTextContent(
+        `This report will be created for the previous calendar year (${previousYear}), covering data collected from January 1 to December 31.`,
+      ),
+    );
   });
 
   testA11yAct(addModalComponent);
@@ -116,13 +128,13 @@ describe("Test CreateReportModal types", () => {
             }}
             reportHandler={mockReportHandler}
           />
-        </RouterWrappedComponent>
+        </RouterWrappedComponent>,
       );
       await waitFor(() =>
         expect(
-          screen.getByRole("heading", { name: `Create a ${text}` })
-        ).toBeVisible()
+          screen.getByRole("heading", { name: `Create a ${text}` }),
+        ).toBeVisible(),
       );
-    }
+    },
   );
 });
