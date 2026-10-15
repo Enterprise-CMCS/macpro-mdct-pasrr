@@ -40,7 +40,7 @@ export const CreateReportModal = ({
   const [errorAlert, setErrorAlert] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
   const [latestReport, setLatestReport] = useState<LiteReport | undefined>(
-    undefined,
+    undefined
   );
 
   const { devDate } = useStore();

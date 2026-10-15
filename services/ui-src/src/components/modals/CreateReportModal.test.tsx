@@ -79,8 +79,8 @@ describe("Test Add Report Modal", () => {
   test("Add Report Modal shows proper add contents", async () => {
     await waitFor(() =>
       expect(
-        screen.getByRole("heading", { name: "Create a PASRR Report" }),
-      ).toBeVisible(),
+        screen.getByRole("heading", { name: "Create a PASRR Report" })
+      ).toBeVisible()
     );
     expect(screen.getByRole("button", { name: "Save" })).toBeVisible();
   });
@@ -89,8 +89,8 @@ describe("Test Add Report Modal", () => {
     const previousYear = 2025;
     await waitFor(() =>
       expect(screen.getByRole("paragraph")).toHaveTextContent(
-        `This report will be created for the previous calendar year (${previousYear}), covering data collected from January 1 to December 31.`,
-      ),
+        `This report will be created for the previous calendar year (${previousYear}), covering data collected from January 1 to December 31.`
+      )
     );
   });
 
@@ -128,13 +128,13 @@ describe("Test CreateReportModal types", () => {
             }}
             reportHandler={mockReportHandler}
           />
-        </RouterWrappedComponent>,
+        </RouterWrappedComponent>
       );
       await waitFor(() =>
         expect(
-          screen.getByRole("heading", { name: `Create a ${text}` }),
-        ).toBeVisible(),
+          screen.getByRole("heading", { name: `Create a ${text}` })
+        ).toBeVisible()
       );
-    },
+    }
   );
 });
