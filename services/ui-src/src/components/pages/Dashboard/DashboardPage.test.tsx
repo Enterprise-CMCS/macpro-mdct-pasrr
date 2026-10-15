@@ -186,15 +186,15 @@ describe("DashboardPage with state user", () => {
       expect(getReportsForState).toHaveBeenCalled();
     });
 
-    expect(
-      screen.getByText(
-        "Select “Create PASRR Report” to create a new report. Then you can use the dashboard below to edit the report name, fill it out, and monitor its status."
-      )
-    ).toBeVisible();
+    const paragraphs = screen.getAllByRole("paragraph");
+    expect(paragraphs.length).toBeGreaterThanOrEqual(2);
 
-    const secondParagraph = screen.getByText(/you should only submit/);
-    expect(secondParagraph).toBeVisible();
-    expect(secondParagraph).toHaveTextContent(
+    expect(paragraphs[0]).toBeVisible();
+    expect(paragraphs[0]).toHaveTextContent(
+      "Select “Create PASRR Report” to create a new report. Then you can use the dashboard below to edit the report name, fill it out, and monitor its status."
+    );
+    expect(paragraphs[1]).toBeVisible();
+    expect(paragraphs[1]).toHaveTextContent(
       "While this tool will not prevent you from creating multiple reports for the same reporting period, you should only submit one report per reporting period."
     );
   });
@@ -220,7 +220,12 @@ describe("DashboardPage with state user", () => {
       name: "Understanding report statuses",
     });
     expect(accordionButton).toHaveAttribute("aria-expanded", "false");
-    expect(screen.getByText("Not started:")).not.toBeVisible();
+
+    const panel = screen.getByRole("region", {
+      name: "Understanding report statuses",
+      hidden: true,
+    });
+    expect(panel).not.toBeVisible();
   });
 
   test("should show statuses, contact note, and email notifications when the accordion is opened", async () => {
@@ -232,17 +237,21 @@ describe("DashboardPage with state user", () => {
     const accordionButton = screen.getByRole("button", {
       name: "Understanding report statuses",
     });
+    const panel = screen.getByRole("region", {
+      name: "Understanding report statuses",
+      hidden: true,
+    });
     await userEvent.click(accordionButton);
     expect(accordionButton).toHaveAttribute("aria-expanded", "true");
 
     await waitFor(() => {
-      expect(screen.getByText("Not started:")).toBeVisible();
+      expect(panel).toBeVisible();
     });
 
     // four statuses
-    expect(screen.getByText("In progress:")).toBeVisible();
-    expect(screen.getByText("Submitted:")).toBeVisible();
-    expect(screen.getByText("In revision:")).toBeVisible();
+    ["Not started:", "In progress:", "Submitted:", "In revision:"].forEach(
+      (text) => expect(panel).toHaveTextContent(text)
+    );
     expect(screen.queryByText("Accepted:")).not.toBeInTheDocument();
 
     // contact note with mailto link
