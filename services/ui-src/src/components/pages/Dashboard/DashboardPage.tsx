@@ -22,8 +22,10 @@ import {
   Image,
   Heading,
   Link,
+  ListItem,
   Text,
   Flex,
+  UnorderedList,
   useDisclosure,
   Accordion,
   Spinner,
@@ -120,17 +122,17 @@ export const DashboardPage = () => {
         <Heading as="h1" variant="h1">
           {fullStateName} {reportName}
         </Heading>
-        <Box marginTop="spacer4" sx={sx.introText}>
-          <p>
+        <Box marginTop="spacer4">
+          <Text marginBottom="spacer2">
             Select “Create {reportName} Report” to create a new report. Then you
             can use the dashboard below to edit the report name, fill it out,
             and monitor its status.
-          </p>
-          <p>
+          </Text>
+          <Text>
             While this tool will not prevent you from creating multiple reports
             for the same reporting period, you should only submit{" "}
             <strong>one</strong> report per reporting period.
-          </p>
+          </Text>
         </Box>
         <Accordion
           allowToggle={true}
@@ -142,48 +144,52 @@ export const DashboardPage = () => {
             sx={sx.accordionItem}
           >
             <Box sx={sx.accordionPanel}>
-              <ul className="statusList">
-                <li>
+              <UnorderedList spacing="spacer1" marginStart="2rem">
+                <ListItem>
                   <strong>Not started:</strong> The state created the report,
                   but hasn’t entered any data yet.
-                </li>
-                <li>
+                </ListItem>
+                <ListItem>
                   <strong>In progress:</strong> The state is actively working on
                   the report, with some or all data entered.
-                </li>
-                <li>
+                </ListItem>
+                <ListItem>
                   <strong>Submitted:</strong> The state submitted the report to
                   CMS for review, and it is locked from editing.
-                </li>
-                <li>
+                </ListItem>
+                <ListItem>
                   <strong>In revision:</strong> CMS has sent the report back to
                   the state for revisions or additional information after
                   submission.
-                </li>
-              </ul>
-              <p>
+                </ListItem>
+              </UnorderedList>
+              <Text>
                 Note: If you need to make changes to a submitted report, reach
                 out to the CMS PASRR team at{" "}
                 <Link
-                  sx={sx.emailLink}
+                  overflowWrap="anywhere"
                   href="mailto:PASRR_Institutional_Coverage@cms.hhs.gov"
                 >
                   PASRR_Institutional_Coverage@cms.hhs.gov
                 </Link>{" "}
                 to have them unlock it.
-              </p>
-              <p className="milestoneIntro">
+              </Text>
+              <Text marginTop="spacer4" marginBottom="spacer1">
                 The PASRR application automatically triggers email notifications
                 to your state team for these key milestones:
-              </p>
-              <ul>
-                <li>
+              </Text>
+              <UnorderedList
+                marginBottom={0}
+                spacing="spacer1"
+                marginStart="2rem"
+              >
+                <ListItem>
                   <strong>When You Submit a Report:</strong> The moment your
                   state team hits finalize, an immediate automated confirmation
                   email is sent to your point-of-contact roster. This serves as
                   your digital receipt and proof of timely completion.
-                </li>
-                <li>
+                </ListItem>
+                <ListItem>
                   <strong>
                     When a Report Status is “Unlocked for Revision”:
                   </strong>{" "}
@@ -191,8 +197,8 @@ export const DashboardPage = () => {
                   unlock the document. An automated notification will detail the
                   necessary changes and grant you immediate data entry access
                   again.
-                </li>
-              </ul>
+                </ListItem>
+              </UnorderedList>
             </Box>
           </AccordionItem>
         </Accordion>
@@ -266,14 +272,6 @@ const sx = {
     marginTop: "spacer5",
     marginX: "auto",
   },
-  introText: {
-    p: {
-      marginBottom: "spacer2",
-    },
-    "p:last-child": {
-      marginBottom: 0,
-    },
-  },
   bodyBox: {
     maxWidth: "55.25rem",
     margin: "0 auto",
@@ -306,11 +304,8 @@ const sx = {
     },
   },
   accordionPanel: {
-    ".statusList": {
+    "ul:first-of-type": {
       marginBottom: "spacer1",
-    },
-    ".milestoneIntro": {
-      marginTop: "spacer4",
     },
     "& > :last-child": {
       marginBottom: 0,
@@ -318,8 +313,5 @@ const sx = {
     ".mobile &": {
       paddingTop: "spacer2",
     },
-  },
-  emailLink: {
-    overflowWrap: "anywhere",
   },
 };
