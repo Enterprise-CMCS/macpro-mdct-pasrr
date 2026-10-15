@@ -54,7 +54,6 @@ export { ProfilePage } from "./pages/Profile/ProfilePage";
 // report
 export { StatusAlert } from "./report/StatusAlert";
 export { Page } from "./report/Page";
-export { PraDisclosure } from "./report/PraDisclosure";
 export { ReportModal } from "./report/ReportModal";
 export { ReportPageWrapper } from "./report/ReportPageWrapper";
 export { Sidebar } from "./report/Sidebar";
