@@ -12,6 +12,7 @@ import { useElementIsHidden } from "utils/state/hooks/useElementIsHidden";
 import { ErrorMessages } from "../../constants";
 import {
   isEmail,
+  isPhone,
   maskByType,
   parseNumber,
   stringifyInput,
@@ -41,10 +42,19 @@ export const TextField = (
   const hideElement = useElementIsHidden(textbox.hideCondition);
 
   useEffect(() => {
-    const isEmailField = textbox.id.includes("email");
     const defaultValueString = stringifyInput(displayValue);
-    if (isEmailField && defaultValueString && !isEmail(defaultValueString)) {
-      setErrorMessage(ErrorMessages.mustBeAnEmail);
+    // Clear error message by default
+    setErrorMessage("");
+
+    switch (true) {
+      case !defaultValueString:
+        break;
+      case textbox.id.includes("email") && !isEmail(defaultValueString):
+        setErrorMessage(ErrorMessages.mustBeAnEmail);
+        break;
+      case textbox.id.includes("phone") && !isPhone(defaultValueString):
+        setErrorMessage(ErrorMessages.mustBeAPhone);
+        break;
     }
   }, []);
 
@@ -69,30 +79,50 @@ export const TextField = (
   ) => {
     const rawValue = event.target.value;
     setDisplayValue(rawValue);
+    // Clear error message by default
+    setErrorMessage("");
 
-    if (textbox.type === ElementType.NumberField) {
-      const updateElement = (props as PageElementProps<NumberFieldTemplate>)
-        .updateElement;
-      const parsedValue = parseNumber(rawValue);
-      updateElement({ answer: parsedValue });
-      const valueIsNonNumeric = rawValue && parsedValue === undefined;
-      if (!rawValue && textbox.required) {
-        setErrorMessage(ErrorMessages.requiredResponse);
-      } else if (valueIsNonNumeric) {
-        setErrorMessage(ErrorMessages.mustBeANumber);
-      } else {
-        setErrorMessage("");
+    switch (textbox.type) {
+      case ElementType.NumberField: {
+        const updateElement = (props as PageElementProps<NumberFieldTemplate>)
+          .updateElement;
+        const parsedValue = parseNumber(rawValue);
+        updateElement({ answer: parsedValue });
+
+        const valueIsNonNumeric = rawValue && parsedValue === undefined;
+        if (!rawValue && textbox.required) {
+          setErrorMessage(ErrorMessages.requiredResponse);
+        } else if (valueIsNonNumeric) {
+          setErrorMessage(ErrorMessages.mustBeANumber);
+        }
+        break;
       }
-    } else {
-      const updateElement = (props as PageElementProps<TextboxTemplate>)
-        .updateElement;
-      updateElement({ answer: rawValue });
-      if (!rawValue && textbox.required) {
-        setErrorMessage(ErrorMessages.requiredResponse);
-      } else if (textbox.id.includes("email") && !isEmail(rawValue)) {
-        setErrorMessage(ErrorMessages.mustBeAnEmail);
-      } else {
-        setErrorMessage("");
+      case ElementType.Textbox: {
+        const updateElement = (props as PageElementProps<TextboxTemplate>)
+          .updateElement;
+        updateElement({ answer: rawValue });
+
+        // Order by match priority
+        const validations = [
+          {
+            match: !rawValue && textbox.required,
+            message: ErrorMessages.requiredResponse,
+          },
+          {
+            match: textbox.id.includes("email") && !isEmail(rawValue),
+            message: ErrorMessages.mustBeAnEmail,
+          },
+          {
+            match: textbox.id.includes("phone") && !isPhone(rawValue),
+            message: ErrorMessages.mustBeAPhone,
+          },
+        ];
+
+        const failedValidation = validations.find((v) => v.match);
+        if (failedValidation) {
+          setErrorMessage(failedValidation.message);
+        }
+        break;
       }
     }
   };
