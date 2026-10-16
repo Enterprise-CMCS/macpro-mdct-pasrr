@@ -326,4 +326,40 @@ describe("elementSatisfiesRequired", () => {
     expect(elementSatisfiesRequired(invalidEmail, [invalidEmail])).toBeFalsy();
     expect(elementSatisfiesRequired(validEmail, [validEmail])).toBeTruthy();
   });
+
+  test("handles invalid phone field", () => {
+    const element = {
+      type: ElementType.Textbox,
+      id: "test-phone-field",
+      required: true,
+    } as TextboxTemplate;
+    const invalidEmail = {
+      ...element,
+      answer: "not-a-valid-phone",
+    };
+    const validEmail = {
+      ...element,
+      answer: "555-555-5555",
+    };
+    expect(elementSatisfiesRequired(invalidEmail, [invalidEmail])).toBeFalsy();
+    expect(elementSatisfiesRequired(validEmail, [validEmail])).toBeTruthy();
+  });
+
+  test("handles invalid zip code field", () => {
+    const element = {
+      type: ElementType.Textbox,
+      id: "test-zipcode-field",
+      required: true,
+    } as TextboxTemplate;
+    const invalidEmail = {
+      ...element,
+      answer: "not-a-valid-zipcode",
+    };
+    const validEmail = {
+      ...element,
+      answer: "55555",
+    };
+    expect(elementSatisfiesRequired(invalidEmail, [invalidEmail])).toBeFalsy();
+    expect(elementSatisfiesRequired(validEmail, [validEmail])).toBeTruthy();
+  });
 });

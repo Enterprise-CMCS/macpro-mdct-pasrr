@@ -2,6 +2,7 @@ import {
   isEmail,
   isPhone,
   isUrl,
+  isZipCode,
   magicNumberMask,
   makeEmptyStringCopyOf,
   numberNAMask,
@@ -251,6 +252,40 @@ describe("Input validation utilities", () => {
       { input: "555-555-5555" },
     ])("should accept the string '$input'", ({ input }) => {
       expect(isPhone(input)).toBe(true);
+    });
+  });
+
+  describe("isZipCode()", () => {
+    test("should reject undefined", () => {
+      expect(isZipCode(undefined)).toBe(false);
+    });
+
+    test("should reject the empty string", () => {
+      expect(isZipCode("")).toBe(false);
+    });
+
+    test.each([
+      { input: "hello" },
+      { input: "www.cms.gov" },
+      { input: "javascript:void(0)" },
+      { input: "https://www.cms.gov" },
+      { input: "hello@world.com" },
+      { input: "0000" },
+      { input: "000000000" },
+      { input: "00000-" },
+      { input: "00000-000" },
+      { input: "00000-00000" },
+    ])("should reject the string '$input'", ({ input }) => {
+      expect(isZipCode(input)).toBe(false);
+    });
+
+    test.each([
+      { input: "00000" },
+      { input: "00000-0000" },
+      { input: "20500" },
+      { input: "20500-0001" },
+    ])("should accept the string '$input'", ({ input }) => {
+      expect(isZipCode(input)).toBe(true);
     });
   });
 

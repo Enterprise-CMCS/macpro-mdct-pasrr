@@ -101,6 +101,12 @@ export const isPhone = (value: string | undefined) => {
   return !!value && phonePattern.test(value);
 };
 
+/** Determine whether the given value is a valid zip code */
+export const isZipCode = (value: string | undefined) => {
+  const zipCodePattern = /^\d{5}(-\d{4})?$/;
+  return !!value && zipCodePattern.test(value);
+};
+
 /**
  * Converts a string to a floating-point number.
  *
