@@ -32,9 +32,9 @@ export class DashboardPage extends BasePage {
   }
 
   // ===== Locators (private helpers) =====
-  private getStartButton() {
+  private getCreateButton() {
     return this.page
-      .getByRole("button", { name: /^Start .* Report$/i })
+      .getByRole("button", { name: /^Create .* Report$/i })
       .first();
   }
 
@@ -86,14 +86,14 @@ export class DashboardPage extends BasePage {
 
   // ===== Modal Interactions =====
   async isStartButtonAvailable(): Promise<boolean> {
-    const btn = this.getStartButton();
+    const btn = this.getCreateButton();
     const visible = await btn.isVisible().catch(() => false);
     if (!visible) return false;
     return btn.isEnabled().catch(() => false);
   }
 
   async isStartButtonVisible(): Promise<boolean> {
-    return this.getStartButton()
+    return this.getCreateButton()
       .isVisible()
       .catch(() => false);
   }
@@ -116,7 +116,7 @@ export class DashboardPage extends BasePage {
     await this.waitForDashboardReady();
 
     // Wait for the button to be enabled — canCreateReport is async (set after reports API resolves)
-    const btn = this.getStartButton();
+    const btn = this.getCreateButton();
     await btn.waitFor({ state: "visible", timeout: TIMEOUT_UI });
     await expect(btn).toBeEnabled({ timeout: TIMEOUT_UI });
     await btn.click();
