@@ -82,7 +82,7 @@ describe("Test Add Report Modal", () => {
         screen.getByRole("heading", { name: "Create a PASRR Report" })
       ).toBeVisible()
     );
-    expect(screen.getByRole("button", { name: "Save" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Create" })).toBeVisible();
   });
 
   test("Add Report Modal shows previous year hint and no dropdown", async () => {
@@ -107,7 +107,7 @@ describe("Test submit", () => {
     await act(async () => {
       await render(addModalComponent);
     });
-    const submitBtn = screen.getByRole("button", { name: "Save" });
+    const submitBtn = screen.getByRole("button", { name: "Create" });
     await userEvent.click(submitBtn);
 
     expect(mockReportHandler).toHaveBeenCalled();

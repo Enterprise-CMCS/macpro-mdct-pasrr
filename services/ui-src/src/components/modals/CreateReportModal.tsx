@@ -97,7 +97,7 @@ export const CreateReportModal = ({
       content={{
         heading: `${!latestReport ? verbiage.addReportHeader : verbiage.copyReportHeader(latestReport)}`,
         subheading: `${!latestReport ? "" : verbiage.copyReportSubheader}`,
-        actionButtonText: submitting ? <Spinner size="md" /> : "Save",
+        actionButtonText: submitting ? <Spinner size="md" /> : "Create",
         closeButtonText: "Cancel",
       }}
       disableConfirm={submitting}
