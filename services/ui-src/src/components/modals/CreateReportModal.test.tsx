@@ -88,9 +88,11 @@ describe("Test Add Report Modal", () => {
   test("Add Report Modal shows previous year hint and no dropdown", async () => {
     const previousYear = 2025;
     await waitFor(() =>
-      expect(screen.getByRole("paragraph")).toHaveTextContent(
-        `This report will be created for the previous calendar year (${previousYear}), covering data collected from January 1 to December 31.`
-      )
+      expect(
+        screen.getByText(
+          `You’re creating the annual PASRR report for reporting year ${previousYear}. The reporting year covers all data collected from January 1 to December 31, ${previousYear}. This action cannot be undone.`
+        )
+      ).toBeVisible()
     );
   });
 

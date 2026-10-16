@@ -17,7 +17,7 @@ import { useStore } from "utils";
 const verbiage = {
   addReportHeader: "Create a PASRR Report",
   reportingYearHint: (reportingYear: number) =>
-    `This report will be created for the previous calendar year (${reportingYear}), covering data collected from January 1 to December 31.`,
+    `You’re creating the annual PASRR report for reporting year ${reportingYear}. The reporting year covers all data collected from January 1 to December 31, ${reportingYear}. This action cannot be undone.`,
   copyReportHeader: (latestReport: LiteReport) => {
     const latestReportSubType = latestReport.subTypeKey;
     const latest = PasrrSubTypeMap[latestReportSubType];
@@ -40,7 +40,7 @@ export const CreateReportModal = ({
   const [errorAlert, setErrorAlert] = useState<string | undefined>();
   const [submitting, setSubmitting] = useState(false);
   const [latestReport, setLatestReport] = useState<LiteReport | undefined>(
-    undefined
+    undefined,
   );
 
   const { devDate } = useStore();
