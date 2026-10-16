@@ -33,6 +33,7 @@ const testReport: Report = {
   subType: PasrrSubType.ANNUAL,
   subTypeKey: "A1",
   budgetPeriod: 1,
+  reportingYear: 2026,
   submissionCount: 0,
   pages: [
     {

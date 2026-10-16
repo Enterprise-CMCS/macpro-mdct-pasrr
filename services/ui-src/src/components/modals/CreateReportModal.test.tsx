@@ -1,5 +1,5 @@
 import { MockedFunction } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CreateReportModal } from "components";
 import {
@@ -18,7 +18,10 @@ const mockGetReportsForState = vi.fn();
 
 vi.mock("utils/state/useStore");
 const mockedUseStore = useStore as unknown as MockedFunction<typeof useStore>;
-mockedUseStore.mockReturnValue(mockStateUserStore);
+mockedUseStore.mockReturnValue({
+  ...mockStateUserStore,
+  devDate: "2026-10-15",
+});
 
 vi.mock("utils/api/requestMethods/report", () => ({
   updateReport: () => mockUpdateReport(),
@@ -52,12 +55,12 @@ describe("Test general modal functionality", () => {
   });
 
   test("Modal top close button can be clicked", async () => {
-    await userEvent.click(screen.getByText("Close"));
+    await userEvent.click(screen.getByRole("button", { name: /close/i }));
     expect(mockCloseHandler).toHaveBeenCalledTimes(1);
   });
 
   test("Modal bottom cancel button can be clicked", async () => {
-    await userEvent.click(screen.getByText("Cancel"));
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(mockCloseHandler).toHaveBeenCalledTimes(1);
   });
 });
@@ -73,9 +76,24 @@ describe("Test Add Report Modal", () => {
     vi.clearAllMocks();
   });
 
-  test("Add Report Modal shows proper add contents", () => {
-    expect(screen.getByText("Add New PASRR Report")).toBeInTheDocument();
-    expect(screen.getByText("Save")).toBeInTheDocument();
+  test("Add Report Modal shows proper add contents", async () => {
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: "Create a PASRR Report" })
+      ).toBeVisible()
+    );
+    expect(screen.getByRole("button", { name: "Create" })).toBeVisible();
+  });
+
+  test("Add Report Modal shows previous year hint and no dropdown", async () => {
+    const previousYear = 2025;
+    await waitFor(() =>
+      expect(
+        screen.getByText(
+          `You’re creating the annual PASRR report for reporting year ${previousYear}. The reporting year covers all data collected from January 1 to December 31, ${previousYear}. This action cannot be undone.`
+        )
+      ).toBeVisible()
+    );
   });
 
   testA11yAct(addModalComponent);
@@ -89,7 +107,7 @@ describe("Test submit", () => {
     await act(async () => {
       await render(addModalComponent);
     });
-    const submitBtn = screen.getByText("Save");
+    const submitBtn = screen.getByRole("button", { name: "Create" });
     await userEvent.click(submitBtn);
 
     expect(mockReportHandler).toHaveBeenCalled();
@@ -100,7 +118,7 @@ describe("Test submit", () => {
 describe("Test CreateReportModal types", () => {
   test.each([{ type: ReportType.PASRR, text: "PASRR Report" }])(
     "$type report type renders a title",
-    ({ type, text }) => {
+    async ({ type, text }) => {
       render(
         <RouterWrappedComponent>
           <CreateReportModal
@@ -114,7 +132,11 @@ describe("Test CreateReportModal types", () => {
           />
         </RouterWrappedComponent>
       );
-      expect(screen.getByText(`Add New ${text}`)).toBeInTheDocument();
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: `Create a ${text}` })
+        ).toBeVisible()
+      );
     }
   );
 });

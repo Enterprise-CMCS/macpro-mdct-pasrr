@@ -14,7 +14,7 @@ export const createReport = handler(
   async (request) => {
     const { reportType, state } = request.parameters;
     const { user, body } = request;
-    const { mockDate } = body as any;
+    const { mockDate, reportingYear } = body as any;
 
     if (!canWriteState(user, state)) {
       return forbidden(error.UNAUTHORIZED);
@@ -80,6 +80,7 @@ export const createReport = handler(
       subTypeKey: nextReportKey,
       name: `${state} - ${name} - ${dateRangeString}`,
       budgetPeriod,
+      reportingYear,
       pages: reportTemplateBuilder!(state),
       copyFromReportId: latestReportId,
     };

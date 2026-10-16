@@ -36,7 +36,7 @@ const testEvent = {
   queryStringParameters: {},
   pathParameters: { reportType: "PASRR", state: "PA" },
   headers: { "cognito-identity-id": "test" },
-  body: JSON.stringify({}),
+  body: JSON.stringify({ reportingYear: 2026 }),
 };
 
 describe("Test create report handler", () => {
