@@ -158,6 +158,10 @@ export const DashboardPage = () => {
                   CMS for review, and it is locked from editing.
                 </ListItem>
                 <ListItem>
+                  <strong>Completed:</strong> CMS has completed review of the
+                  report. No further action is needed from the state.
+                </ListItem>
+                <ListItem>
                   <strong>In revision:</strong> CMS has sent the report back to
                   the state for revisions or additional information after
                   submission.

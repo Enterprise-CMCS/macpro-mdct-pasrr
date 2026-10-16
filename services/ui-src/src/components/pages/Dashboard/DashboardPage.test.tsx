@@ -248,10 +248,14 @@ describe("DashboardPage with state user", () => {
       expect(panel).toBeVisible();
     });
 
-    // four statuses
-    ["Not started:", "In progress:", "Submitted:", "In revision:"].forEach(
-      (text) => expect(panel).toHaveTextContent(text)
-    );
+    // five statuses
+    [
+      "Not started:",
+      "In progress:",
+      "Submitted:",
+      "Completed:",
+      "In revision:",
+    ].forEach((text) => expect(panel).toHaveTextContent(text));
     expect(screen.queryByText("Accepted:")).not.toBeInTheDocument();
 
     // contact note with mailto link
