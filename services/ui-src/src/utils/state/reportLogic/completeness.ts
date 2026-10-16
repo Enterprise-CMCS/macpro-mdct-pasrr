@@ -9,7 +9,7 @@ import {
   Report,
 } from "@pasrr/shared";
 import { isFormPageTemplate, assertExhaustive } from "types";
-import { isEmail } from "utils/validation/inputValidation";
+import { isEmail, isPhone, isZipCode } from "utils/validation/inputValidation";
 
 /**
  * Calculate the status of any page, including calculated values.
@@ -161,8 +161,27 @@ export const elementSatisfiesRequired = (
       (column) => column.value && column.value !== ""
     );
   }
-  if (element.id.includes("email") && typeof element.answer === "string") {
-    return isEmail(element.answer);
+
+  const textboxValidations = (value: string) => [
+    {
+      match: element.id.includes("email"),
+      validation: isEmail(value),
+    },
+    {
+      match: element.id.includes("phone"),
+      validation: isPhone(value),
+    },
+    {
+      match: element.id.includes("zipcode"),
+      validation: isZipCode(value),
+    },
+  ];
+  const customValidation =
+    typeof element.answer === "string"
+      ? textboxValidations(element.answer).find((v) => v.match)
+      : null;
+  if (customValidation) {
+    return customValidation.validation;
   }
 
   return true;

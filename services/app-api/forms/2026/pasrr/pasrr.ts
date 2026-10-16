@@ -46,7 +46,7 @@ const generalInformation: FormPageTemplate = {
       helperText: "Enter phone number as ###-###-####.",
     },
     {
-      id: "contact-zipCode",
+      id: "contact-zipcode",
       type: ElementType.Textbox,
       label: "Postal code",
       required: true,

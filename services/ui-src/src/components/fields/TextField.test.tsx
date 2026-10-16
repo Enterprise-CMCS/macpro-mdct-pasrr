@@ -126,8 +126,8 @@ describe("<TextField />", () => {
   test("TextField should render error on load for invalid zip code", async () => {
     const mockedZipCodeField = {
       ...mockedTextboxElement,
-      id: "mock-zipCode-field",
-      answer: "not-a-zipCode",
+      id: "mock-zipcode-field",
+      answer: "not-a-zipcode",
     };
     render(<TextFieldWrapper template={mockedZipCodeField} />);
     expect(screen.getByText("Enter a valid Zip code.")).toBeVisible();

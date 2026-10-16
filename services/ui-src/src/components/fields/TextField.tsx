@@ -42,7 +42,7 @@ export const TextField = (
 
   const hideElement = useElementIsHidden(textbox.hideCondition);
 
-  const textBoxValidations = (value: string) => [
+  const textboxValidations = (value: string) => [
     {
       match: textbox.id.includes("email") && !isEmail(value),
       message: ErrorMessages.mustBeAnEmail,
@@ -52,7 +52,7 @@ export const TextField = (
       message: ErrorMessages.mustBeAPhone,
     },
     {
-      match: textbox.id.includes("zipCode") && !isZipCode(value),
+      match: textbox.id.includes("zipcode") && !isZipCode(value),
       message: ErrorMessages.mustBeAZipCode,
     },
   ];
@@ -68,7 +68,7 @@ export const TextField = (
         match: !defaultValueString,
         message: "",
       },
-      ...textBoxValidations(defaultValueString),
+      ...textboxValidations(defaultValueString),
     ];
 
     const failedValidation = validations.find((v) => v.match);
@@ -127,7 +127,7 @@ export const TextField = (
             match: !rawValue && textbox.required,
             message: ErrorMessages.requiredResponse,
           },
-          ...textBoxValidations(rawValue),
+          ...textboxValidations(rawValue),
         ];
 
         const failedValidation = validations.find((v) => v.match);
