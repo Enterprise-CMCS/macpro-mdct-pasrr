@@ -123,6 +123,28 @@ describe("<TextField />", () => {
     ).not.toBeInTheDocument();
   });
 
+  test("TextField should render error on load for invalid zip code", async () => {
+    const mockedZipCodeField = {
+      ...mockedTextboxElement,
+      id: "mock-zipcode-field",
+      answer: "not-a-zipcode",
+    };
+    render(<TextFieldWrapper template={mockedZipCodeField} />);
+    expect(screen.getByText("Enter a valid Zip code.")).toBeVisible();
+
+    const textField = screen.getByRole("textbox");
+    await userEvent.clear(textField);
+    expect(screen.getByText("A response is required")).toBeVisible();
+
+    await userEvent.type(textField, "55555");
+    expect(
+      screen.queryByText("A response is required")
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Enter a valid Zip code.")
+    ).not.toBeInTheDocument();
+  });
+
   test("NumberField should render its initial value", () => {
     render(
       <TextFieldWrapper template={{ ...mockedNumberField, answer: 123 }} />

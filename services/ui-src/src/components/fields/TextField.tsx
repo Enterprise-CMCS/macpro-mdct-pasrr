@@ -13,6 +13,7 @@ import { ErrorMessages } from "../../constants";
 import {
   isEmail,
   isPhone,
+  isZipCode,
   maskByType,
   parseNumber,
   stringifyInput,
@@ -41,20 +42,38 @@ export const TextField = (
 
   const hideElement = useElementIsHidden(textbox.hideCondition);
 
+  const textboxValidations = (value: string) => [
+    {
+      match: textbox.id.includes("email") && !isEmail(value),
+      message: ErrorMessages.mustBeAnEmail,
+    },
+    {
+      match: textbox.id.includes("phone") && !isPhone(value),
+      message: ErrorMessages.mustBeAPhone,
+    },
+    {
+      match: textbox.id.includes("zipcode") && !isZipCode(value),
+      message: ErrorMessages.mustBeAZipCode,
+    },
+  ];
+
   useEffect(() => {
     const defaultValueString = stringifyInput(displayValue);
     // Clear error message by default
     setErrorMessage("");
 
-    switch (true) {
-      case !defaultValueString:
-        break;
-      case textbox.id.includes("email") && !isEmail(defaultValueString):
-        setErrorMessage(ErrorMessages.mustBeAnEmail);
-        break;
-      case textbox.id.includes("phone") && !isPhone(defaultValueString):
-        setErrorMessage(ErrorMessages.mustBeAPhone);
-        break;
+    // Order by match priority
+    const validations = [
+      {
+        match: !defaultValueString,
+        message: "",
+      },
+      ...textboxValidations(defaultValueString),
+    ];
+
+    const failedValidation = validations.find((v) => v.match);
+    if (failedValidation) {
+      setErrorMessage(failedValidation.message);
     }
   }, []);
 
@@ -108,14 +127,7 @@ export const TextField = (
             match: !rawValue && textbox.required,
             message: ErrorMessages.requiredResponse,
           },
-          {
-            match: textbox.id.includes("email") && !isEmail(rawValue),
-            message: ErrorMessages.mustBeAnEmail,
-          },
-          {
-            match: textbox.id.includes("phone") && !isPhone(rawValue),
-            message: ErrorMessages.mustBeAPhone,
-          },
+          ...textboxValidations(rawValue),
         ];
 
         const failedValidation = validations.find((v) => v.match);
