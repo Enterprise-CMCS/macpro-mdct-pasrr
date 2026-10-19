@@ -177,7 +177,11 @@ describe("DashboardPage with state user", () => {
     expect(reportModalButton).toBeEnabled();
     await userEvent.click(reportModalButton);
 
-    expect(screen.getByText("Add New PASRR Report")).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: "Create a PASRR Report" })
+      ).toBeVisible()
+    );
   });
 
   test("should render the new intro copy", async () => {

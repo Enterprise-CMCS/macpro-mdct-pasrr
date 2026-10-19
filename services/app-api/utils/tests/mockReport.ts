@@ -18,6 +18,7 @@ export const validReport: Report = {
   subType: PasrrSubType.ANNUAL,
   subTypeKey: "A1",
   budgetPeriod: 1,
+  reportingYear: 2026,
   pages: pages,
   state: "NJ" as StateAbbr,
   id: "2rRaoAFm8yLB2N2wSkTJ0iRTDu0",
