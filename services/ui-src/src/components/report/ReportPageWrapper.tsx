@@ -11,7 +11,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { getReport, useStore } from "utils";
-import { ReportModal, Sidebar, Page, PraDisclosure } from "components";
+import { ReportModal, Sidebar, Page } from "components";
 import { currentPageSelector } from "utils/state/selectors";
 
 import nextArrowIcon from "assets/icons/arrows/icon_arrow_next_white.svg";
@@ -154,11 +154,6 @@ export const ReportPageWrapper = () => {
                   </Button>
                 )}
               </Flex>
-              {parentPage.index == 0 && (
-                <Box flex="auto" marginTop="spacer7">
-                  <PraDisclosure />
-                </Box>
-              )}
             </>
           )}
         </VStack>
