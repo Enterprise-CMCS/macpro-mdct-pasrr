@@ -1,5 +1,8 @@
 import { FormPageTemplate } from "@pasrr/shared";
-import { uploadListPropSchema, validateReportPayload } from "./reportValidation";
+import {
+  uploadListPropSchema,
+  validateReportPayload,
+} from "./reportValidation";
 import { validReport } from "./tests/mockReport";
 
 describe("validateReportPayload", () => {

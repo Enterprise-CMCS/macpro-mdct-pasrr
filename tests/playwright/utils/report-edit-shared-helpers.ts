@@ -70,7 +70,7 @@ export const createArtifactId = (): string =>
   randomUUID().replaceAll("-", "").slice(0, 10);
 
 export const createUniqueGeneralInfoFields = (
-  runId: string = getReportTestRunId(),
+  runId: string = getReportTestRunId()
 ): GeneralInfoField[] => [
   { label: NAME_LABEL, nth: CONTACT_NAME_NTH, value: `Contact Name ${runId}` },
   { label: CONTACT_EMAIL_LABEL, value: `contact-${runId}@test.gov` },
@@ -88,7 +88,7 @@ export const createUniqueGeneralInfoFields = (
 export const editGeneralInformationFields = async (
   editor: ReportEditorPage,
   fields: GeneralInfoField[],
-  mode: GeneralInfoFillMode = "overwrite",
+  mode: GeneralInfoFillMode = "overwrite"
 ): Promise<void> => {
   for (const field of fields) {
     if (mode === "fill-empty") {
@@ -112,7 +112,7 @@ type UploadViaDialogOptions = {
 
 export const uploadFileViaDialog = async (
   page: Page,
-  options: UploadViaDialogOptions,
+  options: UploadViaDialogOptions
 ): Promise<void> => {
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible({ timeout: options.timeoutMs });
