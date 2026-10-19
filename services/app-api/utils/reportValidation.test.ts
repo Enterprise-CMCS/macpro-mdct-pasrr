@@ -1,4 +1,23 @@
-import { uploadListPropSchema } from "./reportValidation";
+import { FormPageTemplate } from "@pasrr/shared";
+import { uploadListPropSchema, validateReportPayload } from "./reportValidation";
+import { validReport } from "./tests/mockReport";
+
+describe("validateReportPayload", () => {
+  test("keeps skipOptionalTag so General Information fields stay without the Required tag", async () => {
+    const validated = await validateReportPayload(validReport);
+    const generalInformation = validated.pages.find(
+      (page) => page.id === "general-information"
+    ) as FormPageTemplate;
+    const inputs = generalInformation.elements.filter(
+      (element) => "required" in element
+    );
+
+    expect(inputs.length).toBeGreaterThan(0);
+    for (const input of inputs) {
+      expect(input).toHaveProperty("skipOptionalTag", true);
+    }
+  });
+});
 
 describe("uploadListPropSchema", () => {
   test("accepts valid attachment with matching extensions", async () => {
