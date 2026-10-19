@@ -35,6 +35,7 @@ const mockReportsInDatabase = [
     status: "Not started",
     name: "Mock Report Name",
     budgetPeriod: 1,
+    reportingYear: 2025,
     subTypeKey: "A1",
   } as Report,
   {
@@ -46,6 +47,7 @@ const mockReportsInDatabase = [
     status: "Not started",
     name: "Mock Report 2027",
     budgetPeriod: 2,
+    reportingYear: 2026,
     subTypeKey: "A2",
   } as Report,
 ];
@@ -128,17 +130,33 @@ describe("DashboardPage with state user", () => {
     expect(cellContent("Edited by")).toBe("Mock User");
   });
 
-  test("should be able to filter reports", async () => {
+  test("should list reporting years from reports, newest first", async () => {
+    render(dashboardComponent);
+    await waitFor(() => {
+      expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
+    });
+
+    const dropdown = screen.getAllByLabelText("Filter by reporting year")[0];
+    const options = [...dropdown.querySelectorAll("option[value]")].map(
+      (option) => option.textContent
+    );
+    expect(options).toEqual(["All", "2026", "2025"]);
+    expect(dropdown).toHaveValue("All");
+    expect(
+      screen.queryByLabelText("Filter by Budget Period")
+    ).not.toBeInTheDocument();
+  });
+
+  test("should be able to filter reports by reporting year", async () => {
     const { container } = render(dashboardComponent);
     await waitFor(() => {
       expect(getReportsForState).toHaveBeenCalled();
       expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
     });
 
-    await userEvent.click(screen.getByText("Clear Filter"));
     await userEvent.selectOptions(
-      screen.queryAllByLabelText("Filter by Budget Period")[0],
-      "Budget Period 1"
+      screen.getAllByLabelText("Filter by reporting year")[0],
+      "2025"
     );
 
     const table = container.querySelector("table")!;
@@ -162,6 +180,23 @@ describe("DashboardPage with state user", () => {
     expect(cellContent("Last edited")).toBe("10/24/2026");
     expect(cellContent("Edited by")).toBe("Mock User");
     expect(screen.queryByText("Mock Report 2027")).not.toBeInTheDocument();
+  });
+
+  test("should reset the reporting year filter to All when cleared", async () => {
+    render(dashboardComponent);
+    await waitFor(() => {
+      expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
+    });
+
+    const dropdown = screen.getAllByLabelText("Filter by reporting year")[0];
+    await userEvent.selectOptions(dropdown, "2026");
+    expect(screen.queryByText("Mock Report Name")).not.toBeInTheDocument();
+    expect(screen.getByText("Mock Report 2027")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Clear Filter" }));
+    expect(dropdown).toHaveValue("All");
+    expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
+    expect(screen.getByText("Mock Report 2027")).toBeInTheDocument();
   });
 
   test("should be able to open the modal to start new report", async () => {
