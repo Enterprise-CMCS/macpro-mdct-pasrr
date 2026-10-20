@@ -38,7 +38,7 @@ export class ReportModalPage extends BasePage {
   // ===== Modal Buttons =====
   async submitCreateModal(): Promise<CreateModalSubmitResult> {
     const modal = this.page.getByRole("dialog").first();
-    const submitButton = modal.getByRole("button", { name: /Save/i });
+    const submitButton = modal.getByRole("button", { name: /Create/i });
     await submitButton.click();
 
     // Created flow closes the modal and navigates to detail.
@@ -62,7 +62,7 @@ export class ReportModalPage extends BasePage {
 
   async submitCopyModal(): Promise<CopyModalSubmitResult> {
     const modal = this.page.getByRole("dialog").first();
-    const submitButton = modal.getByRole("button", { name: /Save/i });
+    const submitButton = modal.getByRole("button", { name: /Create/i });
     await submitButton.click();
 
     // Copy stays on the dashboard (reloads report list) — success = modal closes.
