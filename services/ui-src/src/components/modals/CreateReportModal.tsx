@@ -45,7 +45,12 @@ export const CreateReportModal = ({
 
   const { devDate } = useStore();
 
-  const currentYear = (devDate ? new Date(devDate) : new Date()).getFullYear();
+  // Dev tools store the date as an epoch-millisecond string
+  const parsedDevDate =
+    devDate && /^\d+$/.test(devDate) ? Number(devDate) : devDate;
+  const currentYear = (
+    parsedDevDate ? new Date(parsedDevDate) : new Date()
+  ).getFullYear();
   const reportingYear = currentYear - 1;
 
   useEffect(() => {
