@@ -1,0 +1,65 @@
+import { App } from "components";
+import { MockedFunction } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { useStore, UserProvider } from "utils";
+import { testA11yAct } from "utils/testing/commonTests";
+import {
+  RouterWrappedComponent,
+  mockNoUserStore,
+  mockUseStore,
+} from "utils/testing/setupTest";
+
+vi.mock("utils/state/useStore");
+const mockedUseStore = useStore as unknown as MockedFunction<typeof useStore>;
+mockedUseStore.mockReturnValue(mockUseStore);
+
+const appComponent = (
+  <RouterWrappedComponent>
+    <UserProvider>
+      <App />
+    </UserProvider>
+  </RouterWrappedComponent>
+);
+
+describe("<App />", () => {
+  test("App is visible", async () => {
+    mockedUseStore.mockReturnValue(mockUseStore);
+    render(appComponent);
+    expect(
+      screen.getByRole("region", {
+        name: "Official website of the United States government",
+      })
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: "Here's how you know" })
+    ).toBeVisible();
+    expect(screen.getByRole("button", { name: "my account" })).toBeVisible();
+    expect(screen.getAllByAltText("PASRR logo")).toHaveLength(2);
+    expect(screen.getByAltText("Help")).toBeVisible();
+    expect(screen.getByAltText("Account")).toBeVisible();
+    expect(screen.getByAltText("Expand")).toBeVisible();
+    expect(
+      screen.getByAltText("Department of Health and Human Services, USA")
+    ).toBeVisible();
+    expect(
+      screen.getByAltText("Medicaid.gov: Keeping America Healthy")
+    ).toBeVisible();
+  });
+
+  test("App renders local logins if there is no user", async () => {
+    mockedUseStore.mockReturnValue(mockNoUserStore);
+    render(appComponent);
+    const headings = screen.getAllByRole("heading", { level: 2 });
+    expect(headings.length).toBe(2);
+    expect(headings[0]).toHaveTextContent("Log In with IDM");
+    expect(headings[1]).toHaveTextContent("Log In with Cognito");
+    expect(
+      screen.getByRole("button", { name: "Log In with IDM" })
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: "Log In with Cognito" })
+    ).toBeVisible();
+  });
+
+  testA11yAct(appComponent);
+});
