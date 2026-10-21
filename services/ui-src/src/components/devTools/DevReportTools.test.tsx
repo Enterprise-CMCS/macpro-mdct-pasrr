@@ -245,6 +245,10 @@ vi.mock("utils/state/useStore", () => ({
     ),
 }));
 describe("Test DevReportTools component", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   test("DevReportTools Renders", () => {
     render(<DevReportTools />);
     expect(screen.getByText("Mock Page Tools")).toBeInTheDocument();
@@ -282,7 +286,7 @@ describe("Test DevReportTools component", () => {
     await userEvent.click(
       screen.getByRole("button", { name: "Auto Fill Page" })
     );
-    expect(mockSetAnswer).not.toHaveBeenCalledWith();
+    expect(mockSetAnswer).not.toHaveBeenCalled();
   });
 
   test("Test autofill of Review & Submit", async () => {
