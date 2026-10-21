@@ -192,6 +192,7 @@ export enum ElementType {
   AccordionGroup = "accordionGroup",
   ActionTable = "actionTable",
   RequestFeedbackButton = "requestFeedbackButton",
+  FieldGroup = "fieldGroup",
 }
 
 export type PageElement =
@@ -215,7 +216,8 @@ export type PageElement =
   | AccordionGroupTemplate
   | AttachmentAreaTemplate
   | ActionTableTemplate
-  | RequestFeedbackButtonTemplate;
+  | RequestFeedbackButtonTemplate
+  | FieldGroupTemplate;
 
 export type HideCondition = {
   controllerElementId: string;
@@ -295,10 +297,13 @@ export interface StatusAlertTemplate extends DisplayElementTemplate {
   for?: string;
 }
 
+export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+
 export interface SubHeaderTemplate extends DisplayElementTemplate {
   type: ElementType.SubHeader;
   helperText?: string;
   hideCondition?: HideCondition;
+  headingLevel?: HeadingLevel;
 }
 
 interface InputElementTemplate {
@@ -426,6 +431,20 @@ export interface ActionTableTemplate extends InputElementTemplate {
 export interface RequestFeedbackButtonTemplate {
   type: ElementType.RequestFeedbackButton;
   id: string;
+}
+
+export type FieldGroupElement = DropdownTemplate | TextboxTemplate;
+
+export type FieldGroupAnswerShape = {
+  id: string;
+  value: string;
+};
+
+export interface FieldGroupTemplate extends InputElementTemplate {
+  type: ElementType.FieldGroup;
+  elements: FieldGroupElement[];
+  answer?: FieldGroupAnswerShape[];
+  headingLevel?: HeadingLevel;
 }
 
 export interface PasrrSubTypeData {
