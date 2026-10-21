@@ -12,6 +12,7 @@ const mockedDropdownElement: DropdownTemplate = {
   label: "test-dropdown-field",
   helperText: "helper text",
   required: true,
+  skipOptionalTag: true,
   options: [
     { label: "2026", value: "2026" },
     { label: "2027", value: "2027" },

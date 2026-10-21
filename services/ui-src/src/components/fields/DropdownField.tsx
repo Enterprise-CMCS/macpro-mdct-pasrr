@@ -5,7 +5,9 @@ import {
   Dropdown as CmsdsDropdownField,
   DropdownChangeObject,
 } from "@cmsgov/design-system";
-import { parseHtml } from "utils";
+import { Box } from "@chakra-ui/react";
+import { optionalTag, parseHtml } from "utils";
+import { ErrorMessages } from "../../constants";
 
 export const DropdownField = (props: PageElementProps<DropdownTemplate>) => {
   /**
@@ -16,6 +18,7 @@ export const DropdownField = (props: PageElementProps<DropdownTemplate>) => {
   const dropdown = props.element;
   const defaultValue = dropdown.answer ?? dropdown.options[0].value;
   const [displayValue, setDisplayValue] = useState<string>(defaultValue);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Need to listen to prop updates from the parent for events
   useEffect(() => {
@@ -24,22 +27,34 @@ export const DropdownField = (props: PageElementProps<DropdownTemplate>) => {
 
   const onChangeHandler = async (event: DropdownChangeObject) => {
     const value = event.target.value;
+    const isEmptyAndRequired = value === "" && dropdown.required;
     setDisplayValue(value);
+    setErrorMessage(isEmptyAndRequired ? ErrorMessages.requiredResponse : "");
     props.updateElement({ answer: value });
   };
 
   const parsedHint = dropdown.helperText && parseHtml(dropdown.helperText);
-  const labelText = dropdown.label;
 
   return (
-    <CmsdsDropdownField
-      name={dropdown.id}
-      label={labelText}
-      hint={parsedHint}
-      onChange={onChangeHandler}
-      options={dropdown.options}
-      value={displayValue}
-      disabled={props.disabled || dropdown.disabled}
-    />
+    <Box width="100%" sx={sx.container}>
+      <CmsdsDropdownField
+        name={dropdown.id}
+        label={optionalTag(dropdown)}
+        hint={parsedHint}
+        onChange={onChangeHandler}
+        options={dropdown.options}
+        value={displayValue}
+        disabled={props.disabled || dropdown.disabled}
+        errorMessage={errorMessage}
+      />
+    </Box>
   );
+};
+
+const sx = {
+  container: {
+    ".ds-c-dropdown__menu-container": {
+      zIndex: "1001",
+    },
+  },
 };
