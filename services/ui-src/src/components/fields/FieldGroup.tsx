@@ -34,7 +34,7 @@ export const FieldGroup = (props: PageElementProps<FieldGroupTemplate>) => {
 
   return (
     <Box as="fieldset" width="100%">
-      <Box as="legend" marginBottom={"spacer4"}>
+      <Box as="legend" marginBottom={"spacer2"} marginTop={0}>
         <SubHeaderElement element={subHeaderElement} />
       </Box>
       <Page
