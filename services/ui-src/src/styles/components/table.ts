@@ -179,7 +179,7 @@ const metricVariant = {
         width: "1px",
       },
       input: {
-        "field-sizing": "content",
+        fieldSizing: "content",
         minWidth: "50px",
       },
       "&:last-of-type": {
