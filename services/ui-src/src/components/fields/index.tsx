@@ -4,3 +4,4 @@ export { RadioField } from "./RadioField";
 export { TextField } from "./TextField";
 export { TextAreaField } from "./TextAreaField";
 export { ListInput } from "./ListInput";
+export { FieldGroup } from "./FieldGroup";

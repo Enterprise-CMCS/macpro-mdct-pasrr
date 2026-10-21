@@ -6,6 +6,7 @@ import {
   ChoiceTemplate,
   DropdownTemplate,
   ElementType,
+  FieldGroupTemplate,
   PageElement,
   RadioTemplate,
   Report,
@@ -57,36 +58,47 @@ export const updateElements = (
   user: User
 ) => {
   for (const element of elements) {
-    // Handle nested elements
-    if (element.type == ElementType.AccordionGroup) {
-      const newElement = requestElements.find(
-        (newElement) => newElement.id === element.id
-      ) as AccordionGroupTemplate;
-      updateStatePolicyCommitments(
-        element.accordions,
-        newElement.accordions,
-        user
-      );
+    const requestElement =
+      requestElements.find((newElement) => newElement.id === element.id) ??
+      ({} as PageElement);
+
+    switch (element.type) {
+      // Handle nested elements
+      case ElementType.AccordionGroup:
+        updateStatePolicyCommitments(
+          element.accordions,
+          (requestElement as AccordionGroupTemplate).accordions,
+          user
+        );
+        break;
+
+      case ElementType.FieldGroup:
+        updateElements(
+          element.elements,
+          (requestElement as FieldGroupTemplate).elements,
+          user
+        );
+        break;
+
+      case ElementType.Checkbox:
+      case ElementType.Radio:
+        updateChoiceTemplates(
+          element.choices,
+          (requestElement as CheckboxTemplate | RadioTemplate).choices,
+          user
+        );
+        break;
+
+      case ElementType.Dropdown:
+        updateChoiceTemplates(
+          element.options,
+          (requestElement as DropdownTemplate).options,
+          user
+        );
+        break;
     }
-    if (
-      element.type == ElementType.Checkbox ||
-      element.type == ElementType.Radio
-    ) {
-      const newElement = requestElements.find(
-        (newElement) => newElement.id === element.id
-      ) as CheckboxTemplate | RadioTemplate;
-      updateChoiceTemplates(element.choices, newElement.choices, user);
-    }
-    if (element.type == ElementType.Dropdown) {
-      const newElement = requestElements.find(
-        (newElement) => newElement.id === element.id
-      ) as DropdownTemplate;
-      updateChoiceTemplates(element.options, newElement.options, user);
-    }
-    const requestElement = requestElements.find(
-      (newElement) => newElement.id === element.id
-    );
-    if (!requestElement || !("answer" in requestElement)) {
+
+    if (!("answer" in requestElement)) {
       continue;
     }
     if (
@@ -96,7 +108,7 @@ export const updateElements = (
     ) {
       continue;
     }
-    if (requestElement?.type === element.type) {
+    if (element.type === requestElement.type) {
       element.answer = requestElement.answer;
     }
   }
