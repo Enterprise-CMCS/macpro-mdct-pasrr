@@ -54,6 +54,10 @@ export const DevReportTools = () => {
   };
 
   const fillAnswer = (element: PageElement) => {
+    if (!("required" in element) || !element.required) {
+      return {};
+    }
+
     const answer =
       "answer" in element &&
       element.answer !== "" &&
@@ -63,9 +67,11 @@ export const DevReportTools = () => {
     const options = (element as DropdownTemplate).options;
     const value = options?.[0]?.value || options?.[1]?.value || "";
 
-    return (
-      answer ?? getAnswerByType({ type: element.type, id: element.id, value })
-    );
+    return {
+      answer:
+        answer ??
+        getAnswerByType({ type: element.type, id: element.id, value }),
+    };
   };
 
   const fillActionTable = (element: ActionTableTemplate) => {
@@ -91,13 +97,9 @@ export const DevReportTools = () => {
 
   const fillFieldGroup = (element: FieldGroupTemplate) => {
     const elements = element.elements.map((el) => {
-      if (!("required" in el) || !el.required) {
-        return el;
-      }
-
       return {
         ...el,
-        answer: fillAnswer(el),
+        ...fillAnswer(el),
       };
     });
 
@@ -111,10 +113,6 @@ export const DevReportTools = () => {
 
   const fillPageElements = (elements: PageElement[]) => {
     return elements.map((element) => {
-      if (!("required" in element) || !element.required) {
-        return element;
-      }
-
       switch (element.type) {
         case ElementType.ActionTable:
           return { ...element, answer: fillActionTable(element) };
@@ -130,7 +128,7 @@ export const DevReportTools = () => {
         default:
           return {
             ...element,
-            answer: fillAnswer(element),
+            ...fillAnswer(element),
           };
       }
     });
