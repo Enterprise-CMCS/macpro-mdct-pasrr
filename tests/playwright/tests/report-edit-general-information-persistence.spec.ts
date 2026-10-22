@@ -3,11 +3,10 @@ import { ReportEditorPage } from "./pageObjects/report-editor.page";
 import { TIMEOUT_AUTOSAVE } from "../utils/timeouts";
 import { openReportSectionOrSkip } from "../utils/report-edit-arrange";
 import {
-  CONTACT_EMAIL_LABEL,
-  CONTACT_NAME_LABEL,
+  createUniqueGeneralInfoFields,
   editGeneralInformationFields,
   GENERAL_INFORMATION_SECTION,
-  getReportTestRunId,
+  type GeneralInfoField,
   REVIEW_SUBMIT_SECTION,
 } from "../utils/report-edit-shared-helpers";
 import {
@@ -18,15 +17,15 @@ import {
 test.describe("Report Editing - General Information Persistence", () => {
   const fillFields = async (
     editor: ReportEditorPage,
-    fields: Array<{ label: string | RegExp; value: string }>
+    fields: GeneralInfoField[]
   ) => editGeneralInformationFields(editor, fields);
 
   const verifyFieldValues = async (
     editor: ReportEditorPage,
-    fields: Array<{ label: string | RegExp; value: string }>
+    fields: GeneralInfoField[]
   ) => {
     for (const field of fields) {
-      await verifyFieldValue(editor, field.label, field.value);
+      await verifyFieldValue(editor, field.label, field.value, field.nth);
     }
   };
 
@@ -45,11 +44,7 @@ test.describe("Report Editing - General Information Persistence", () => {
     }
 
     const { reportType, state, reportId } = editor.getCurrentRouteParams();
-    const runId = getReportTestRunId();
-    const testDataMultiple = [
-      { label: CONTACT_NAME_LABEL, value: `Contact Name ${runId}` },
-      { label: CONTACT_EMAIL_LABEL, value: `contact-${runId}@test.gov` },
-    ];
+    const testDataMultiple = createUniqueGeneralInfoFields();
 
     // Act
     await fillFields(editor, testDataMultiple);

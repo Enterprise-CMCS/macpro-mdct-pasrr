@@ -107,8 +107,13 @@ export class ReportEditorPage extends BasePage {
 
   // ===== Locators =====
 
-  getTextField(label: string | RegExp): Locator {
-    return this.page.getByLabel(label);
+  /**
+   * @param nth Zero-based index for labels shared by multiple fields on the
+   * page (e.g. "Name" in two sections). Omit to keep strict single-match.
+   */
+  getTextField(label: string | RegExp, nth?: number): Locator {
+    const fields = this.page.getByLabel(label);
+    return nth === undefined ? fields : fields.nth(nth);
   }
 
   get continueButton(): Locator {
@@ -173,8 +178,12 @@ export class ReportEditorPage extends BasePage {
     });
   }
 
-  async fillTextField(label: string | RegExp, value: string): Promise<void> {
-    const field = this.page.getByLabel(label);
+  async fillTextField(
+    label: string | RegExp,
+    value: string,
+    nth?: number
+  ): Promise<void> {
+    const field = this.getTextField(label, nth);
     await field.waitFor({ state: "visible", timeout: TIMEOUT_LOADING });
     await field.fill(value);
   }

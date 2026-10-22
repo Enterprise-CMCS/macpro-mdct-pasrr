@@ -28,9 +28,10 @@ export async function verifyFieldIsReadOnly(
 export async function verifyFieldValue(
   editor: ReportEditorPage,
   label: string | RegExp,
-  expectedValue: string
+  expectedValue: string,
+  nth?: number
 ): Promise<void> {
-  await expect(editor.getTextField(label)).toHaveValue(expectedValue);
+  await expect(editor.getTextField(label, nth)).toHaveValue(expectedValue);
 }
 
 /**
