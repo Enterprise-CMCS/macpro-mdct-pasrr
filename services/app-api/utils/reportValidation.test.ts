@@ -2,15 +2,35 @@ import {
   fieldGroupElementSchema,
   pageElementSchema,
   uploadListPropSchema,
+  validateReportPayload,
 } from "./reportValidation";
 import {
   dropdownEmptyLabel,
   DropdownTemplate,
   ElementType,
+  FormPageTemplate,
   TextboxTemplate,
 } from "@pasrr/shared";
+import { validReport } from "./tests/mockReport";
 
 describe("reportValidation", () => {
+  describe("validateReportPayload", () => {
+    test("keeps skipOptionalTag so General Information fields stay without the Required tag", async () => {
+      const validated = await validateReportPayload(validReport);
+      const generalInformation = validated.pages.find(
+        (page) => page.id === "general-information"
+      ) as FormPageTemplate;
+      const inputs = generalInformation.elements.filter(
+        (element) => "required" in element
+      );
+
+      expect(inputs.length).toBeGreaterThan(0);
+      for (const input of inputs) {
+        expect(input).toHaveProperty("skipOptionalTag", true);
+      }
+    });
+  });
+
   describe("pageElementSchema", () => {
     describe("ElementType.Dropdown", () => {
       const mockedDropdownElement: DropdownTemplate = {
