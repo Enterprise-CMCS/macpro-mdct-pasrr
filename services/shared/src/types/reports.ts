@@ -304,6 +304,7 @@ export interface SubHeaderTemplate extends DisplayElementTemplate {
   helperText?: string;
   hideCondition?: HideCondition;
   headingLevel?: HeadingLevel;
+  noWrapper?: boolean;
 }
 
 interface InputElementTemplate {
@@ -440,8 +441,12 @@ export type FieldGroupAnswerShape = {
   value: string;
 };
 
-export interface FieldGroupTemplate extends InputElementTemplate {
+export interface FieldGroupTemplate {
   type: ElementType.FieldGroup;
+  id: string;
+  label: string;
+  helperText?: string;
+  required: boolean;
   elements: FieldGroupElement[];
   answer?: FieldGroupAnswerShape[];
   headingLevel?: HeadingLevel;

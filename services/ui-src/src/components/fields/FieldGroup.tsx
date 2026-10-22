@@ -18,6 +18,7 @@ export const FieldGroup = (props: PageElementProps<FieldGroupTemplate>) => {
     text: label,
     helperText,
     headingLevel,
+    noWrapper: true,
   };
 
   const setFieldGroupElements = (element: PageElement[]) => {

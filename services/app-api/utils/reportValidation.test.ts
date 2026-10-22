@@ -21,7 +21,8 @@ describe("reportValidation", () => {
         (page) => page.id === "general-information"
       ) as FormPageTemplate;
       const inputs = generalInformation.elements.filter(
-        (element) => "required" in element
+        (element) =>
+          "required" in element && element.type !== ElementType.FieldGroup
       );
 
       expect(inputs.length).toBeGreaterThan(0);

@@ -58,6 +58,7 @@ const subHeaderTemplateSchema = object().shape({
   text: string().required(),
   helperText: string().notRequired(),
   hideCondition: hideConditionSchema,
+  headingLevel: number().integer().min(1).max(6).notRequired(),
 });
 
 const paragraphTemplateSchema = object().shape({
@@ -408,9 +409,13 @@ export const fieldGroupElementSchema = lazy(
 
 const fieldGroupTemplateSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.FieldGroup)),
-  ...inputElementSchema,
+  id: string().required(),
+  label: string().required(),
+  helperText: string().notRequired(),
+  required: boolean().required(),
   elements: array().of(fieldGroupElementSchema).required(),
   answer: array().of(mixed()).notRequired(),
+  headingLevel: number().integer().min(1).max(6).notRequired(),
 });
 
 /**
