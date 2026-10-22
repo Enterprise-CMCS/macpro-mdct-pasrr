@@ -182,16 +182,11 @@ export const elementSatisfiesRequired = (
         },
       ];
 
-      const customValidation =
-        typeof element.answer === "string"
-          ? textboxValidations(element.answer).find((v) => v.match)
-          : null;
-
+      const customValidation = textboxValidations(element.answer).find(
+        (v) => v.match
+      );
       return customValidation?.validation ?? true;
     }
-
-    case element.type === ElementType.Dropdown:
-      return element.answer !== "";
 
     default:
       return true;
