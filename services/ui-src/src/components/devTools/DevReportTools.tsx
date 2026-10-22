@@ -53,6 +53,21 @@ export const DevReportTools = () => {
     return console.error("Type ignored: " + type + ". Element id: " + id);
   };
 
+  const fillAnswer = (element: PageElement) => {
+    const answer =
+      "answer" in element &&
+      element.answer !== "" &&
+      element.answer !== undefined
+        ? element.answer
+        : undefined;
+    const options = (element as DropdownTemplate).options;
+    const value = options?.[0]?.value || options?.[1]?.value || "";
+
+    return (
+      answer ?? getAnswerByType({ type: element.type, id: element.id, value })
+    );
+  };
+
   const fillActionTable = (element: ActionTableTemplate) => {
     const { answer, rows } = element;
     const getMockAnswer = (col: { id: string; value: string }) => {
@@ -76,11 +91,13 @@ export const DevReportTools = () => {
 
   const fillFieldGroup = (element: FieldGroupTemplate) => {
     const elements = element.elements.map((el) => {
-      const options = (el as DropdownTemplate).options;
-      const value = options?.[0]?.value || options?.[1]?.value || "";
+      if (!("required" in el) || !el.required) {
+        return el;
+      }
+
       return {
         ...el,
-        answer: getAnswerByType({ type: el.type, id: el.id, value }),
+        answer: fillAnswer(el),
       };
     });
 
@@ -110,23 +127,11 @@ export const DevReportTools = () => {
             answer: fieldGroupFills.answer,
           };
 
-        default: {
-          const answer =
-            "answer" in element &&
-            element.answer !== "" &&
-            element.answer !== undefined
-              ? element.answer
-              : undefined;
-          const options = (element as DropdownTemplate).options;
-          const value = options?.[0]?.value || options?.[1]?.value || "";
-
+        default:
           return {
             ...element,
-            answer:
-              answer ??
-              getAnswerByType({ type: element.type, id: element.id, value }),
+            answer: fillAnswer(element),
           };
-        }
       }
     });
   };
