@@ -99,6 +99,31 @@ describe("Test Add Report Modal", () => {
   testA11yAct(addModalComponent);
 });
 
+describe("Test dev tools date", () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+    mockedUseStore.mockReturnValue({
+      ...mockStateUserStore,
+      devDate: "2026-10-15",
+    });
+  });
+
+  test("Hint uses previous year when dev date is an epoch-ms string", async () => {
+    mockedUseStore.mockReturnValue({
+      ...mockStateUserStore,
+      devDate: "1822276800000", // 9/30/2027, as set by dev tools
+    });
+    await act(async () => {
+      await render(addModalComponent);
+    });
+    expect(
+      screen.getByText(
+        "You’re creating the annual PASRR report for reporting year 2026. The reporting year covers all data collected from January 1 to December 31, 2026. This action cannot be undone."
+      )
+    ).toBeVisible();
+  });
+});
+
 describe("Test submit", () => {
   afterEach(() => {
     vi.clearAllMocks();
