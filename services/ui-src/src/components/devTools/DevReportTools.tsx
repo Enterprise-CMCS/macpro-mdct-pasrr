@@ -1,7 +1,9 @@
 import { Button, Stack, Text } from "@chakra-ui/react";
 import {
   ActionTableTemplate,
+  DropdownTemplate,
   ElementType,
+  FieldGroupTemplate,
   FormPageTemplate,
   PageElement,
   ParentPageTemplate,
@@ -24,18 +26,55 @@ export const DevReportTools = () => {
     .filter((section) => section?.displayStatus === "Optional")
     .map((page) => page?.section.id);
 
-  const getAnswerByType = (type: string, id?: string) => {
+  const getAnswerByType = ({
+    type,
+    id,
+    value,
+  }: {
+    type: string;
+    id?: string;
+    value?: string;
+  }) => {
     switch (type) {
+      case ElementType.Dropdown:
+        return value;
       case ElementType.NumberField:
         return "1234";
       case ElementType.Date:
         return "02/02/2026";
       case ElementType.Textbox:
-        return id?.includes("email") ? "mock@email.com" : "mock text input";
+        const textMap: Record<string, string> = {
+          email: "mock@email.com",
+          phone: "555-555-5555",
+          zipcode: "55555",
+        };
+        const field = Object.keys(textMap).find((f) => id?.includes(f));
+        return field ? textMap[field] : "mock text input";
       case ElementType.TextAreaField:
         return "mock text area field";
     }
     return console.error("Type ignored: " + type + ". Element id: " + id);
+  };
+
+  const fillAnswer = (element: PageElement) => {
+    if (!("required" in element) || !element.required) {
+      return {};
+    }
+
+    const answer =
+      "answer" in element &&
+      element.answer !== "" &&
+      element.answer !== undefined
+        ? element.answer
+        : undefined;
+    const options = (element as DropdownTemplate).options;
+    const value = options?.[0]?.value || options?.[1]?.value || "";
+
+    return {
+      answer:
+        answer ??
+        getAnswerByType({ type: element.type, id: element.id, value }),
+    };
   };
 
   const fillActionTable = (element: ActionTableTemplate) => {
@@ -45,7 +84,10 @@ export const DevReportTools = () => {
       if (!col.value || col.value === "") {
         const typeInfo = rows.find((row) => row.id === col.id);
         if (typeInfo && !typeInfo.disabled) {
-          return { ...col, value: getAnswerByType(typeInfo.type, typeInfo.id) };
+          return {
+            ...col,
+            value: getAnswerByType({ type: typeInfo.type, id: typeInfo.id }),
+          };
         }
       }
       return col;
@@ -56,25 +98,41 @@ export const DevReportTools = () => {
     );
   };
 
-  const fillPageElements = (elements: PageElement[]) => {
-    return elements?.map((element) => {
-      if (!("required" in element) || !element.required) {
-        return element;
-      }
-      if (element.type === "actionTable")
-        return { ...element, answer: fillActionTable(element) };
-      else {
-        const answer =
-          "answer" in element &&
-          element.answer != "" &&
-          element.answer != undefined
-            ? element.answer
-            : undefined;
+  const fillFieldGroup = (element: FieldGroupTemplate) => {
+    const elements = element.elements.map((el) => {
+      return {
+        ...el,
+        ...fillAnswer(el),
+      };
+    });
 
-        return {
-          ...element,
-          answer: answer ?? getAnswerByType(element.type, element.id),
-        };
+    const answer = elements.map((el) => ({
+      id: el.id,
+      value: el.answer,
+    }));
+
+    return { elements, answer };
+  };
+
+  const fillPageElements = (elements: PageElement[]) => {
+    return elements.map((element) => {
+      switch (element.type) {
+        case ElementType.ActionTable:
+          return { ...element, answer: fillActionTable(element) };
+
+        case ElementType.FieldGroup:
+          const fieldGroupFills = fillFieldGroup(element);
+          return {
+            ...element,
+            elements: fieldGroupFills.elements,
+            answer: fieldGroupFills.answer,
+          };
+
+        default:
+          return {
+            ...element,
+            ...fillAnswer(element),
+          };
       }
     });
   };

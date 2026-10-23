@@ -2,15 +2,12 @@ import {
   AlertTypes,
   ElementType,
   FormPageTemplate,
+  getPostalAddressElements,
   HeaderIcon,
   PageType,
   ReportPages,
   ReviewSubmitTemplate,
 } from "@pasrr/shared";
-
-// TODO: replace with the real PASRR report schema. This is a minimal
-// placeholder template that keeps the application buildable and runnable
-// end-to-end until PASRR's report pages are defined.
 
 const generalInformation: FormPageTemplate = {
   id: "general-information",
@@ -56,18 +53,15 @@ const generalInformation: FormPageTemplate = {
       helperText: "Enter phone number as ###-###-####.",
     },
     {
-      type: ElementType.SubHeader,
-      id: "mailing-address-subheader",
-      text: "Mailing address",
-      helperText:
-        "Enter the primary mailing address for your state Medicaid office.",
-    },
-    {
-      id: "contact-zipcode",
-      type: ElementType.Textbox,
-      label: "Postal code",
+      id: "mailing-address",
+      type: ElementType.FieldGroup,
+      label: "Mailing address",
       required: true,
-      skipOptionalTag: true,
+      helperText:
+        "Enter the main mailing address for your state Medicaid office.",
+      elements: getPostalAddressElements({
+        id: "mailing-address",
+      }),
     },
     {
       type: ElementType.SubHeader,

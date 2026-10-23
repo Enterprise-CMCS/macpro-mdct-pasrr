@@ -1,5 +1,7 @@
 //Shared constants between frontend and backend
 
+import { ElementType, FieldGroupElement } from "../types/reports";
+
 // STATES
 
 // NOTE: this is the thing we would need to remove to allow a ZZ IDM user to exist if it is requested
@@ -62,7 +64,8 @@ export const StateNames = {
   ...(!isProdEnv && { ZZ: "Test State ZZ" }),
 };
 
-export const dropdownEmptyOption = { label: "- Select an option -", value: "" };
+export const dropdownEmptyLabel = "- Select an option -";
+export const dropdownEmptyOption = { label: dropdownEmptyLabel, value: "" };
 
 export const StateDropdownOptions = Object.entries(StateNames).map(
   ([key, value]) => ({
@@ -120,4 +123,60 @@ export const getExtension = (filename: string): string | undefined => {
 
 export const isAllowedFileExtension = (ext: string): boolean => {
   return acceptedFileTypes.includes(ext.toLowerCase());
+};
+
+// Used with FieldGroup component
+export const getPostalAddressElements = ({
+  id,
+  required = true,
+  skipOptionalTag = true,
+}: {
+  id: string;
+  required?: boolean;
+  skipOptionalTag?: boolean;
+}): FieldGroupElement[] => {
+  return [
+    {
+      id: `${id}-street`,
+      type: ElementType.Textbox,
+      label: "Street address",
+      required,
+      skipOptionalTag,
+    },
+    {
+      id: `${id}-street-line-2`,
+      type: ElementType.Textbox,
+      label: "Street address line 2",
+      required: false,
+      skipOptionalTag: false,
+    },
+    {
+      id: `${id}-city`,
+      type: ElementType.Textbox,
+      label: "City",
+      required,
+      skipOptionalTag,
+    },
+    {
+      id: `${id}-state`,
+      type: ElementType.Dropdown,
+      label: "State",
+      options: [
+        dropdownEmptyOption,
+        ...Object.entries(StateNames).map(([value, label]) => ({
+          label,
+          value,
+        })),
+      ],
+      required,
+      skipOptionalTag,
+    },
+    {
+      id: `${id}-zipcode`,
+      type: ElementType.Textbox,
+      label: "Postal code",
+      required,
+      skipOptionalTag,
+    },
+  ];
 };

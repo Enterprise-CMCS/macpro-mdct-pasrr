@@ -1,4 +1,10 @@
-import { ElementType, FormPageTemplate, PageType } from "@pasrr/shared";
+import {
+  ElementType,
+  FormPageTemplate,
+  getPostalAddressElements,
+  PageType,
+} from "@pasrr/shared";
+import { mockDropdown, mockTextboxOptional } from "utils/testing/mockForm";
 
 export const textboxSection: FormPageTemplate = {
   id: "mock-textbox-id",
@@ -132,7 +138,7 @@ export const accordionGroupSection: FormPageTemplate = {
       id: "id-accordion-group",
       accordions: [
         {
-          label: "Accordiong Group 1",
+          label: "Accordion Group 1",
           elements: [
             {
               type: ElementType.Textbox,
@@ -194,6 +200,40 @@ export const actionTableSection: FormPageTemplate = {
         ],
       ],
       required: true,
+    },
+  ],
+};
+
+export const fieldGroupSection: FormPageTemplate = {
+  id: "mock-field-group-id",
+  title: "mock-field-group-title",
+  type: PageType.Standard,
+  elements: [
+    {
+      type: ElementType.FieldGroup,
+      id: "id-field-group",
+      label: "FieldGroup",
+      helperText: "Information to help user fill field group",
+      required: true,
+      elements: [mockDropdown, mockTextboxOptional],
+    },
+  ],
+};
+
+export const postalAddressFieldGroupSection: FormPageTemplate = {
+  id: "mock-postal-address-id",
+  title: "mock-postal-address-title",
+  type: PageType.Standard,
+  elements: [
+    {
+      type: ElementType.FieldGroup,
+      id: "id-postal-address",
+      label: "Postal address FieldGroup",
+      helperText: "Information to help user fill out postal address fields",
+      required: true,
+      elements: getPostalAddressElements({
+        id: "id-postal-address",
+      }),
     },
   ],
 };

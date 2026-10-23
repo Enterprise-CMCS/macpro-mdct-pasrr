@@ -4,6 +4,7 @@ import { notAnsweredText } from "../../constants";
 import { ActionTableExport } from "components/fields/ActionTable";
 import { parseHtml } from "utils";
 import { AttachmentAreaExport } from "components/fields/AttachmentArea";
+import { FieldGroupExport } from "components/fields/FieldGroup";
 
 // TODO: add PASRR-specific paragraph ids that should render in exports once
 // the PASRR report schema is defined.
@@ -25,6 +26,7 @@ const renderElementList = [
   ElementType.SubHeader,
   ElementType.Paragraph,
   ElementType.ActionTable,
+  ElementType.FieldGroup,
 ];
 
 export const shouldUseTable = (type: ElementType) => {
@@ -52,6 +54,8 @@ export const renderElements = (element: PageElement) => {
       return ActionTableExport(element);
     case ElementType.AccordionGroup:
       return "";
+    case ElementType.FieldGroup:
+      return FieldGroupExport(element);
   }
 
   if (!("answer" in element)) {
