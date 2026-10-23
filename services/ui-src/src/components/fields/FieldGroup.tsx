@@ -59,7 +59,7 @@ export const FieldGroupExport = (element: FieldGroupTemplate) => {
     type: ElementType.SubHeader,
     text: element.label,
     helperText: element.helperText,
-    headingLevel: 3,
+    headingLevel: element.headingLevel ?? 3,
   };
   return (
     <Stack width="720px" key={element.id}>

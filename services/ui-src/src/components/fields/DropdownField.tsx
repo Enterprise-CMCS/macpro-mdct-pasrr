@@ -25,11 +25,19 @@ export const DropdownField = (props: PageElementProps<DropdownTemplate>) => {
     setDisplayValue(dropdown.answer ?? dropdown.options[0].value);
   }, [dropdown.answer]);
 
+  const showError = (value: string) => {
+    const isEmptyAndRequired = value === "" && dropdown.required;
+    setErrorMessage(isEmptyAndRequired ? ErrorMessages.requiredResponse : "");
+  };
+
+  const onBlurHandler = () => {
+    showError(displayValue);
+  };
+
   const onChangeHandler = async (event: DropdownChangeObject) => {
     const value = event.target.value;
-    const isEmptyAndRequired = value === "" && dropdown.required;
     setDisplayValue(value);
-    setErrorMessage(isEmptyAndRequired ? ErrorMessages.requiredResponse : "");
+    showError(value);
     props.updateElement({ answer: value });
   };
 
@@ -41,6 +49,7 @@ export const DropdownField = (props: PageElementProps<DropdownTemplate>) => {
         name={dropdown.id}
         label={optionalTag(dropdown)}
         hint={parsedHint}
+        onBlurCapture={onBlurHandler}
         onChange={onChangeHandler}
         options={dropdown.options}
         value={displayValue}

@@ -37,6 +37,13 @@ const copyAccordionAnswers = (
         ) as PageElement;
         if (oldChildItem?.type === newChildItem.type) {
           newChildItem.answer = structuredClone(oldChildItem.answer);
+
+          if (oldChildItem.type === ElementType.FieldGroup) {
+            copyFieldGroupAnswers(
+              oldChildItem.elements,
+              (newChildItem as FieldGroupTemplate).elements
+            );
+          }
         }
       }
     }
@@ -51,8 +58,10 @@ const copyFieldGroupAnswers = (
     const newElement = newElements.find(
       (newElement) => newElement.id === oldElement.id
     );
-    if (newElement && "answer" in newElement && "answer" in oldElement) {
-      newElement.answer = structuredClone(oldElement.answer);
+    if (newElement && "answer" in oldElement) {
+      Object.assign(newElement, {
+        answer: structuredClone(oldElement.answer),
+      });
     }
   }
 };

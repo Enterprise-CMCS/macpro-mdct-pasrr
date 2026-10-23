@@ -1,4 +1,11 @@
-import { ElementType, PageStatus, PageType, Report } from "@pasrr/shared";
+import {
+  ElementType,
+  PageElement,
+  PageStatus,
+  PageType,
+  Report,
+  ReportPage,
+} from "@pasrr/shared";
 import { mockAccordionPages, validReport } from "../tests/mockReport";
 import { copyReport } from "./copyReport";
 
@@ -58,6 +65,39 @@ const mockOldReport: Report = {
           ],
           answer: [{ id: "mock-field-group-id-textbox", value: "mock text" }],
         },
+        {
+          id: "mock-accordion-group-id",
+          type: ElementType.AccordionGroup,
+          required: true,
+          accordions: [
+            {
+              label: "Accordion",
+              elements: [
+                {
+                  id: "mock-accordion-field-group-id",
+                  type: ElementType.FieldGroup,
+                  label: "FieldGroup",
+                  required: true,
+                  elements: [
+                    {
+                      id: "mock-accordion-field-group-id-textbox",
+                      type: ElementType.Textbox,
+                      label: "Textbox",
+                      required: true,
+                      answer: "mock accordion text",
+                    },
+                  ],
+                  answer: [
+                    {
+                      id: "mock-accordion-field-group-id-textbox",
+                      value: "mock accordion text",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
     ...mockAccordionPages,
@@ -68,34 +108,73 @@ const mockOldReport: Report = {
 const mockNewReport: any = structuredClone(mockOldReport);
 mockNewReport.id = "mock-new-report";
 mockNewReport.copyFromReportId = "mock-old-report";
-delete mockNewReport.pages[1].elements[1].answer;
-delete mockNewReport.pages[1].status;
+
+const testPage = mockNewReport.pages.find(
+  (page: ReportPage) => page.id === "mock-page-1"
+);
+const testTextbox = testPage.elements.find(
+  (element: PageElement) => element.id === "mock-input-element"
+);
+const testFieldGroup = testPage.elements.find(
+  (element: PageElement) => element.id === "mock-field-group-id"
+);
+const testFieldGroupTextbox = testFieldGroup.elements.find(
+  (element: PageElement) => element.id === "mock-field-group-id-textbox"
+);
+const testAccordionFieldGroup = testPage.elements.find(
+  (element: PageElement) => element.id === "mock-accordion-group-id"
+).accordions[0].elements[0];
+const testAccordionFieldGroupTextbox = testAccordionFieldGroup.elements.find(
+  (element: PageElement) =>
+    element.id === "mock-accordion-field-group-id-textbox"
+);
+delete testTextbox.answer;
+delete testFieldGroup.answer;
+delete testFieldGroupTextbox.answer;
+delete testAccordionFieldGroup.answer;
+delete testAccordionFieldGroupTextbox.answer;
+delete testPage.status;
 
 describe("copyReport util", () => {
   test("copyReport copies data from old report into new one", async () => {
     mockGetReport.mockReturnValue(mockOldReport);
     mockQueryUpload.mockReturnValue({ Items: [] });
+
     // no answer in report before copy
-    expect(mockNewReport.pages[1].elements[1].answer).toBeUndefined();
+    expect(testTextbox.answer).toBeUndefined();
+    expect(testFieldGroup.answer).toBeUndefined();
+    expect(testFieldGroupTextbox.answer).toBeUndefined();
+    expect(testAccordionFieldGroup.answer).toBeUndefined();
+    expect(testAccordionFieldGroupTextbox.answer).toBeUndefined();
 
     await copyReport(mockNewReport);
 
     // textbox answer copies
-    expect(mockNewReport.pages[1].elements[1].answer).toBe("mock answer");
+    expect(testTextbox.answer).toBe("mock answer");
 
-    // field group answer copies
-    expect(mockNewReport.pages[1].elements[2].answer).toEqual([
+    // field group answers copies
+    expect(testFieldGroup.answer).toEqual([
       { id: "mock-field-group-id-textbox", value: "mock text" },
     ]);
-    expect(mockNewReport.pages[1].elements[2].elements[0].answer).toBe(
-      "mock text"
-    );
+    expect(testFieldGroupTextbox.answer).toBe("mock text");
+
+    // accordion field group answers copies
+    expect(testAccordionFieldGroup.answer).toEqual([
+      {
+        id: "mock-accordion-field-group-id-textbox",
+        value: "mock accordion text",
+      },
+    ]);
+    expect(testAccordionFieldGroupTextbox.answer).toBe("mock accordion text");
 
     // page status copies
-    expect(mockNewReport.pages[1].status).toEqual(PageStatus.IN_PROGRESS);
+    expect(testPage.status).toEqual(PageStatus.IN_PROGRESS);
 
     // Verify accordion group answers are copied correctly
-    const newAccordions = mockNewReport.pages[2].elements[0].accordions;
+    const testAccordionPage = mockNewReport.pages.find(
+      (page: ReportPage) => page.id === "mock-accordion-page"
+    );
+    const newAccordions = testAccordionPage.elements[0].accordions;
     expect(newAccordions).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -109,7 +188,7 @@ describe("copyReport util", () => {
             }),
             expect.objectContaining({
               id: "attachment-id",
-              type: "attachmentArea",
+              type: ElementType.AttachmentArea,
             }),
           ],
         }),

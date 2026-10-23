@@ -43,10 +43,13 @@ export const DevReportTools = () => {
       case ElementType.Date:
         return "02/02/2026";
       case ElementType.Textbox:
-        if (id?.includes("email")) return "mock@email.com";
-        if (id?.includes("phone")) return "555-555-5555";
-        if (id?.includes("zipcode")) return "55555";
-        return "mock text input";
+        const textMap: Record<string, string> = {
+          email: "mock@email.com",
+          phone: "555-555-5555",
+          zipcode: "55555",
+        };
+        const field = Object.keys(textMap).find((f) => id?.includes(f));
+        return field ? textMap[field] : "mock text input";
       case ElementType.TextAreaField:
         return "mock text area field";
     }
