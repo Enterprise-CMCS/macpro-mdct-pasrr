@@ -42,6 +42,22 @@ const mockOldReport: Report = {
           required: true,
           answer: "mock answer",
         },
+        {
+          id: "mock-field-group-id",
+          type: ElementType.FieldGroup,
+          label: "FieldGroup",
+          required: true,
+          elements: [
+            {
+              id: "mock-field-group-id-textbox",
+              type: ElementType.Textbox,
+              label: "Textbox",
+              required: true,
+              answer: "mock text",
+            },
+          ],
+          answer: [{ id: "mock-field-group-id-textbox", value: "mock text" }],
+        },
       ],
     },
     ...mockAccordionPages,
@@ -65,7 +81,15 @@ describe("copyReport util", () => {
     await copyReport(mockNewReport);
 
     // textbox answer copies
-    expect(mockNewReport.pages[1].elements[1].answer).toEqual("mock answer");
+    expect(mockNewReport.pages[1].elements[1].answer).toBe("mock answer");
+
+    // field group answer copies
+    expect(mockNewReport.pages[1].elements[2].answer).toEqual([
+      { id: "mock-field-group-id-textbox", value: "mock text" },
+    ]);
+    expect(mockNewReport.pages[1].elements[2].elements[0].answer).toBe(
+      "mock text"
+    );
 
     // page status copies
     expect(mockNewReport.pages[1].status).toEqual(PageStatus.IN_PROGRESS);
