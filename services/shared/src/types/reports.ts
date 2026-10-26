@@ -278,6 +278,7 @@ interface HelperTextLink {
 
 export interface HeaderTemplate extends DisplayElementTemplate {
   type: ElementType.Header;
+  helperText?: string;
   icon?: HeaderIcon;
 }
 

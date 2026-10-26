@@ -91,7 +91,7 @@ export const SubHeaderElement = ({
         {element.text}
       </Heading>
       {element.helperText && (
-        <Text variant="helperText">{element.helperText}</Text>
+        <Text variant="helperText">{parseHtml(element.helperText)}</Text>
       )}
     </Stack>
   );

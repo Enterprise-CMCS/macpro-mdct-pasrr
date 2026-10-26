@@ -74,7 +74,7 @@ export const RadioField = (props: PageElementProps<RadioTemplate>) => {
 
   const {
     isOpen: radioModalIsOpen,
-    onOpen: radioModalOnOpenHandler,
+    // onOpen: radioModalOnOpenHandler,
     onClose: radioModalOnCloseHandler,
   } = useDisclosure();
 
@@ -95,7 +95,7 @@ export const RadioField = (props: PageElementProps<RadioTemplate>) => {
     const value = event.target.value;
     if (radio.answer && eventToBeConfirmed === undefined) {
       setEventToBeConfirmed(event);
-      return radioModalOnOpenHandler();
+      // return radioModalOnOpenHandler();
     }
 
     const newDisplayValue = formatChoices(
