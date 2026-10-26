@@ -25,6 +25,7 @@ import arrowLeftIcon from "assets/icons/arrows/icon_arrow_left_blue.svg";
 import { parseHintText, parseHtml, useStore } from "utils";
 import successIcon from "assets/icons/status/icon_status_check.svg";
 import { useElementIsHidden } from "utils/state/hooks/useElementIsHidden";
+import { ElementType as ReactElementType, Fragment } from "react";
 
 export type PageElementProps<T extends PageElement = PageElement> = T extends {
   answer?: any;
@@ -85,15 +86,21 @@ export const SubHeaderElement = ({
   if (hideElement) {
     return null;
   }
+  const level = `h${element.headingLevel || 2}` as ReactElementType;
+  const Wrapper = element.noWrapper ? Fragment : Stack;
+  const helperType = element.noWrapper ? "span" : "p";
+
   return (
-    <Stack>
-      <Heading as="h2" variant="subHeader">
+    <Wrapper>
+      <Heading as={level} variant="subHeader">
         {element.text}
       </Heading>
       {element.helperText && (
-        <Text variant="helperText">{element.helperText}</Text>
+        <Text as={helperType} variant="helperText">
+          {element.helperText}
+        </Text>
       )}
-    </Stack>
+    </Wrapper>
   );
 };
 

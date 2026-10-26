@@ -27,6 +27,7 @@ import {
   ListInput,
   AccordionGroup,
   ActionTable,
+  FieldGroup,
 } from "components";
 import { useStore } from "utils";
 import { SubmissionParagraph } from "./SubmissionParagraph";
@@ -112,6 +113,8 @@ export const Page = ({ id, setElements, elements }: Props) => {
         return <ActionTable {...{ updateElement, disabled, element }} />;
       case ElementType.RequestFeedbackButton:
         return <RequestFeedbackButton />;
+      case ElementType.FieldGroup:
+        return <FieldGroup {...{ updateElement, element }} />;
       default:
         assertExhaustive(element);
         return null;

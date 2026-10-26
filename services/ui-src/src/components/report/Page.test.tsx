@@ -161,6 +161,29 @@ const elements: PageElement[] = [
     label: "mock label",
     required: false,
   },
+  {
+    type: ElementType.RequestFeedbackButton,
+    id: "mock-request-feedback-button-id",
+  },
+  {
+    type: ElementType.ActionTable,
+    id: "mock-action-table-id",
+    label: "ActionTable label",
+    heading: "ActionTable heading",
+    modal: {
+      title: "ActionTable modal title",
+      elements: [],
+    },
+    required: true,
+    rows: [],
+  },
+  {
+    type: ElementType.FieldGroup,
+    id: "mock-field-group-id",
+    label: "FieldGroup label",
+    required: true,
+    elements: [],
+  },
 ];
 
 const textFieldElement: PageElement[] = [
@@ -193,7 +216,7 @@ const dateFieldElement: PageElement[] = [
 ];
 
 describe("Page Component with state user", () => {
-  test.each(elements)("Renders all element types: %p", (element) => {
+  test.each(elements)("Renders all element types: $type", (element) => {
     const { container } = render(
       <Page id="mock-page" elements={[element]} setElements={vi.fn()} />
     );
@@ -225,6 +248,22 @@ describe("Page Component with state user", () => {
     expect(mockNavigate).toHaveBeenCalledWith(
       "/report/exampleReport/exampleState/123/report-page-id"
     );
+  });
+
+  test("should call setElements on input change", async () => {
+    const updateSpy = vi.fn();
+
+    render(
+      <Page
+        id="mock-page"
+        elements={dateFieldElement}
+        setElements={updateSpy}
+      />
+    );
+
+    const dateField = screen.getByRole("textbox");
+    await userEvent.type(dateField, "02/02/26");
+    expect(updateSpy).toHaveBeenCalledWith(dateFieldElement);
   });
 
   test("should not render if it is passed missing types", () => {

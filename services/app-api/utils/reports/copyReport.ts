@@ -7,6 +7,7 @@ import {
   AccordionGroupTemplate,
   ElementType,
   PageStatus,
+  FieldGroupTemplate,
 } from "@pasrr/shared";
 import KSUID from "ksuid";
 import { queryUpload, batchPutUploads } from "../../storage/upload";
@@ -36,8 +37,31 @@ const copyAccordionAnswers = (
         ) as PageElement;
         if (oldChildItem?.type === newChildItem.type) {
           newChildItem.answer = structuredClone(oldChildItem.answer);
+
+          if (oldChildItem.type === ElementType.FieldGroup) {
+            copyFieldGroupAnswers(
+              oldChildItem.elements,
+              (newChildItem as FieldGroupTemplate).elements
+            );
+          }
         }
       }
+    }
+  }
+};
+
+const copyFieldGroupAnswers = (
+  oldElements: PageElement[],
+  newElements: PageElement[]
+) => {
+  for (const oldElement of oldElements) {
+    const newElement = newElements.find(
+      (newElement) => newElement.id === oldElement.id
+    );
+    if (newElement && "answer" in oldElement) {
+      Object.assign(newElement, {
+        answer: structuredClone(oldElement.answer),
+      });
     }
   }
 };
@@ -49,17 +73,25 @@ const copyAnswer = (
   status?: PageStatus
 ) => {
   for (const oldElement of oldElements) {
-    // Copying over accordion group answers
-    if ("accordions" in oldElement) {
-      const newElement = newElements.find(
-        (newElement) => newElement.id === oldElement.id
-      ) as AccordionGroupTemplate;
-      copyAccordionAnswers(oldElement.accordions, newElement.accordions);
-    }
-
     const newElement = newElements.find(
       (newElement) => newElement.id === oldElement.id
     );
+
+    // Copying over accordion group answers
+    if ("accordions" in oldElement) {
+      copyAccordionAnswers(
+        oldElement.accordions,
+        (newElement as AccordionGroupTemplate).accordions
+      );
+    }
+
+    if (oldElement.type === ElementType.FieldGroup) {
+      copyFieldGroupAnswers(
+        oldElement.elements,
+        (newElement as FieldGroupTemplate).elements
+      );
+    }
+
     // when copying, don't use pre-filled answers
     if (newElement && "answer" in newElement) {
       delete newElement.answer;

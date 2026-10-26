@@ -2,6 +2,7 @@ import {
   DateField,
   DropdownField,
   ListInput,
+  FieldGroup,
   RadioField,
   TextAreaField,
   TextField,
@@ -26,6 +27,7 @@ import {
 import {
   AlertTypes,
   ElementType,
+  getPostalAddressElements,
   HeaderIcon,
   NumberFieldTemplate,
   PageElement,
@@ -41,10 +43,13 @@ import {
   attachmentAreaSection,
   accordionGroupSection,
   actionTableSection,
+  fieldGroupSection,
+  postalAddressFieldGroupSection,
 } from "./pdfElementSectionHelpers";
 import { formatMonthDayYear } from "utils";
 import { SubmissionParagraph } from "components/report/SubmissionParagraph";
 import { RequestFeedbackButton } from "components/report/RequestFeedbackButton";
+import { mockDropdown, mockTextboxOptional } from "utils/testing/mockForm";
 
 const logNewElement = (el: Partial<PageElement>) => console.log("Updated:", el);
 
@@ -437,7 +442,7 @@ export const elementObject: {
           id: "id-accordion-group",
           accordions: [
             {
-              label: "Accordiong Group 1",
+              label: "Accordion Group 1",
               elements: [
                 {
                   type: ElementType.Textbox,
@@ -448,7 +453,7 @@ export const elementObject: {
               ],
             },
             {
-              label: "Accordiong Group 2",
+              label: "Accordion Group 2",
               elements: [
                 {
                   type: ElementType.Textbox,
@@ -523,5 +528,39 @@ export const elementObject: {
     id: "id-request-feedback-button",
     variants: [<RequestFeedbackButton></RequestFeedbackButton>],
     pdfVariants: ["Request Feedback button currently not used in PDFs"],
+  },
+  [ElementType.FieldGroup]: {
+    description: "Group fields into a fieldset",
+    id: "id-field-group",
+    variants: [
+      <FieldGroup
+        element={{
+          type: ElementType.FieldGroup,
+          id: "id-field-group",
+          label: "FieldGroup",
+          required: true,
+          helperText: "Information to help user fill field group",
+          elements: [mockDropdown, mockTextboxOptional],
+        }}
+        updateElement={logNewElement}
+      />,
+      <FieldGroup
+        element={{
+          type: ElementType.FieldGroup,
+          id: "id-field-group",
+          label: "Postal address FieldGroup",
+          required: true,
+          helperText: "Information to help user fill out postal address fields",
+          elements: getPostalAddressElements({
+            id: "id-field-group",
+          }),
+        }}
+        updateElement={logNewElement}
+      />,
+    ],
+    pdfVariants: [
+      <ExportedReportWrapper section={fieldGroupSection} />,
+      <ExportedReportWrapper section={postalAddressFieldGroupSection} />,
+    ],
   },
 };

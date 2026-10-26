@@ -24,6 +24,8 @@ import {
   ZipRequestTypes,
   ZipRequestBody,
   CommentType,
+  dropdownEmptyLabel,
+  FieldGroupElement,
 } from "@pasrr/shared";
 import { error } from "./constants";
 
@@ -56,6 +58,7 @@ const subHeaderTemplateSchema = object().shape({
   text: string().required(),
   helperText: string().notRequired(),
   hideCondition: hideConditionSchema,
+  headingLevel: number().integer().min(1).max(6).notRequired(),
 });
 
 const paragraphTemplateSchema = object().shape({
@@ -124,7 +127,11 @@ const dropdownTemplateSchema = object().shape({
   options: array().of(
     object().shape({
       label: string().required(),
-      value: string().required(),
+      value: string().when("label", {
+        is: dropdownEmptyLabel,
+        then: (schema) => schema.notRequired(),
+        otherwise: (schema) => schema.required(),
+      }),
       checked: boolean().notRequired(),
       checkedChildren: lazy(() => array().of(pageElementSchema).notRequired()),
     })
@@ -169,9 +176,9 @@ export const uploadListPropSchema = object().shape({
     ),
 });
 
-const pageElementSchema = lazy((value: PageElement): Schema => {
+const getPageElementSchema = (value: PageElement): Schema => {
   if (!value.type) {
-    throw new Error("Some error message");
+    throw new Error("ElementType is missing");
   }
   switch (value.type) {
     case ElementType.Header:
@@ -216,10 +223,14 @@ const pageElementSchema = lazy((value: PageElement): Schema => {
       return actionTableSchema;
     case ElementType.RequestFeedbackButton:
       return requestFeedbackButtonSchema;
+    case ElementType.FieldGroup:
+      return fieldGroupTemplateSchema;
     default:
-      throw new Error("Page Element type is not valid");
+      throw new Error("ElementType is not valid");
   }
-});
+};
+
+export const pageElementSchema = lazy(getPageElementSchema);
 
 const radioTemplateSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.Radio)),
@@ -384,6 +395,29 @@ const requestFeedbackButtonSchema = object().shape({
   id: string().required(),
 });
 
+export const fieldGroupElementSchema = lazy(
+  (value: FieldGroupElement): Schema => {
+    switch (value.type) {
+      case ElementType.Dropdown:
+      case ElementType.Textbox:
+        return getPageElementSchema(value);
+      default:
+        throw new Error("ElementType is not valid");
+    }
+  }
+);
+
+const fieldGroupTemplateSchema = object().shape({
+  type: string().required().matches(new RegExp(ElementType.FieldGroup)),
+  id: string().required(),
+  label: string().required(),
+  helperText: string().notRequired(),
+  required: boolean().required(),
+  elements: array().of(fieldGroupElementSchema).required(),
+  answer: array().of(mixed()).notRequired(),
+  headingLevel: number().integer().min(1).max(6).notRequired(),
+});
+
 /**
  * This schema is meant to represent the pages field in the ReportTemplate type.
  * The following yup `lazy` function is building up the union type:
@@ -398,7 +432,7 @@ const pagesSchema = array()
         if (pageObject.id && pageObject.childPageIds) {
           return parentPageTemplateSchema;
         } else {
-          throw new Error("Some error message");
+          throw new Error("Page element id/childPageIds are missing");
         }
       } else {
         switch (pageObject.type) {

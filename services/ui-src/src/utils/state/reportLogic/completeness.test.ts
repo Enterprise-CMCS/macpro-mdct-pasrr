@@ -1,5 +1,6 @@
 import {
   ActionTableTemplate,
+  dropdownEmptyOption,
   ElementType,
   FormPageTemplate,
   ListInputTemplate,
@@ -123,9 +124,43 @@ describe("pageIsCompletable", () => {
           elements: [
             {
               id: "bad-question",
+              type: ElementType.TextAreaField,
+              answer: undefined,
+              required: true,
+            },
+            {
+              id: "bad-radio-question",
               type: ElementType.Radio,
               answer: undefined,
               required: true,
+              choices: [
+                {
+                  label: "Choice 1",
+                  value: "A",
+                  checked: false,
+                },
+                {
+                  label: "Choice 2",
+                  value: "B",
+                  checked: false,
+                },
+                {
+                  label: "Choice 3",
+                  value: "C",
+                  checked: false,
+                },
+              ],
+            },
+            {
+              id: "bad-dropdown-question",
+              type: ElementType.Dropdown,
+              answer: "",
+              required: true,
+              options: [
+                dropdownEmptyOption,
+                { label: "2026", value: "2026" },
+                { label: "2027", value: "2027" },
+              ],
             },
           ],
         },
@@ -143,9 +178,53 @@ describe("pageIsCompletable", () => {
           elements: [
             {
               id: "good-question",
-              type: ElementType.Textbox,
-              answer: "WOW",
+              type: ElementType.TextAreaField,
+              answer: "mock text",
               required: true,
+            },
+            {
+              id: "good-radio-question",
+              type: ElementType.Radio,
+              answer: "A",
+              required: true,
+              choices: [
+                {
+                  label: "Choice 1",
+                  value: "A",
+                  checked: false,
+                },
+                {
+                  label: "Choice 2",
+                  value: "B",
+                  checked: false,
+                },
+                {
+                  label: "Choice 3",
+                  value: "C",
+                  checked: false,
+                },
+              ],
+            },
+            {
+              id: "good-hidden-element",
+              type: ElementType.TextAreaField,
+              answer: undefined,
+              required: true,
+              hideCondition: {
+                controllerElementId: "good-radio-question",
+                answer: "A",
+              },
+            },
+            {
+              id: "good-dropdown-question",
+              type: ElementType.Dropdown,
+              answer: "2026",
+              required: true,
+              options: [
+                dropdownEmptyOption,
+                { label: "2026", value: "2026" },
+                { label: "2027", value: "2027" },
+              ],
             },
           ],
         },
@@ -153,6 +232,7 @@ describe("pageIsCompletable", () => {
     } as Report;
     expect(pageIsCompletable(report, "my-id")).toBeTruthy();
   });
+
   test("is completable when element type is an AccordionGroup", () => {
     const report = {
       pages: [
@@ -183,6 +263,36 @@ describe("pageIsCompletable", () => {
       ],
     } as Report;
     expect(pageIsCompletable(report, "my-id")).toBeTruthy();
+  });
+
+  test("is completable when element type is fieldGroup", () => {
+    const report = {
+      pages: [
+        {
+          id: "mock-page",
+          status: PageStatus.IN_PROGRESS,
+          elements: [
+            {
+              type: ElementType.FieldGroup,
+              id: "mock-field-group-id",
+              elements: [
+                {
+                  type: ElementType.Textbox,
+                  id: "mock-field-group-id-textbox",
+                  required: true,
+                  answer: "mock text",
+                },
+              ],
+              answer: [
+                { id: "mock-field-group-id-textbox", value: "mock text" },
+              ],
+              required: true,
+            },
+          ],
+        },
+      ],
+    } as Report;
+    expect(pageIsCompletable(report, "mock-page")).toBeTruthy();
   });
 });
 
@@ -333,16 +443,16 @@ describe("elementSatisfiesRequired", () => {
       id: "test-phone-field",
       required: true,
     } as TextboxTemplate;
-    const invalidEmail = {
+    const invalidPhone = {
       ...element,
       answer: "not-a-valid-phone",
     };
-    const validEmail = {
+    const validPhone = {
       ...element,
       answer: "555-555-5555",
     };
-    expect(elementSatisfiesRequired(invalidEmail, [invalidEmail])).toBeFalsy();
-    expect(elementSatisfiesRequired(validEmail, [validEmail])).toBeTruthy();
+    expect(elementSatisfiesRequired(invalidPhone, [invalidPhone])).toBeFalsy();
+    expect(elementSatisfiesRequired(validPhone, [validPhone])).toBeTruthy();
   });
 
   test("handles invalid zip code field", () => {
@@ -351,15 +461,17 @@ describe("elementSatisfiesRequired", () => {
       id: "test-zipcode-field",
       required: true,
     } as TextboxTemplate;
-    const invalidEmail = {
+    const invalidZipCode = {
       ...element,
       answer: "not-a-valid-zipcode",
     };
-    const validEmail = {
+    const validZipCode = {
       ...element,
       answer: "55555",
     };
-    expect(elementSatisfiesRequired(invalidEmail, [invalidEmail])).toBeFalsy();
-    expect(elementSatisfiesRequired(validEmail, [validEmail])).toBeTruthy();
+    expect(
+      elementSatisfiesRequired(invalidZipCode, [invalidZipCode])
+    ).toBeFalsy();
+    expect(elementSatisfiesRequired(validZipCode, [validZipCode])).toBeTruthy();
   });
 });

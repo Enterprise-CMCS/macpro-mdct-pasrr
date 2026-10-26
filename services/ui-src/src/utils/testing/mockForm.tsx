@@ -5,6 +5,9 @@ import {
   ReportType,
   PasrrSubType,
   Report,
+  DropdownTemplate,
+  TextboxTemplate,
+  dropdownEmptyOption,
 } from "@pasrr/shared";
 
 export const mockAccordion = {
@@ -23,6 +26,26 @@ export const mockAccordion = {
   ],
   list: [`List Item 1`, "List Item 2", `List Item 3`],
   text: "Additional Text",
+};
+
+export const mockDropdown: DropdownTemplate = {
+  type: ElementType.Dropdown,
+  id: "mock-dropdown-id",
+  label: "Dropdown",
+  required: true,
+  options: [
+    dropdownEmptyOption,
+    { value: "dropdown option 1", label: "dropdown option 1" },
+    { value: "dropdown option 2", label: "dropdown option 2" },
+    { value: "dropdown option 3", label: "dropdown option 3" },
+  ],
+};
+
+export const mockTextboxOptional: TextboxTemplate = {
+  type: ElementType.Textbox,
+  id: "mock-textbox-optional-id",
+  label: "Textbox",
+  required: false,
 };
 
 export const mockReport: Report = {
