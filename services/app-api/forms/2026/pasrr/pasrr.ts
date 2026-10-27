@@ -95,6 +95,34 @@ const generalInformation: FormPageTemplate = {
   ],
 };
 
+const intellectualDisability: FormPageTemplate = {
+  id: "id-rc",
+  title: "Intellectual Disability and Related Conditions (ID/RC)",
+  type: PageType.Standard,
+  sidebar: true,
+  elements: [
+    {
+      type: ElementType.Header,
+      id: "id-rc-header",
+      text: "Intellectual Disability and Related Conditions (ID/RC)",
+    },
+  ],
+};
+
+const seriousMentalIllness: FormPageTemplate = {
+  id: "smi",
+  title: "Serious Mental Illness (SMI)",
+  type: PageType.Standard,
+  sidebar: true,
+  elements: [
+    {
+      type: ElementType.Header,
+      id: "smi-header",
+      text: "Serious Mental Illness (SMI)",
+    },
+  ],
+};
+
 const reviewAndSubmit: ReviewSubmitTemplate = {
   id: "review-submit",
   title: "Review & Submit",
@@ -159,8 +187,10 @@ const reviewAndSubmit: ReviewSubmitTemplate = {
 export const pasrrReportTemplate = (_state: string): ReportPages => [
   {
     id: "root",
-    childPageIds: ["general-information", "review-submit"],
+    childPageIds: ["general-information", "id-rc", "smi", "review-submit"],
   },
   generalInformation,
+  intellectualDisability,
+  seriousMentalIllness,
   reviewAndSubmit,
 ];
