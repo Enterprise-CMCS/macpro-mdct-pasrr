@@ -2,6 +2,7 @@ import { fetchAuthSession, signOut } from "aws-amplify/auth";
 import { Hub } from "aws-amplify/utils";
 import { IDLE_WINDOW } from "../../constants";
 import { isBefore, addMilliseconds } from "date-fns";
+import { clearSessionVisitedLinks } from "utils/other/sessionVisitedLinks";
 
 let authManager: AuthManager;
 
@@ -20,6 +21,7 @@ class AuthManager {
       isBefore(new Date(expiration).valueOf(), Date.now().valueOf());
     if (isExpired) {
       localStorage.removeItem("mdctpasrr_session_exp");
+      clearSessionVisitedLinks();
       signOut().then(() => {
         window.location.href = "/";
       });

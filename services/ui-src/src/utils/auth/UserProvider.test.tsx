@@ -2,9 +2,11 @@ import { MockedFunction } from "vitest";
 import { useContext } from "react";
 import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { signInWithRedirect } from "aws-amplify/auth";
 // utils
 import { UserContext, UserProvider, useStore } from "utils";
 import { mockUseStore, RouterWrappedComponent } from "utils/testing/setupTest";
+import { VISITED_LINKS_STORAGE_KEY } from "../../constants";
 
 vi.mock("utils/state/useStore");
 const mockSetUser = vi.fn();
@@ -106,6 +108,29 @@ describe("<UserProvider />", () => {
         await userEvent.click(loginButton);
       });
       expect(screen.getByText("User Test")).toBeVisible();
+    });
+
+    test("login with IDM clears visited links before redirecting", async () => {
+      sessionStorage.setItem(
+        VISITED_LINKS_STORAGE_KEY,
+        JSON.stringify(["https://example.com"])
+      );
+      let storedBeforeRedirect: string | null | undefined;
+      vi.mocked(signInWithRedirect).mockImplementationOnce(async () => {
+        storedBeforeRedirect = sessionStorage.getItem(
+          VISITED_LINKS_STORAGE_KEY
+        );
+      });
+
+      await act(async () => {
+        const loginButton = screen.getByRole("button", {
+          name: "Log In with IDM",
+        });
+        await userEvent.click(loginButton);
+      });
+
+      expect(signInWithRedirect).toHaveBeenCalled();
+      expect(storedBeforeRedirect).toBeNull();
     });
   });
 
