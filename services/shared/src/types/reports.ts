@@ -422,7 +422,7 @@ export interface ActionTableTemplate extends InputElementTemplate {
   type: ElementType.ActionTable;
   heading: string;
   rows: ActionRowElement[];
-  modal?: {
+  modal: {
     title: string;
     hintText?: string;
     elements: ActionModalElement[];

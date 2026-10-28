@@ -3,7 +3,6 @@ import {
   PageType,
   ElementType,
   AccordionTemplate,
-  ActionTableTemplate,
 } from "@pasrr/shared";
 
 // accordions
@@ -21,72 +20,6 @@ const residentReviewsAccordion: AccordionTemplate = {
     "</ul>",
 };
 
-// tables
-const residentsRequiringSpecializedServicesDispositionsTable =
-  (): ActionTableTemplate => {
-    const table: ActionTableTemplate = {
-      type: ElementType.ActionTable,
-      id: "residents-requiring-specialized-services-dispositions-table",
-      heading:
-        "Residents who don’t require nursing facility care, but do require specialized services",
-      label: "",
-      helperText:
-        "Report the number and disposition (resident status) of residents with ID/RC who:" +
-        "<ul>" +
-        "  <li>Was determined by a PASRR Level II resident review evaluation not to require the level of services provided by a nursing facility, but to require specialized services, <b>and</b></li>" +
-        "  <li>Has not continuously resided in a nursing facility for at least 30 months before the date of the PASRR Level II resident review determination. </li>" +
-        "</ul>",
-      rows: [
-        {
-          id: "disposition",
-          header: "Disposition",
-          type: ElementType.Paragraph,
-        },
-        {
-          id: "residents",
-          header: "# of residents",
-          type: ElementType.Paragraph,
-        },
-      ],
-      answer: [],
-      required: true,
-    };
-
-    const dispositionAnswers: any[] = [];
-    table.answer = dispositionAnswers;
-    return table;
-  };
-
-const residentsNoRequirementsDispositionsTable = (): ActionTableTemplate => {
-  const table: ActionTableTemplate = {
-    type: ElementType.ActionTable,
-    id: "residents-no-requirements-dispositions-table",
-    heading:
-      "Residents who don’t require nursing facility care or specialized services",
-    label: "",
-    helperText:
-      "Report the number and disposition (resident status) of residents with ID/RC who:" +
-      "<ul>" +
-      "  <li>Was determined by a PASRR Level II resident review evaluation not to require the level of services provided by a nursing facility or do not require specialized services, <b>and</b></li>" +
-      "  <li>Has not continuously resided in a nursing facility for at least 30 months before the date of the PASRR Level II resident review determination.</li>" +
-      "</ul>",
-    rows: [
-      { id: "disposition", header: "Disposition", type: ElementType.Paragraph },
-      {
-        id: "residents",
-        header: "# of residents",
-        type: ElementType.Paragraph,
-      },
-    ],
-    answer: [],
-    required: true,
-  };
-
-  const dispositionAnswers: any[] = [];
-  table.answer = dispositionAnswers;
-  return table;
-};
-
 export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
   id: "intellectual-disability-and-related-conditions",
   title: "Intellectual Disability and Related Conditions (ID/RC)",
@@ -101,7 +34,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
         "Section 1919(e)(7)(C)(iv) of the Act requires the state to report the number and disposition (resident status) of the nursing facility residents under Section II annually. 42 CFR §483.132(a) specifies the settings the PASRR evaluator must assess. Report Level II resident review data for individuals with an intellectual disability or related condition (ID/RC). All data should reflect the number and disposition as of December 31 of the reporting year.",
     },
     residentReviewsAccordion,
-    residentsRequiringSpecializedServicesDispositionsTable(),
+    // TODO: dispositions table
     {
       id: "qFCBEF0Elrjv9qTptN7igzZa",
       type: ElementType.TextAreaField,
@@ -140,7 +73,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
         },
       ],
     },
-    residentsNoRequirementsDispositionsTable(),
+    // TODO: dispositions table
     {
       id: "qkz8lof1dGiflEWb9W4CkIFV",
       type: ElementType.TextAreaField,
