@@ -37,6 +37,7 @@ export { ListInput } from "./fields/ListInput";
 export { AttachmentArea } from "./fields/AttachmentArea";
 export { AccordionGroup } from "./fields/AccordionGroup";
 export { ActionTable } from "./fields/ActionTable";
+export { FieldGroup } from "./fields/FieldGroup";
 // forms
 export { AdminBannerDrawer } from "./forms/AdminBannerDrawer";
 export { AdminDashboard } from "./forms/AdminDashboard";

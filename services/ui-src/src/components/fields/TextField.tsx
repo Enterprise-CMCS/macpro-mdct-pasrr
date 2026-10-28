@@ -163,8 +163,24 @@ export const TextField = (
     return null;
   }
 
+  const getWidth = (id: string) => {
+    if (id.includes("phone") || id.includes("zipcode")) {
+      return "14.5rem";
+    }
+
+    return "100%";
+  };
+
+  const sxOverride = {
+    container: {
+      ".ds-c-field": {
+        width: getWidth(textbox.id),
+      },
+    },
+  };
+
   return (
-    <Box width="100%">
+    <Box width="100%" sx={sxOverride.container}>
       <CmsdsTextField
         name={textbox.id}
         label={optionalTag(textbox)}
