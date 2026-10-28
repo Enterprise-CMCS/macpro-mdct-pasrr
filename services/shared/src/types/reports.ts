@@ -415,12 +415,12 @@ export type ActionAnswerShape = { id: string; value: string | number }[];
 export interface ActionTableTemplate extends InputElementTemplate {
   type: ElementType.ActionTable;
   heading: string;
-  modal: {
+  rows: ActionRowElement[];
+  modal?: {
     title: string;
     hintText?: string;
     elements: ActionModalElement[];
   };
-  rows: ActionRowElement[];
   answer?: ActionAnswerShape[];
 }
 

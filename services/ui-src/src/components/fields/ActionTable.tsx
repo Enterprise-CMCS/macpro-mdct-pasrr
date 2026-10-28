@@ -1,5 +1,4 @@
 import { Flex, Button, Image, Heading, Stack, Text } from "@chakra-ui/react";
-import { ActionModal } from "components/modals/ActionModal";
 import { PageElementProps } from "components/report/Elements";
 import { JSX, useState } from "react";
 import { useParams } from "react-router";
@@ -49,9 +48,7 @@ const buildRows = (
     id: string,
     type: ElementType
   ) => void,
-  onEdit: (index: number) => void,
   formDisabled?: boolean,
-  canChangeStatus: boolean = false,
   errorMessages: Array<Map<string, string>> = []
 ) => {
   const formattedRows: (JSX.Element | string | number)[][] = [];
@@ -80,17 +77,6 @@ const buildRows = (
         rowElement.push(value || "--");
       }
     });
-    if (canChangeStatus) {
-      rowElement.push(
-        <Button
-          variant="link"
-          onClick={() => onEdit(answerRowIndex)}
-          disabled={formDisabled}
-        >
-          Edit/Abandon
-        </Button>
-      );
-    }
     formattedRows.push(rowElement);
   });
 
@@ -99,8 +85,7 @@ const buildRows = (
 
 export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
   const { disabled, element } = props;
-  const { heading, helperText, label, modal, rows, answer } = element;
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const { heading, helperText, label, rows, answer } = element;
   const { userIsAdmin: canAddOrChangeStatus } = useStore().user ?? {};
   const { report } = useStore();
   const { pageId } = useParams();
@@ -110,42 +95,9 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
   const actionsDisabled =
     disabled || element.disabled || parentPage?.status === PageStatus.ABANDONED;
 
-  const dropdownIds = modal.elements
-    .filter((element) => element.type === ElementType.Dropdown)
-    .map((element) => element.id);
-
-  //building the default values that will be used in the add modal
-  const initial = rows.map((row) => {
-    const defaultValue = { id: row.id, value: "" };
-    //if the field is a dropdown, we want to set it to the first child option
-    if (dropdownIds.includes(row.id)) {
-      const index = modal.elements.findIndex((init) => init.id == row.id);
-      defaultValue.value = modal.elements[index].children![0].value;
-    }
-    return defaultValue;
-  });
-
-  const [modalData, setModalData] = useState<{
-    data: ActionAnswerShape;
-    index: number | undefined;
-  }>({ data: initial, index: undefined });
-
   const [errorMessages, setErrorMessages] = useState<
     Array<Map<string, string>>
   >(answer?.map((row) => buildEmptyErrorMessages(row)) ?? []);
-
-  const modalErrorMessageIndex = modalData.index ?? 0;
-  const modalErrorMessages =
-    errorMessages[modalErrorMessageIndex] ??
-    buildEmptyErrorMessages(modalData.data);
-
-  const updateModalErrorMessages = (rowErrorMessages: Map<string, string>) => {
-    setErrorMessages((current) => {
-      const newErrorMessages = [...current];
-      newErrorMessages[modalErrorMessageIndex] = rowErrorMessages;
-      return newErrorMessages;
-    });
-  };
 
   const formatAnswers = (
     data: ActionAnswerShape,
@@ -153,9 +105,7 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
   ) => {
     return data.map((item) => {
       let element;
-      if (answerType === "modal") {
-        element = modal.elements.find((element) => element.id === item.id);
-      } else if (answerType === "row") {
+      if (answerType === "row") {
         element = rows.find((element) => element.id === item.id);
       }
       if (element?.mask) {
@@ -189,43 +139,13 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
     props.updateElement({ answer: newAnswer });
   };
 
-  /* Modal functions */
-  const onModalEdit = (index: number) => {
-    if (!answer) return;
-    setModalData({ data: structuredClone(answer[index]), index });
-    setErrorMessages((current) => {
-      if (current[index]) return current;
-      const newErrorMessages = [...current];
-      newErrorMessages[index] = buildEmptyErrorMessages(answer[index]);
-      return newErrorMessages;
-    });
-    setModalOpen(true);
-  };
-
   const formattedRows = buildRows(
     rows,
     answer ?? [],
     onChange,
-    onModalEdit,
     actionsDisabled,
-    canAddOrChangeStatus,
     errorMessages
   );
-
-  const onSave = (data: ActionAnswerShape) => {
-    const newData = formatAnswers(data, "modal");
-    if (modalData.index === undefined) {
-      setErrorMessages((current) => [
-        ...current.slice(0, answer?.length ?? 0),
-        buildEmptyErrorMessages(newData),
-      ]);
-      props.updateElement({ answer: [...(answer ?? []), newData] });
-    } else {
-      const newAnswer = [...answer!];
-      newAnswer[modalData.index] = newData;
-      props.updateElement({ answer: newAnswer });
-    }
-  };
 
   const headers = rows.map((row) => ({ label: row.header }));
   if (canAddOrChangeStatus) headers.push({ label: "Actions" });
@@ -244,36 +164,12 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
           leftIcon={
             <Image src={actionsDisabled ? addGray : addPrimary} alt="Add" />
           }
-          onClick={() => {
-            setModalOpen(true);
-            setModalData({ data: initial, index: undefined });
-            setErrorMessages((current) => {
-              const newErrorMessages = current.slice(0, answer?.length ?? 0);
-              newErrorMessages[answer?.length ?? 0] =
-                buildEmptyErrorMessages(initial);
-              return newErrorMessages;
-            });
-          }}
           disabled={actionsDisabled}
         >
           Add {label}
         </Button>
       ) : null}
       {ResponsiveTable(headers, formattedRows, "metric")}
-      <ActionModal
-        modal={modal}
-        form={modalData}
-        onSave={onSave}
-        errorMessages={modalErrorMessages}
-        setErrorMessages={updateModalErrorMessages}
-        modalDisclosure={{
-          isOpen: isModalOpen,
-          onClose: () => {
-            setModalOpen(false);
-          },
-        }}
-        disabled={actionsDisabled}
-      />
     </Flex>
   );
 };

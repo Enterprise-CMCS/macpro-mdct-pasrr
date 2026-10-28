@@ -150,12 +150,7 @@ export const elementSatisfiesRequired = (
       )
       .flat();
 
-    const requiredAnswers = activeElements.filter((column) => {
-      const modalElement = element.modal.elements.find(
-        (modalElement) => modalElement.id === column.id
-      );
-      return modalElement?.required !== false;
-    });
+    const requiredAnswers = activeElements;
 
     return requiredAnswers.every(
       (column) => column.value && column.value !== ""
