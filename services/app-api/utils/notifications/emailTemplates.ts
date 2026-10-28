@@ -1,7 +1,7 @@
 import { ReportStatus } from "@pasrr/shared";
 import { EMAIL_TRIGGERS } from "./email";
 
-const FROM_ADDRESS = "MDCT_NoReply@cms.hhs.gov";
+const FROM_ADDRESS = "MDCT_NoReply@mdct.cms.gov";
 
 export const getEmailTemplate = (emailTrigger: EMAIL_TRIGGERS, data: any) => {
   switch (emailTrigger) {

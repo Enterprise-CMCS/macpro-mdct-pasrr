@@ -8,10 +8,11 @@ import {
   aws_ses as ses,
   aws_sns as sns,
   aws_iam as iam,
-  Aws,
   CfnOutput,
   Duration,
   RemovalPolicy,
+  SecretValue,
+  Stack,
 } from "aws-cdk-lib";
 import { Lambda } from "../constructs/lambda.ts";
 import { WafConstruct } from "../constructs/waf.ts";
@@ -73,11 +74,7 @@ export function createApiComponents(props: CreateApiComponentsProps) {
   if (!isDev) {
     const topic = new sns.Topic(scope, `${project}-${stage}-failedEmailTopic`);
     new sns.Subscription(scope, `${project}-${stage}-email-subscription`, {
-      topic: sns.Topic.fromTopicArn(
-        scope,
-        `${project}-${stage}-failed-email-topic`,
-        topic.topicArn
-      ),
+      topic,
       endpoint: "mdct-integrations@coforma.io",
       protocol: sns.SubscriptionProtocol.EMAIL,
     });
@@ -95,7 +92,7 @@ export function createApiComponents(props: CreateApiComponentsProps) {
     configSet.addEventDestination("sns", {
       destination: ses.EventDestination.snsTopic(topic),
       configurationSetEventDestinationName: `${project}-${stage}-email-topic`,
-      enabled: isProduction, // only send alerts to sns in prod
+      enabled: true,
       events: [
         ses.EmailSendingEvent.REJECT,
         ses.EmailSendingEvent.BOUNCE,
@@ -103,21 +100,34 @@ export function createApiComponents(props: CreateApiComponentsProps) {
       ],
     });
 
+    // BYO DKIM for mdct.cms.gov, selector "mdct".
+    // Before deploy, put the one-line base64 private key (no PEM headers) in
+    // secret `${project}-default` under dkimPrivateKey. Publish the matching
+    // public key at mdct._domainkey.mdct.cms.gov. CloudFormation resolves the
+    // private key at deploy time; rotating it requires a stack update.
+    const senderDomain = "mdct.cms.gov";
     const senderIdentity = new ses.EmailIdentity(
       scope,
       "SenderDomainIdentity",
       {
-        identity: ses.Identity.domain("cms.hhs.gov"),
+        identity: ses.Identity.domain(senderDomain),
         configurationSet: configSet,
+        dkimIdentity: ses.DkimIdentity.byoDkim({
+          privateKey: SecretValue.secretsManager(`${project}-default`, {
+            jsonField: "dkimPrivateKey",
+          }),
+          selector: "mdct",
+        }),
       }
     );
+    senderIdentity.applyRemovalPolicy(RemovalPolicy.RETAIN);
 
     sesPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: ["ses:SendEmail", "ses:SendRawEmail"],
       resources: [
-        senderIdentity.emailIdentityArn,
-        `arn:aws:ses:${Aws.REGION}:${Aws.ACCOUNT_ID}:configuration-set/${configSet.configurationSetName}`,
+        `arn:aws:ses:us-east-1:${Stack.of(scope).account}:identity/${senderDomain}`,
+        `arn:aws:ses:us-east-1:${Stack.of(scope).account}:configuration-set/${configSet.configurationSetName}`,
       ],
     });
   }
@@ -197,6 +207,9 @@ export function createApiComponents(props: CreateApiComponentsProps) {
     ),
     brokerString,
     ...(isLocalStack && { AWS_ENDPOINT_URL: process.env.AWS_ENDPOINT_URL }),
+    ...(!isDev
+      ? { SES_CONFIGURATION_SET: `${project}-${stage}-email-configuration-set` }
+      : {}),
   };
 
   const commonProps = {
