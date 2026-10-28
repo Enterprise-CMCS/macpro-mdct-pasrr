@@ -11,6 +11,7 @@ import {
   CfnOutput,
   Duration,
   RemovalPolicy,
+  SecretValue,
   Stack,
 } from "aws-cdk-lib";
 import { Lambda } from "../constructs/lambda.ts";
@@ -99,12 +100,24 @@ export function createApiComponents(props: CreateApiComponentsProps) {
       ],
     });
 
+    // BYO DKIM for mdct.cms.gov, selector "mdct".
+    // Before deploy, put the one-line base64 private key (no PEM headers) in
+    // secret `${project}-default` under dkimPrivateKey. Publish the matching
+    // public key at mdct._domainkey.mdct.cms.gov. CloudFormation resolves the
+    // private key at deploy time; rotating it requires a stack update.
+    const senderDomain = "mdct.cms.gov";
     const senderIdentity = new ses.EmailIdentity(
       scope,
       "SenderDomainIdentity",
       {
-        identity: ses.Identity.domain("cms.hhs.gov"),
+        identity: ses.Identity.domain(senderDomain),
         configurationSet: configSet,
+        dkimIdentity: ses.DkimIdentity.byoDkim({
+          privateKey: SecretValue.secretsManager(`${project}-default`, {
+            jsonField: "dkimPrivateKey",
+          }),
+          selector: "mdct",
+        }),
       }
     );
     senderIdentity.applyRemovalPolicy(RemovalPolicy.RETAIN);
@@ -113,7 +126,7 @@ export function createApiComponents(props: CreateApiComponentsProps) {
       effect: iam.Effect.ALLOW,
       actions: ["ses:SendEmail", "ses:SendRawEmail"],
       resources: [
-        `arn:aws:ses:us-east-1:${Stack.of(scope).account}:identity/cms.hhs.gov`,
+        `arn:aws:ses:us-east-1:${Stack.of(scope).account}:identity/${senderDomain}`,
         `arn:aws:ses:us-east-1:${Stack.of(scope).account}:configuration-set/${configSet.configurationSetName}`,
       ],
     });

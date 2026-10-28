@@ -8,7 +8,7 @@ vi.spyOn(console, "debug").mockImplementation(() => {});
 const sesMock = mockClient(SESClient);
 
 const mockParams = {
-  Source: "MDCT_NoReply@cms.hhs.gov",
+  Source: "MDCT_NoReply@mdct.cms.gov",
   Destination: { ToAddresses: ["test@example.com"] },
   Message: {
     Subject: { Data: "Test Subject" },

@@ -15,6 +15,7 @@ describe("emailTemplate util", () => {
     );
     expect(template).toEqual(
       expect.objectContaining({
+        Source: "MDCT_NoReply@mdct.cms.gov",
         Destination: {
           ToAddresses: genericData.recipients,
         },
@@ -32,6 +33,7 @@ describe("emailTemplate util", () => {
     );
     expect(template).toEqual(
       expect.objectContaining({
+        Source: "MDCT_NoReply@mdct.cms.gov",
         Destination: {
           ToAddresses: genericData.recipients,
         },
@@ -51,6 +53,7 @@ describe("emailTemplate util", () => {
     );
     expect(template).toEqual(
       expect.objectContaining({
+        Source: "MDCT_NoReply@mdct.cms.gov",
         Destination: {
           ToAddresses: genericData.recipients,
         },
