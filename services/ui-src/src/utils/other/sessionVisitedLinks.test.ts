@@ -23,7 +23,7 @@ describe("sessionVisitedLinks", () => {
     expect(isSessionVisitedLink(url)).toBe(true);
     expect(isSessionVisitedLink("https://example.com/other")).toBe(true);
     expect(
-      JSON.parse(sessionStorage.getItem(VISITED_LINKS_STORAGE_KEY) as string),
+      JSON.parse(sessionStorage.getItem(VISITED_LINKS_STORAGE_KEY) as string)
     ).toEqual([url, "https://example.com/other"]);
   });
 
@@ -43,14 +43,14 @@ describe("sessionVisitedLinks", () => {
 
     markSessionVisitedLink(url);
     expect(
-      JSON.parse(sessionStorage.getItem(VISITED_LINKS_STORAGE_KEY) as string),
+      JSON.parse(sessionStorage.getItem(VISITED_LINKS_STORAGE_KEY) as string)
     ).toEqual([url]);
   });
 
   test("treats stored data that is not an array as no visited links", () => {
     sessionStorage.setItem(
       VISITED_LINKS_STORAGE_KEY,
-      JSON.stringify({ href: url }),
+      JSON.stringify({ href: url })
     );
 
     expect(isSessionVisitedLink(url)).toBe(false);
@@ -59,7 +59,7 @@ describe("sessionVisitedLinks", () => {
   test("ignores non-string entries in stored data", () => {
     sessionStorage.setItem(
       VISITED_LINKS_STORAGE_KEY,
-      JSON.stringify([url, 42, null, { href: "x" }]),
+      JSON.stringify([url, 42, null, { href: "x" }])
     );
 
     expect(isSessionVisitedLink(url)).toBe(true);
@@ -67,7 +67,7 @@ describe("sessionVisitedLinks", () => {
 
     markSessionVisitedLink("https://example.com/other");
     expect(
-      JSON.parse(sessionStorage.getItem(VISITED_LINKS_STORAGE_KEY) as string),
+      JSON.parse(sessionStorage.getItem(VISITED_LINKS_STORAGE_KEY) as string)
     ).toEqual([url, "https://example.com/other"]);
   });
 });
