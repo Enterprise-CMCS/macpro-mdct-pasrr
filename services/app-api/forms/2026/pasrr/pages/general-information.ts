@@ -41,6 +41,14 @@ export const generalInformation: FormPageTemplate = {
         "Enter an email address. Department or program-wide email addresses are allowed.",
     },
     {
+      id: "contact-phone",
+      type: ElementType.Textbox,
+      label: "Phone number",
+      required: true,
+      skipOptionalTag: true,
+      helperText: "Enter phone number as ###-###-####.",
+    },
+    {
       id: "mailing-address",
       type: ElementType.FieldGroup,
       label: "Mailing address",
