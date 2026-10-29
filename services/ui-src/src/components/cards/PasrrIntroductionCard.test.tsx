@@ -17,22 +17,22 @@ describe("<PasrrIntroductionCard />", () => {
       screen.getByRole("heading", {
         level: 2,
         name: "PASRR Report",
-      }),
+      })
     ).toBeVisible();
     expect(
       screen.getByRole("link", {
         name: "Enter PASRR report",
-      }),
+      })
     ).toBeVisible();
     expect(
       screen.getByRole("button", {
         name: "User Guide and Help File",
-      }),
+      })
     ).toBeVisible();
     expect(
       screen.getByRole("button", {
         name: "When is the PASRR report due?",
-      }),
+      })
     ).toBeVisible();
   });
 
@@ -45,7 +45,7 @@ describe("<PasrrIntroductionCard />", () => {
     expect(overviewLink).toHaveAttribute("href", PASRR_OVERVIEW_URL);
     expect(overviewLink).toHaveAttribute("target", "_blank");
     expect(
-      within(overviewLink).getByRole("img", { name: externalLinkAltText }),
+      within(overviewLink).getByRole("img", { name: externalLinkAltText })
     ).toBeVisible();
   });
 

@@ -29,7 +29,7 @@ export const ExternalLink = ({
 }: LinkProps) => {
   const hrefValue = typeof href === "string" ? href : "";
   const [isSessionVisited, setIsSessionVisited] = useState(
-    () => Boolean(hrefValue) && isSessionVisitedLink(hrefValue),
+    () => Boolean(hrefValue) && isSessionVisitedLink(hrefValue)
   );
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {

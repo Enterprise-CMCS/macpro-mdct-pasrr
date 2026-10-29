@@ -19,7 +19,7 @@ describe("<ExternalLink />", () => {
     expect(link).toHaveProperty("href", "https://cms.gov/");
     expect(link).toHaveAttribute("target", "_blank");
     expect(
-      within(link).getByRole("img", { name: externalLinkAltText }),
+      within(link).getByRole("img", { name: externalLinkAltText })
     ).toBeVisible();
   });
 
@@ -35,7 +35,7 @@ describe("<ExternalLink />", () => {
 
     expect(link).toHaveClass("is-session-visited");
     expect(sessionStorage.getItem(VISITED_LINKS_STORAGE_KEY)).toContain(
-      "https://cms.gov/",
+      "https://cms.gov/"
     );
   });
 });
