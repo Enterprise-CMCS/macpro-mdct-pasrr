@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Box, useDisclosure } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { PageElementProps } from "components/report/Elements";
 import { ChoiceTemplate, PageElement, RadioTemplate } from "@pasrr/shared";
 import { parseHtml, useStore } from "utils";
 import { ChoiceList as CmsdsChoiceList } from "@cmsgov/design-system";
 import { Page } from "components/report/Page";
 import { useElementIsHidden } from "utils/state/hooks/useElementIsHidden";
-import { Modal } from "components";
 
 const formatChoices = (
   choices: ChoiceTemplate[],
@@ -72,22 +71,6 @@ export const RadioField = (props: PageElementProps<RadioTemplate>) => {
     );
   }, [radio.choices, radio.answer]);
 
-  const {
-    isOpen: radioModalIsOpen,
-    // onOpen: radioModalOnOpenHandler,
-    onClose: radioModalOnCloseHandler,
-  } = useDisclosure();
-
-  const modalConfirmHandler = () => {
-    onChangeHandler(eventToBeConfirmed as React.ChangeEvent<HTMLInputElement>);
-    modalCloseCustomHandler();
-  };
-
-  const modalCloseCustomHandler = () => {
-    setEventToBeConfirmed(undefined);
-    radioModalOnCloseHandler();
-  };
-
   // OnChange handles setting the visual of the radio on click, outside the normal blur
   const onChangeHandler = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -95,7 +78,6 @@ export const RadioField = (props: PageElementProps<RadioTemplate>) => {
     const value = event.target.value;
     if (radio.answer && eventToBeConfirmed === undefined) {
       setEventToBeConfirmed(event);
-      // return radioModalOnOpenHandler();
     }
 
     const newDisplayValue = formatChoices(
@@ -134,19 +116,6 @@ export const RadioField = (props: PageElementProps<RadioTemplate>) => {
         onChange={onChangeHandler}
         {...props}
       />
-      <Modal
-        data-testid="confirm-modal"
-        modalDisclosure={{
-          isOpen: radioModalIsOpen,
-          onClose: modalCloseCustomHandler,
-        }}
-        onConfirmHandler={modalConfirmHandler}
-        content={{
-          heading: "Are you sure?",
-          actionButtonText: "Yes",
-          closeButtonText: "No",
-        }}
-      ></Modal>
     </Box>
   );
 };

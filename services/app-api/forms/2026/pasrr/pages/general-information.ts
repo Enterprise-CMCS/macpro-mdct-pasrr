@@ -53,20 +53,6 @@ export const generalInformation: FormPageTemplate = {
     },
     {
       type: ElementType.SubHeader,
-      id: "mailing-address-subheader",
-      text: "Mailing address",
-      helperText:
-        "Enter the primary mailing address for your state Medicaid office.",
-    },
-    {
-      id: "contact-zipcode",
-      type: ElementType.Textbox,
-      label: "Postal code",
-      required: true,
-      skipOptionalTag: true,
-    },
-    {
-      type: ElementType.SubHeader,
       id: "alternate-contact-subheader",
       text: "Alternate state Medicaid agency contact",
       helperText:

@@ -11,12 +11,12 @@ const residentReviewsAccordion: AccordionTemplate = {
   id: "resident-reviews-accordion",
   label: "Which resident reviews should I include?",
   value:
-    "Include all Level II resident reviews completed during the reporting period for individuals with ID/RC that meet the annual reporting criteria. This includes Level II resident reviews triggered by:" +
+    "<p>Include all Level II resident reviews completed during the reporting period for individuals with ID/RC that meet the annual reporting criteria. This includes Level II resident reviews triggered by:</p>" +
     "<ul>" +
     "  <li>A significant change in condition.</li>" +
     "  <li>Expiration of a PASRR 30-day exempted hospital discharge exemption.</li>" +
     "  <li>Expiration of an PASRR advance group determination stay (such as respite care).</li>" +
-    "  <li> Expiration of an approved Medicaid section 1135 waiver for PASRR.</li>" +
+    "  <li>Expiration of an approved Medicaid section 1135 waiver for PASRR.</li>" +
     "</ul>",
 };
 
@@ -72,6 +72,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
               helperText:
                 "Do not include personally identifiable information (PII) or protected health information (PHI).",
               required: true,
+              skipOptionalTag: true,
             },
           ],
         },
