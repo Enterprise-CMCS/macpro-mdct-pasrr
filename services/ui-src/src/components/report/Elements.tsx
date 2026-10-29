@@ -97,7 +97,7 @@ export const SubHeaderElement = ({
       </Heading>
       {element.helperText && (
         <Text as={helperType} variant="helperText">
-          {parseHtml(element.helperText)}
+          {element.helperText}
         </Text>
       )}
     </Wrapper>
