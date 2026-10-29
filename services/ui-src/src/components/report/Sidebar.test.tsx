@@ -93,6 +93,27 @@ describe("Sidebar", () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(reportPath);
   });
 
+  test("toggle button exposes its state via aria-expanded", () => {
+    for (const sidebarOpen of [true, false]) {
+      (useStore as unknown as Mock).mockReturnValue({
+        pageMap: mockPageMap,
+        report,
+        currentPageId: "id-1",
+        setCurrentPageId,
+        setSidebar: vi.fn(),
+        sidebarOpen,
+      });
+      const { unmount } = render(
+        <Router>
+          <Sidebar />
+        </Router>
+      );
+      const button = screen.getByRole("button", { name: "Sidebar" });
+      expect(button).toHaveAttribute("aria-expanded", String(sidebarOpen));
+      unmount();
+    }
+  });
+
   test("should expand on Click", async () => {
     render(
       <Router>
