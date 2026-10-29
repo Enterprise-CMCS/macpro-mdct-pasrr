@@ -1,4 +1,9 @@
-import { FormPageTemplate, PageType, ElementType } from "@pasrr/shared";
+import {
+  FormPageTemplate,
+  PageType,
+  ElementType,
+  getPostalAddressElements,
+} from "@pasrr/shared";
 
 export const generalInformation: FormPageTemplate = {
   id: "general-information",
@@ -36,12 +41,15 @@ export const generalInformation: FormPageTemplate = {
         "Enter an email address. Department or program-wide email addresses are allowed.",
     },
     {
-      id: "contact-phone",
-      type: ElementType.Textbox,
-      label: "Phone number",
+      id: "mailing-address",
+      type: ElementType.FieldGroup,
+      label: "Mailing address",
       required: true,
-      skipOptionalTag: true,
-      helperText: "Enter phone number as ###-###-####.",
+      helperText:
+        "Enter the main mailing address for your state Medicaid office.",
+      elements: getPostalAddressElements({
+        id: "mailing-address",
+      }),
     },
     {
       type: ElementType.SubHeader,
