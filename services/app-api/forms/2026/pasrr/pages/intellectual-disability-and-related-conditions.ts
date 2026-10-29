@@ -37,18 +37,18 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
       text: "Section 1919(e)(7)(C)(iv) of the Act requires the state to report the number and disposition (resident status) of the nursing facility residents under Section II annually. 42 CFR § 483.132(a) specifies the settings the PASRR evaluator must assess. Report Level II resident review data for individuals with an intellectual disability or related condition (ID/RC). All data should reflect the number and disposition as of December 31 of the reporting year.",
     },
     residentReviewsAccordion,
-    // TODO: dispositions table
     {
-      id: "qFCBEF0Elrjv9qTptN7igzZa",
+      id: "idrc-did-residents-receive-multiple-reviews",
       type: ElementType.TextAreaField,
       label:
         "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain.",
-      required: false,
       helperText:
         "Do not include personally identifiable information (PII) or protected health information (PHI).",
+      required: true,
+      skipOptionalTag: true,
     },
     {
-      id: "t2XYm6zxRV8yGR3ue8PwiM8g",
+      id: "idrc-did-residents-receive-specialized-services",
       type: ElementType.Radio,
       label:
         "During this reporting period, did all eligible residents receive specialized services or have them arranged by the state?",
@@ -65,7 +65,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
           value: "No",
           checkedChildren: [
             {
-              id: "luRDPU38GzZxxOq7LqycQRpo",
+              id: "idrc-how-many-residents-did-not-receive-specialized-services",
               type: ElementType.TextAreaField,
               label:
                 "How many residents did not receive services, and why were services not arranged or provided by the state?",
@@ -77,16 +77,6 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
           ],
         },
       ],
-    },
-    // TODO: dispositions table
-    {
-      id: "qkz8lof1dGiflEWb9W4CkIFV",
-      type: ElementType.TextAreaField,
-      label:
-        "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain.",
-      helperText:
-        "Do not include personally identifiable information (PII) or protected health information (PHI).",
-      required: false,
     },
   ],
 };
