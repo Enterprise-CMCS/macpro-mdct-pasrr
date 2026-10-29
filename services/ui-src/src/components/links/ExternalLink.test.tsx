@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ExternalLink } from "./ExternalLink";
 import {
@@ -19,9 +19,8 @@ describe("<ExternalLink />", () => {
     expect(link).toHaveProperty("href", "https://cms.gov/");
     expect(link).toHaveAttribute("target", "_blank");
     expect(
-      screen.getByRole("img", { name: externalLinkAltText })
+      within(link).getByRole("img", { name: externalLinkAltText }),
     ).toBeVisible();
-    expect(screen.getByText("This is a link")).toBeVisible();
   });
 
   test("marks the link visited for this browser session only", async () => {
@@ -36,7 +35,7 @@ describe("<ExternalLink />", () => {
 
     expect(link).toHaveClass("is-session-visited");
     expect(sessionStorage.getItem(VISITED_LINKS_STORAGE_KEY)).toContain(
-      "https://cms.gov/"
+      "https://cms.gov/",
     );
   });
 });

@@ -46,12 +46,12 @@ describe("<LoginCognito />", () => {
     test("Successful login resets session visited links", async () => {
       sessionStorage.setItem(
         VISITED_LINKS_STORAGE_KEY,
-        JSON.stringify(["https://example.com"])
+        JSON.stringify(["https://example.com"]),
       );
       await userEvent.type(screen.getByLabelText("Email"), "email@address.com");
       await userEvent.type(screen.getByLabelText("Password"), "p@$$w0rd"); //pragma: allowlist secret
       await userEvent.click(screen.getByRole("button"));
-      expect(sessionStorage.getItem(VISITED_LINKS_STORAGE_KEY)).toEqual(null);
+      expect(sessionStorage.getItem(VISITED_LINKS_STORAGE_KEY)).toBeNull();
     });
   });
 
