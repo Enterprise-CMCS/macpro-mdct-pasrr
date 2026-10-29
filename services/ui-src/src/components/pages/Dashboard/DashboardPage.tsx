@@ -51,13 +51,13 @@ export const DashboardPage = () => {
   const fullStateName = isStateAbbr(state) ? StateNames[state] : "";
   const reportName = getReportName(reportType);
   const hasSubmittedReport = reports.some((report) =>
-    isCompleteStatus(report.status)
+    isCompleteStatus(report.status),
   );
   const reportingYears = [
     ...new Set(
       reports
         .map((report) => report.reportingYear)
-        .filter((year) => typeof year === "number")
+        .filter((year) => typeof year === "number"),
     ),
   ].toSorted((a, b) => b - a);
   const reportingYearFilterOptions = [
@@ -81,8 +81,8 @@ export const DashboardPage = () => {
     } else {
       setFilteredReports(
         reports.filter(
-          (report) => report.reportingYear === Number(reportingYearFilter)
-        )
+          (report) => report.reportingYear === Number(reportingYearFilter),
+        ),
       );
     }
   }, [reports, reportingYearFilter]);
@@ -90,7 +90,7 @@ export const DashboardPage = () => {
   useEffect(() => {
     const noReports = reports.length === 0;
     const allSubmittedReports = reports.every((report) =>
-      isCompleteStatus(report.status)
+      isCompleteStatus(report.status),
     );
     setCanCreateReport(noReports || allSubmittedReports);
   }, [reports]);
@@ -144,7 +144,7 @@ export const DashboardPage = () => {
             and monitor its status.
           </Text>
           <Text>
-            You can submit one report per year. You'll be able to create your
+            You can submit one report per year. You’ll be able to create your
             next report at the start of the new year.
           </Text>
         </Box>
