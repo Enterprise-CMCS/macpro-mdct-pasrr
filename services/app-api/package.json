@@ -15,7 +15,7 @@
     "@aws-sdk/s3-request-presigner": "~3.1032.0",
     "@launchdarkly/node-server-sdk": "^9.14.4",
     "@pasrr/shared": "workspace:*",
-    "dompurify": "^3.4.16",
+    "dompurify": "^3.4.17",
     "file-type": "^22.0.1",
     "jsdom": "^26.0.0",
     "jszip": "3.10.1",

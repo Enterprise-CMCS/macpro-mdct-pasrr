@@ -6014,7 +6014,7 @@ __metadata:
     "@types/papaparse": "npm:^5"
     "@vitest/coverage-v8": "npm:^4.1.11"
     aws-sdk-client-mock: "npm:~4.1.0"
-    dompurify: "npm:^3.4.16"
+    dompurify: "npm:^3.4.17"
     file-type: "npm:^22.0.1"
     jsdom: "npm:^26.0.0"
     jszip: "npm:3.10.1"
@@ -6923,15 +6923,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^3.4.16":
-  version: 3.4.16
-  resolution: "dompurify@npm:3.4.16"
+"dompurify@npm:^3.4.17":
+  version: 3.4.17
+  resolution: "dompurify@npm:3.4.17"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10c0/65a901c6b6d489d3e898f67223d81dac66d613cda48f5785f0ed52a4ae320c4b2745490a58c14161e29f0273080fea0a0cb234a9ef892650e1a9b2a7befa07a5
+  checksum: 10c0/6a12251ef5e700fc91b6d96d33e9f8b5fd590c55276f632cf42d182c5808e9f48d5bef435ab26eac235dfcc05ed8fe95e1c8308dcc502bf1050e561f14d0361a
   languageName: node
   linkType: hard
 
@@ -10653,7 +10653,7 @@ __metadata:
     core-js: "npm:^3.41.0"
     date-fns: "npm:^4.1.0"
     date-fns-tz: "npm:^3.2.0"
-    dompurify: "npm:^3.4.16"
+    dompurify: "npm:^3.4.17"
     file-saver: "npm:2.0.5"
     framer-motion: "npm:^11"
     html-react-parser: "npm:^3.0.16"
@@ -10705,9 +10705,9 @@ __metadata:
   linkType: hard
 
 "undici@npm:^7.21.0, undici@npm:^7.25.0":
-  version: 7.30.0
-  resolution: "undici@npm:7.30.0"
-  checksum: 10c0/011a321a9198532b0f0504740faa43b9ab8fcc0e4f60104e5c9cb808a61faeb03e4be4aec4f0c65f47913d7c7d9d91591793a6cb9ab843f98ca2c3d711c4a34c
+  version: 7.30.1
+  resolution: "undici@npm:7.30.1"
+  checksum: 10c0/c838089b010e8e28a9a5358d4bf4621e0c8d7bb70058b23e819667349c4c0b6791a7c8bc9bbe94ff0923db132faae0d9d9592b9743eda4f2b49466fa57482213
   languageName: node
   linkType: hard
 
