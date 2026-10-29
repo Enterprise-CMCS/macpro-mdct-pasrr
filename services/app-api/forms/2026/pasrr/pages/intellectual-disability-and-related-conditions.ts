@@ -13,10 +13,10 @@ const residentReviewsAccordion: AccordionTemplate = {
   value:
     "<p>Include all Level II resident reviews completed during the reporting period for individuals with ID/RC that meet the annual reporting criteria. This includes Level II resident reviews triggered by:</p>" +
     "<ul>" +
-    "  <li>A significant change in condition.</li>" +
-    "  <li>Expiration of a PASRR 30-day exempted hospital discharge exemption.</li>" +
-    "  <li>Expiration of an PASRR advance group determination stay (such as respite care).</li>" +
-    "  <li>Expiration of an approved Medicaid section 1135 waiver for PASRR.</li>" +
+    "<li>A significant change in condition.</li>" +
+    "<li>Expiration of a PASRR 30-day exempted hospital discharge exemption.</li>" +
+    "<li>Expiration of an PASRR advance group determination stay (such as respite care).</li>" +
+    "<li>Expiration of an approved Medicaid section 1135 waiver for PASRR.</li>" +
     "</ul>",
 };
 
@@ -83,7 +83,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
       id: "qkz8lof1dGiflEWb9W4CkIFV",
       type: ElementType.TextAreaField,
       label:
-        " Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain.",
+        "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain.",
       helperText:
         "Do not include personally identifiable information (PII) or protected health information (PHI).",
       required: false,
