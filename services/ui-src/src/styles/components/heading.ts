@@ -30,8 +30,9 @@ const h5Variant = {
 const subHeaderVariant = {
   fontSize: "heading_xl",
   fontWeight: "heading_xl",
-  p: {
-    margin: "0",
+  "h2&, h2 &": {
+    fontSize: "heading_2xl",
+    fontWeight: "heading_2xl",
   },
   ".mobile &": {
     fontSize: "heading_lg",
