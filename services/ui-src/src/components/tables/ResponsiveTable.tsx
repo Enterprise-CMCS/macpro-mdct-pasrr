@@ -182,6 +182,7 @@ const VerticalTable = ({
             .map((data, dataIndex) => {
               return data ? (
                 <Grid
+                  key={`vertical-table-body-data-${rowIndex}-${dataIndex}`}
                   templateColumns="minmax(0, 40vw) minmax(0, 1fr) "
                   gap="1.5rem"
                 >
@@ -202,6 +203,7 @@ const VerticalTable = ({
             .map((data, dataIndex) => {
               return data ? (
                 <Grid
+                  key={`vertical-table-foot-data-${rowIndex}-${dataIndex}`}
                   templateColumns="minmax(0, 40vw) minmax(0, 1fr) "
                   gap="1.5rem"
                 >
