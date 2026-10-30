@@ -42,6 +42,9 @@ a {
   &:hover {
     color: var(--chakra-colors-gray_light);
   }
+  &:visited {
+    color: var(--chakra-colors-visited);
+  }
   transition: all 0.3s ease !important;
 }
 
@@ -233,6 +236,15 @@ button {
 .tech-spec-icon-hint-size {
   @extend .tech-spec-icon;
   height: 0.9rem;
+}
+
+// EXTERNAL LINK ICON
+
+.external-link-icon.ds-c-icon {
+  height: 1em;
+  margin-left: 0.25em;
+  margin-top: -2px;
+  width: 1em;
 }
 
 .column {
