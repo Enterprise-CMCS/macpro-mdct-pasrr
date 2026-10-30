@@ -15,42 +15,42 @@ export const reviewAndSubmit: ReviewSubmitTemplate = {
   elements: [
     {
       type: ElementType.StatusAlert,
-      id: "review-alert",
+      id: "review_alert",
       status: AlertTypes.ERROR,
       title: "Your form is not ready for submission",
       text: "Some sections of the PASRR Report have errors or are missing required responses.",
     },
     {
       type: ElementType.Header,
-      id: "review-header",
+      id: "review_header",
       text: "Review & Submit",
     },
     {
       type: ElementType.RequestFeedbackButton,
-      id: "review-request-feedback",
+      id: "review_requestFeedback",
     },
     {
       type: ElementType.Paragraph,
-      id: "review-text",
+      id: "review_text",
       title: "Ready to Submit?",
       text: "Double check that everything in your PASRR Report is accurate. To make edits to your report after submitting, contact your CMS PASRR Lead to unlock your report.",
     },
     {
       type: ElementType.StatusTable,
-      id: "review-status",
+      id: "review_status",
       to: "review-submit",
     },
   ],
   submittedView: [
     {
       type: ElementType.Header,
-      id: "submitted-header",
+      id: "submitted_header",
       text: "Successfully Submitted",
       icon: HeaderIcon.Check,
     },
     {
       type: ElementType.SubmissionParagraph,
-      id: "submitted-thank-you",
+      id: "submitted_thankYou",
     },
     {
       type: ElementType.Divider,
@@ -58,7 +58,7 @@ export const reviewAndSubmit: ReviewSubmitTemplate = {
     },
     {
       type: ElementType.Paragraph,
-      id: "submitted-what-explanation",
+      id: "submitted_whatExplanation",
       title: "What happens now?",
       text:
         "<p>Your report has been submitted and is now locked from editing.</p></br></br>" +
