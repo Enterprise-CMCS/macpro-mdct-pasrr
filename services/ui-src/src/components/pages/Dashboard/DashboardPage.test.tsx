@@ -234,7 +234,7 @@ describe("DashboardPage with state user", () => {
     );
     expect(paragraphs[1]).toBeVisible();
     expect(paragraphs[1]).toHaveTextContent(
-      "You can submit one report per year. You'll be able to create your next report at the start of the new year."
+      "You can submit one report per year. You’ll be able to create your next report at the start of the new year."
     );
   });
 
