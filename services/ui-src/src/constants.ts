@@ -3,7 +3,7 @@ export const ErrorMessages = {
   mustBeADate: "Response must be a date in MMDDYYYY format",
   mustBeADateOptional:
     "If provided, response must be a date in MMDDYYYY format",
-  mustBeANumber: "Response must be a number",
+  mustBeANumber: "Response must be a valid number",
   requiredResponse: "A response is required",
   mustBeAnEmail: "Response must be a valid email address",
   denominatorZero: (

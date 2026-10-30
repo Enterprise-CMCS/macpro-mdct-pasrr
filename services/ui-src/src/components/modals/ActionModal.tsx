@@ -85,16 +85,17 @@ export const ActionModal = ({
       <form id="actionModal" onSubmit={onSubmit}>
         <Flex flexDir="column" gap="1.5rem">
           {renderElements.map((element, index) =>
-            buildElement(
-              {
+            buildElement({
+              element: {
                 ...element,
                 disabled: element.disabled || disabled,
               },
-              formData.find((data) => data.id === element.id)?.value!,
-              (value) => onModalChange(value, element.id, index),
-              element.label,
-              errorMessages.get(element.id)
-            )
+              defaultValue: formData.find((data) => data.id === element.id)
+                ?.value!,
+              onChange: (value) => onModalChange(value, element.id, index),
+              label: element.label,
+              errorMessage: errorMessages.get(element.id),
+            })
           )}
         </Flex>
       </form>

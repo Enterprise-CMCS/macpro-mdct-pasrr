@@ -69,14 +69,14 @@ const buildRows = (
           disabled: disabled || column.disabled,
         };
 
-        const value = buildElement(
-          formattedCol,
-          element?.value!,
-          (value) =>
+        const value = buildElement({
+          element: formattedCol,
+          defaultValue: element?.value!,
+          onChange: (value) =>
             onChange(value, answerRowIndex, column.id, formattedCol.type),
-          generateAriaLabel(column.header, answerRow),
-          errorMessages[answerRowIndex]?.get(column.id)
-        );
+          label: generateAriaLabel(column.header, answerRow),
+          errorMessage: errorMessages[answerRowIndex]?.get(column.id),
+        });
         rowElement.push(value || "--");
       }
     });
@@ -259,7 +259,7 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
           Add {label}
         </Button>
       ) : null}
-      {ResponsiveTable(headers, formattedRows, "metric")}
+      {ResponsiveTable({ headers, rows: formattedRows, variant: "metric" })}
       <ActionModal
         modal={modal}
         form={modalData}
@@ -297,7 +297,7 @@ export const ActionTableExport = (element: ActionTableTemplate) => {
       <Heading as="h2" className="chakra-heading" fontWeight="bold">
         {element.label}
       </Heading>
-      {ResponsiveTable(headers, rows, "pdf")}
+      {ResponsiveTable({ headers, rows, variant: "pdf" })}
     </Stack>
   );
 };

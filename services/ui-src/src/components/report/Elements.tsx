@@ -79,6 +79,9 @@ export const HeaderElement = ({
   );
 };
 
+const hasBlockLevelElements = (text?: string) =>
+  Boolean(text && /<\/?(div|p|ul|ol|li)\b/i.test(text));
+
 export const SubHeaderElement = ({
   element,
 }: PageElementProps<SubHeaderTemplate>) => {
@@ -88,7 +91,12 @@ export const SubHeaderElement = ({
   }
   const level = `h${element.headingLevel || 2}` as ReactElementType;
   const Wrapper = element.noWrapper ? Fragment : Stack;
-  const helperType = element.noWrapper ? "span" : "p";
+  const hasBlocks = hasBlockLevelElements(element.helperText);
+  let helperContainerType: ReactElementType = hasBlocks ? "div" : "p";
+
+  if (element.noWrapper && !hasBlocks) {
+    helperContainerType = "span";
+  }
 
   return (
     <Wrapper>
@@ -96,8 +104,14 @@ export const SubHeaderElement = ({
         {element.text}
       </Heading>
       {element.helperText && (
-        <Text as={helperType} variant="helperText">
-          {element.helperText}
+        <Text
+          as={helperContainerType}
+          display="flex"
+          flexDirection="column"
+          gap="spacer1"
+          variant="helperText"
+        >
+          {parseHtml(element.helperText)}
         </Text>
       )}
     </Wrapper>
@@ -134,7 +148,7 @@ export const ParagraphElement = ({
       <Box fontSize={obj.size} fontWeight={obj.weight} color={obj.color}>
         {parseHtml(element.text)}
       </Box>
-      <Text>{parsedHint}</Text>
+      {parsedHint && <Text>{parsedHint}</Text>}
     </Stack>
   );
 };

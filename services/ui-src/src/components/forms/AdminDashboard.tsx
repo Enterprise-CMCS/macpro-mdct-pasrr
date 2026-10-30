@@ -420,8 +420,8 @@ export const AdminDashboard = () => {
             <Spinner size="md" />
           </Flex>
         ) : (
-          ResponsiveTable(
-            [
+          ResponsiveTable({
+            headers: [
               { label: "State/Territory", sortable: true },
               { label: "Report Name", sortable: true },
               { label: "Budget Period", sortable: true },
@@ -430,10 +430,9 @@ export const AdminDashboard = () => {
               { label: "#" },
               { label: "Actions" },
             ],
-            tableRows,
-            "",
-            sortRows
-          )
+            rows: tableRows,
+            sorting: sortRows,
+          })
         )}
       </Stack>
       {selectedReport && (

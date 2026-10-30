@@ -13,15 +13,32 @@ import {
   maskByType,
 } from "utils/validation/inputValidation";
 
-export const buildElement = (
-  element: ActionElement,
-  defaultValue: string | number,
-  onChange: (value: string[]) => void,
-  label?: string,
-  errorMessage?: string
-) => {
-  const { type } = element;
+export const buildElement = ({
+  defaultValue,
+  element,
+  errorMessage,
+  key,
+  label,
+  onChange,
+  readonly = false,
+}: {
+  defaultValue: string | number;
+  element: ActionElement;
+  errorMessage?: string;
+  key?: string;
+  label?: string;
+  onChange: (value: string[]) => void;
+  readonly?: boolean;
+}) => {
+  let type = element.type;
   const children = "children" in element ? element.children : [];
+
+  if (
+    [ElementType.NumberField, ElementType.Textbox].includes(type) &&
+    readonly === true
+  ) {
+    type = ElementType.Paragraph;
+  }
 
   switch (type) {
     case ElementType.Paragraph:
@@ -31,7 +48,7 @@ export const buildElement = (
     case ElementType.Dropdown:
       return (
         <Dropdown
-          key={`dropdown-${label}`}
+          key={`dropdown-${key || label}`}
           name={label ?? "dropdown"}
           label={label}
           onChange={(event) => {
@@ -47,7 +64,7 @@ export const buildElement = (
     case ElementType.Textbox:
       return (
         <PasrrTextField
-          key={`textbox-${label}`}
+          key={`textbox-${key || label}`}
           element={
             {
               ...element,
@@ -67,7 +84,7 @@ export const buildElement = (
     case ElementType.NumberField:
       return (
         <CmsdsTextField
-          key={`textbox-${label}`}
+          key={`textbox-${key || label}`}
           label={label}
           name={label ?? "textbox"}
           onChange={(event) => {
@@ -86,7 +103,7 @@ export const buildElement = (
     case ElementType.TextAreaField:
       return (
         <CmsdsTextField
-          key={`textarea-${label}`}
+          key={`textarea-${key || label}`}
           label={label}
           name={label ?? "textarea"}
           onChange={(event) => {
@@ -105,7 +122,7 @@ export const buildElement = (
     case ElementType.Date:
       return (
         <SingleInputDateField
-          key={`date-${label}`}
+          key={`date-${key || label}`}
           name={label ?? "date-field"}
           label={label}
           onChange={(_rawValue: string, maskedValue: string) => {
@@ -133,9 +150,16 @@ export const getErrorMessage = (
 
   switch (type) {
     case ElementType.NumberField:
-      const parsedValue = parseNumber(value[0]);
-      const valueIsNonNumeric = value && parsedValue === undefined;
-      if (valueIsNonNumeric) {
+      const rawValue = value[0];
+      const parsedValue = parseNumber(rawValue);
+      const valueIsNonNumeric = parsedValue === undefined;
+
+      if (
+        valueIsNonNumeric ||
+        rawValue.includes(".") ||
+        parsedValue < 0 ||
+        !Number.isInteger(parsedValue)
+      ) {
         return ErrorMessages.mustBeANumber;
       }
       break;

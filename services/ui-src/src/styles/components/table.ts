@@ -190,6 +190,83 @@ const metricVariant = {
   },
 };
 
+const summationVariant = {
+  table: {
+    tr: {
+      border: "none",
+      "&:nth-of-type(even)": {
+        background: "gray_lightest_highlight",
+      },
+      "&.white": {
+        background: "white",
+      },
+      "&.grey": {
+        background: "gray_lightest_highlight",
+      },
+    },
+    td: {
+      border: "none",
+      lineHeight: "body_md",
+      paddingX: "spacer2",
+      paddingY: "spacer1",
+      verticalAlign: "middle",
+      input: {
+        fieldSizing: "content",
+        minWidth: "3rem",
+        maxWidth: "12rem",
+      },
+      "label, button": {
+        margin: "0",
+        display: "flex",
+        justifyContent: "center",
+      },
+      ".ds-c-label": {
+        border: 0,
+        clip: "rect(0 0 0 0)",
+        height: "1px",
+        margin: "-1px",
+        overflow: "hidden",
+        padding: 0,
+        position: "absolute",
+        width: "1px",
+      },
+      ".ds-c-label-mask": {
+        display: "none",
+      },
+    },
+    tbody: {
+      td: {
+        "&:first-of-type": {
+          width: "25rem",
+        },
+        "&:nth-of-type(2)": {
+          width: "10rem",
+        },
+      },
+    },
+    thead: {
+      th: {
+        background: "primary_darkest",
+        color: "white",
+        fontSize: "body_lg",
+        paddingX: "spacer2",
+        paddingY: "1.25rem",
+      },
+    },
+    tfoot: {
+      td: {
+        background: "gray_lighter",
+        fontWeight: "bold",
+        padding: "spacer2",
+        textAlign: "right",
+        "&:first-of-type": {
+          textAlign: "left",
+        },
+      },
+    },
+  },
+};
+
 const pdfVariant = {
   table: {
     th: {
@@ -210,6 +287,7 @@ const variants = {
   reportDetails: reportDetailsVariant,
   metric: metricVariant,
   pdf: pdfVariant,
+  summation: summationVariant,
 };
 
 const sizes = {};
