@@ -250,3 +250,26 @@ button {
   font-size: 14px;
   color: var(--chakra-colors-success_darker);
 }
+
+// PAGE ELEMENT OVERRIDES
+
+// SubHeaderElement heading
+.chakra-stack {
+  > .chakra-heading {
+    margin-top: 1rem;
+  }
+}
+
+// SubHeaderElement heading that follows ParagraphElement
+.chakra-stack + .chakra-stack {
+  > .chakra-heading {
+    margin-top: 0;
+  }
+}
+
+// SubHeaderElement heading that follows HeaderElement
+.chakra-heading + .chakra-stack {
+  > .chakra-heading {
+    margin-top: 0;
+  }
+}
