@@ -145,14 +145,14 @@ describe("Input validation utilities", () => {
       const result = validateNumber("texas", true);
       expect(result.parsedValue).toBeUndefined();
       expect(result.isValid).toBe(false);
-      expect(result.errorMessage).toBe("Response must be a number");
+      expect(result.errorMessage).toBe("Response must be a valid number");
     });
 
     test("should reject invalid numbers for optional fields", () => {
       const result = validateNumber("texas", false);
       expect(result.parsedValue).toBeUndefined();
       expect(result.isValid).toBe(false);
-      expect(result.errorMessage).toBe("Response must be a number");
+      expect(result.errorMessage).toBe("Response must be a valid number");
     });
 
     test("should allow valid numbers", () => {

@@ -10,7 +10,7 @@ import { parseMMDDYYYY } from "utils";
  * we will have a `displayValue` object with the same shape but string values,
  * like `{ num: "3", denom: "4" }`. Then we will hold error messages in a third
  * object, the same shape as the `displayValue`. It might eventually look like
- * `{ num: "A response is required", denom: "Response must be a number" }`.
+ * `{ num: "A response is required", denom: "Response must be a valid number" }`.
  *
  * The error message object will be re-created on page load, with empty values.
  * As the user types inputs, we update the error message values accordingly.

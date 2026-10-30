@@ -143,7 +143,7 @@ describe("Test tableBuilder functions", () => {
     });
     test("Test NumberField error message", () => {
       expect(getErrorMessage(ElementType.NumberField, true, ["abc"])).toBe(
-        "Response must be a number"
+        "Response must be a valid number"
       );
       expect(getErrorMessage(ElementType.NumberField, true, [""])).toBe(
         "A response is required"
