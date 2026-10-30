@@ -13,15 +13,30 @@ import {
   maskByType,
 } from "utils/validation/inputValidation";
 
-export const buildElement = (
-  element: ActionElement,
-  defaultValue: string | number,
-  onChange: (value: string[]) => void,
-  label?: string,
-  errorMessage?: string
-) => {
-  const { type } = element;
+export const buildElement = ({
+  defaultValue,
+  element,
+  errorMessage,
+  label,
+  onChange,
+  readonly = false,
+}: {
+  defaultValue: string | number;
+  element: ActionElement;
+  errorMessage?: string;
+  label?: string;
+  onChange: (value: string[]) => void;
+  readonly?: boolean;
+}) => {
+  let type = element.type;
   const children = "children" in element ? element.children : [];
+
+  if (
+    [ElementType.NumberField, ElementType.Textbox].includes(type) &&
+    readonly === true
+  ) {
+    type = ElementType.Paragraph;
+  }
 
   switch (type) {
     case ElementType.Paragraph:
@@ -133,9 +148,16 @@ export const getErrorMessage = (
 
   switch (type) {
     case ElementType.NumberField:
-      const parsedValue = parseNumber(value[0]);
-      const valueIsNonNumeric = value && parsedValue === undefined;
-      if (valueIsNonNumeric) {
+      const rawValue = value[0];
+      const parsedValue = parseNumber(rawValue);
+      const valueIsNonNumeric = parsedValue === undefined;
+
+      if (
+        valueIsNonNumeric ||
+        rawValue.includes(".") ||
+        parsedValue < 0 ||
+        !Number.isInteger(parsedValue)
+      ) {
         return ErrorMessages.mustBeANumber;
       }
       break;

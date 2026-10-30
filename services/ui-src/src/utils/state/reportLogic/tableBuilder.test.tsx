@@ -40,7 +40,12 @@ describe("Test tableBuilder functions", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       const component = elements.map((element) =>
-        buildElement(element, "", mockOnChange, element.label)
+        buildElement({
+          element,
+          defaultValue: "",
+          onChange: mockOnChange,
+          label: element.label,
+        })
       );
       render(<>{component}</>);
     });
@@ -66,15 +71,15 @@ describe("Test tableBuilder functions", () => {
     test("Masked textbox formats its value on blur", async () => {
       const StatefulMaskedTextbox = () => {
         const [value, setValue] = useState<string | number>("");
-        return buildElement(
-          {
+        return buildElement({
+          element: {
             ...elements[2],
             mask: MaskType.CommaSeparated,
           },
-          value,
-          ([nextValue]) => setValue(nextValue),
-          "Masked textbox"
-        );
+          defaultValue: value,
+          onChange: ([nextValue]) => setValue(nextValue),
+          label: "Masked textbox",
+        });
       };
       render(<StatefulMaskedTextbox />);
 
@@ -107,12 +112,12 @@ describe("Test tableBuilder functions", () => {
   });
 
   test("Test buildElement throws error no type is found", () => {
-    const component = buildElement(
-      { id: "mock-accordion", type: ElementType.AccordionGroup },
-      "",
-      mockOnChange,
-      "Mock Accordion"
-    );
+    const component = buildElement({
+      element: { id: "mock-accordion", type: ElementType.AccordionGroup },
+      defaultValue: "",
+      onChange: mockOnChange,
+      label: "Mock Accordion",
+    });
     render(component);
     expect(screen.queryByText("Mock Accordion")).not.toBeInTheDocument();
   });

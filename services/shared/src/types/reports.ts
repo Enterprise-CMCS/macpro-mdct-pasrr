@@ -193,6 +193,7 @@ export enum ElementType {
   ActionTable = "actionTable",
   RequestFeedbackButton = "requestFeedbackButton",
   FieldGroup = "fieldGroup",
+  SummationTable = "summationTable",
 }
 
 export type PageElement =
@@ -217,7 +218,8 @@ export type PageElement =
   | AttachmentAreaTemplate
   | ActionTableTemplate
   | RequestFeedbackButtonTemplate
-  | FieldGroupTemplate;
+  | FieldGroupTemplate
+  | SummationTableTemplate;
 
 export type HideCondition = {
   controllerElementId: string;
@@ -450,6 +452,30 @@ export interface FieldGroupTemplate {
   elements: FieldGroupElement[];
   answer?: FieldGroupAnswerShape[];
   headingLevel?: HeadingLevel;
+}
+
+export type SummationTableCellAnswerShape = {
+  id: string;
+  value: string | number;
+  preset?: boolean;
+  readonly?: boolean;
+};
+
+export type SummationTableRowAnswerShape = SummationTableCellAnswerShape[];
+
+export type SummationTableAnswerShape = {
+  rows: SummationTableRowAnswerShape[];
+  total: SummationTableRowAnswerShape[];
+};
+
+export interface SummationTableTemplate extends Omit<
+  InputElementTemplate,
+  "label" | "helperText" | "helperTextLink" | "skipOptionalTag"
+> {
+  type: ElementType.SummationTable;
+  caption: string;
+  rows: ActionRowElement[];
+  answer?: SummationTableAnswerShape;
 }
 
 export interface PasrrSubTypeData {

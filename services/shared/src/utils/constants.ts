@@ -1,6 +1,11 @@
 //Shared constants between frontend and backend
 
-import { ElementType, FieldGroupElement } from "../types/reports";
+import {
+  ActionRowElement,
+  ElementType,
+  FieldGroupElement,
+  SummationTableAnswerShape,
+} from "../types/reports";
 
 // STATES
 
@@ -179,4 +184,65 @@ export const getPostalAddressElements = ({
       skipOptionalTag,
     },
   ];
+};
+
+// Used with SummationTable component
+export const getResidentDispositionPresetRowsAndAnswer = ({
+  id,
+}: {
+  id: string;
+}): { rows: ActionRowElement[]; answer: SummationTableAnswerShape } => {
+  const dispositionColumnId = `${id}-disposition`;
+
+  const rows = [
+    {
+      id: dispositionColumnId,
+      header: "Disposition",
+      type: ElementType.Textbox,
+    },
+    {
+      id: `${id}-number-of-residents`,
+      header: "# of residents",
+      type: ElementType.NumberField,
+    },
+  ];
+
+  const dispositions = [
+    "Discharged to community",
+    "Discharged to Medicaid home and community-based services waiver",
+    "Discharged to an institution for mental diseases (IMD) or inpatient psychiatric facility",
+    "Discharged to an intermediate care facility for individuals with intellectual disabilities or related conditions (ICF/IID)",
+    "Discharged (setting unknown)",
+    "Discharged after appeal",
+    "Pending appeal",
+    "Pending home or community placement",
+    "Pending institutional (IMD, inpatient psychiatric facility, ICF/IID) placement",
+    "Deceased",
+    "Unknown",
+  ];
+
+  const answerRows = dispositions.map((value) => [
+    {
+      id: dispositionColumnId,
+      value,
+      preset: true,
+      readonly: true,
+    },
+  ]);
+
+  const totalRows = rows.map((row) => ({
+    id: row.id,
+    value: row.id === dispositionColumnId ? "Total" : "0",
+    ...(row.id === dispositionColumnId ? { preset: true } : {}),
+    readonly: true,
+  }));
+  const total = [totalRows];
+
+  return {
+    rows,
+    answer: {
+      rows: answerRows,
+      total,
+    },
+  };
 };
