@@ -54,8 +54,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
     {
       type: ElementType.SummationTable,
       id: "idrc-specialized-services-required-table",
-      caption:
-        "Residents who don’t require nursing facility care, but do require specialized services",
+      caption: "Resident dispositions: Specialized services only",
       required: true,
       rows: getResidentDispositionPresetRowsAndAnswer({
         id: "idrc-specialized-services-required-table",
@@ -121,8 +120,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
     {
       type: ElementType.SummationTable,
       id: "idrc-specialized-services-not-required-table",
-      caption:
-        "Residents who don’t require nursing facility care or specialized services",
+      caption: "Resident dispositions: No nursing facility care or services",
       required: true,
       rows: getResidentDispositionPresetRowsAndAnswer({
         id: "idrc-specialized-services-not-required-table",

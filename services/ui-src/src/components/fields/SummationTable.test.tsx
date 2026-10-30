@@ -8,6 +8,7 @@ import { testA11y } from "utils/testing/commonTests";
 import {
   ElementType,
   getResidentDispositionPresetRowsAndAnswer,
+  MaskType,
   SummationTableTemplate,
 } from "@pasrr/shared";
 
@@ -40,18 +41,20 @@ const mockedSummationTableElement: SummationTableTemplate = {
       header: "NumberField",
       type: ElementType.NumberField,
     },
+    {
+      id: `${id}-number-field-with-mask`,
+      header: "NumberField Mask",
+      type: ElementType.NumberField,
+      mask: MaskType.CommaSeparated,
+    },
   ],
   answer: {
-    rows: [
-      [
-        { id: `${id}-textbox`, value: "mock text" },
-        { id: `${id}-number-field`, value: "12345" },
-      ],
-    ],
+    rows: [[{ id: `${id}-textbox`, value: "mock text" }]],
     total: [
       [
         { id: `${id}-textbox`, value: "Total", preset: true, readonly: true },
-        { id: `${id}-number-field`, value: "0", readonly: true },
+        { id: `${id}-number-field`, value: 0, readonly: true },
+        { id: `${id}-number-field-with-mask`, value: 0, readonly: true },
       ],
     ],
   },
@@ -85,7 +88,7 @@ describe("<SummationTable />", () => {
       name: "mock text NumberField",
     });
     expect(numberField).toBeVisible();
-    expect(numberField).toHaveValue("12345");
+    expect(numberField).toHaveValue("");
   });
 
   test("SummationTable should send updates to the Form", async () => {
@@ -94,12 +97,7 @@ describe("<SummationTable />", () => {
     await userEvent.clear(textbox);
     expect(updateSpy).toHaveBeenCalledWith({
       answer: {
-        rows: [
-          [
-            { id: `${id}-textbox`, value: "" },
-            { id: `${id}-number-field`, value: "12345" },
-          ],
-        ],
+        rows: [[{ id: `${id}-textbox`, value: "" }]],
         total: mockedSummationTableElement.answer?.total,
       },
     });
@@ -108,17 +106,42 @@ describe("<SummationTable />", () => {
       name: "NumberField",
     });
     await userEvent.clear(numberField);
+    await userEvent.type(numberField, "123");
     expect(updateSpy).toHaveBeenCalledWith({
       answer: {
         rows: [
           [
             { id: `${id}-textbox`, value: "" },
-            { id: `${id}-number-field`, value: "" },
+            { id: `${id}-number-field`, value: 123 },
           ],
         ],
         total: mockedSummationTableElement.answer?.total,
       },
     });
+
+    const numberFieldWithMask = screen.getByRole("textbox", {
+      name: "NumberField Mask",
+    });
+    await userEvent.type(numberFieldWithMask, "mock text");
+    expect(screen.getByText("Response must be a valid number")).toBeVisible();
+
+    await userEvent.clear(numberFieldWithMask);
+    await userEvent.type(numberFieldWithMask, "12,345");
+    expect(updateSpy).toHaveBeenCalledWith({
+      answer: {
+        rows: [
+          [
+            { id: `${id}-textbox`, value: "" },
+            { id: `${id}-number-field`, value: 123 },
+            { id: `${id}-number-field-with-mask`, value: 12345 },
+          ],
+        ],
+        total: mockedSummationTableElement.answer?.total,
+      },
+    });
+    expect(
+      screen.queryByText("Response must be a valid number")
+    ).not.toBeInTheDocument();
   });
 
   test("Resident Disposition SummationTable is visible", () => {

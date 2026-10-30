@@ -4,6 +4,7 @@ import {
   ActionRowElement,
   ElementType,
   FieldGroupElement,
+  MaskType,
   SummationTableAnswerShape,
 } from "../types/reports";
 
@@ -204,6 +205,7 @@ export const getResidentDispositionPresetRowsAndAnswer = ({
       id: `${id}-number-of-residents`,
       header: "# of residents",
       type: ElementType.NumberField,
+      mask: MaskType.CommaSeparated,
     },
   ];
 
@@ -232,7 +234,7 @@ export const getResidentDispositionPresetRowsAndAnswer = ({
 
   const totalRows = rows.map((row) => ({
     id: row.id,
-    value: row.id === dispositionColumnId ? "Total" : "0",
+    value: row.id === dispositionColumnId ? "Total" : 0,
     ...(row.id === dispositionColumnId ? { preset: true } : {}),
     readonly: true,
   }));

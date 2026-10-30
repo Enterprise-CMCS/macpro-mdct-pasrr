@@ -12,7 +12,7 @@ import {
   buildElement,
   getErrorMessage,
 } from "utils/state/reportLogic/tableBuilder";
-import { unmaskByType } from "utils/validation/inputValidation";
+import { parseNumber, unmaskByType } from "utils/validation/inputValidation";
 import { ResponsiveTable } from "components/tables/ResponsiveTable";
 
 export const SummationTable = (
@@ -27,16 +27,23 @@ export const SummationTable = (
 
   const formatAnswer = (
     answerCell: SummationTableCellAnswerShape,
-    rows: ActionRowElement[]
+    rows: ActionRowElement[],
+    type: ElementType
   ) => {
     const element = rows.find((t) => t.id === answerCell.id);
+
+    let value = answerCell.value;
+
     if (element?.mask) {
-      return {
-        ...answerCell,
-        value: unmaskByType(element.mask, answerCell.value),
-      };
+      value = unmaskByType(element.mask, value);
+    } else if (type === ElementType.NumberField && value) {
+      value = parseNumber(value.toString()) ?? value;
     }
-    return answerCell;
+
+    return {
+      ...answerCell,
+      value,
+    };
   };
 
   const generateAriaLabel = (
@@ -54,7 +61,7 @@ export const SummationTable = (
     answer = [],
     disabled = false,
     errorMessages = [],
-    onChange = () => {},
+    onChange,
     rows,
   }: {
     answer?: SummationTableRowAnswerShape[];
@@ -91,7 +98,7 @@ export const SummationTable = (
               errorMessage: errorMessages[answerRowIndex]?.get(column.id),
               label: generateAriaLabel(column.header, answerRow, firstCellId),
               onChange: (value) =>
-                onChange({
+                onChange?.({
                   answer,
                   id: column.id,
                   index: answerRowIndex,
@@ -124,13 +131,11 @@ export const SummationTable = (
     type: ElementType;
     value: string[];
   }) => {
-    const answerRows = answer?.rows ?? [];
+    const answerRows = [...(answer?.rows ?? [])];
     const updatedCell = { id, value: value[0] };
-    const formattedValue = formatAnswer(updatedCell, rows).value;
-    const rowToUpdate = answerRows[index];
-    if (!rowToUpdate) {
-      answerRows[index] = [];
-    }
+    const formattedValue = formatAnswer(updatedCell, rows, type).value;
+    const rowToUpdate = answerRows[index] ?? [];
+    answerRows[index] = rowToUpdate;
     const cellToUpdate = rowToUpdate.find((t) => t.id === id);
 
     if (cellToUpdate) {
@@ -140,9 +145,6 @@ export const SummationTable = (
     }
 
     const updatedErrorMessages = [...errorMessages];
-    if (!updatedErrorMessages[index]) {
-      updatedErrorMessages[index] = new Map<string, string>();
-    }
     const errorMessage = getErrorMessage(type, false, value);
     updatedErrorMessages[index].set(id, errorMessage);
     setErrorMessages(updatedErrorMessages);

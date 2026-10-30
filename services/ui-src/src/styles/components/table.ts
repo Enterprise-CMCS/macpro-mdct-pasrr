@@ -239,6 +239,9 @@ const summationVariant = {
         "&:first-of-type": {
           width: "25rem",
         },
+        "&:nth-of-type(2)": {
+          width: "10rem",
+        },
       },
     },
     thead: {
