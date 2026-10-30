@@ -177,7 +177,7 @@ const VerticalTable = ({
     <VStack gap="1.5rem" alignItems="flex-start">
       <Divider />
       {rows.map((row, rowIndex) => (
-        <Fragment key={`vertical-table-row-${rowIndex}`}>
+        <Fragment key={`vertical-table-body-row-${rowIndex}`}>
           {row
             .map((data, dataIndex) => {
               return data ? (
@@ -197,7 +197,7 @@ const VerticalTable = ({
         </Fragment>
       ))}
       {footers.map((row, rowIndex) => (
-        <Fragment key={`vertical-table-row-${rowIndex}`}>
+        <Fragment key={`vertical-table-foot-row-${rowIndex}`}>
           {row
             .map((data, dataIndex) => {
               return data ? (
