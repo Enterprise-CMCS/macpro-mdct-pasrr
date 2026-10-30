@@ -96,6 +96,7 @@ export const SummationTable = (
               defaultValue: answerCell?.value ?? "",
               element: formattedCell,
               errorMessage: errorMessages[answerRowIndex]?.get(column.id),
+              key: `element-${column.id}-${answerRowIndex}`,
               label: generateAriaLabel(column.header, answerRow, firstCellId),
               onChange: (value) =>
                 onChange?.({

@@ -17,6 +17,7 @@ export const buildElement = ({
   defaultValue,
   element,
   errorMessage,
+  key,
   label,
   onChange,
   readonly = false,
@@ -24,6 +25,7 @@ export const buildElement = ({
   defaultValue: string | number;
   element: ActionElement;
   errorMessage?: string;
+  key?: string;
   label?: string;
   onChange: (value: string[]) => void;
   readonly?: boolean;
@@ -46,7 +48,7 @@ export const buildElement = ({
     case ElementType.Dropdown:
       return (
         <Dropdown
-          key={`dropdown-${label}`}
+          key={`dropdown-${key || label}`}
           name={label ?? "dropdown"}
           label={label}
           onChange={(event) => {
@@ -62,7 +64,7 @@ export const buildElement = ({
     case ElementType.Textbox:
       return (
         <PasrrTextField
-          key={`textbox-${label}`}
+          key={`textbox-${key || label}`}
           element={
             {
               ...element,
@@ -82,7 +84,7 @@ export const buildElement = ({
     case ElementType.NumberField:
       return (
         <CmsdsTextField
-          key={`textbox-${label}`}
+          key={`textbox-${key || label}`}
           label={label}
           name={label ?? "textbox"}
           onChange={(event) => {
@@ -101,7 +103,7 @@ export const buildElement = ({
     case ElementType.TextAreaField:
       return (
         <CmsdsTextField
-          key={`textarea-${label}`}
+          key={`textarea-${key || label}`}
           label={label}
           name={label ?? "textarea"}
           onChange={(event) => {
@@ -120,7 +122,7 @@ export const buildElement = ({
     case ElementType.Date:
       return (
         <SingleInputDateField
-          key={`date-${label}`}
+          key={`date-${key || label}`}
           name={label ?? "date-field"}
           label={label}
           onChange={(_rawValue: string, maskedValue: string) => {
