@@ -40,7 +40,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
     residentReviewsAccordion,
     {
       type: ElementType.SubHeader,
-      id: "idrc-specialized-services-required-subheader",
+      id: "idrc_specializedServicesRequiredSubheader",
       text: "Resident dispositions: Specialized services only",
       helperText:
         "<p>Report Level II resident review data for individuals with an intellectual disability or related condition (ID/RC) by providing the number and disposition (resident status) of residents who:</p>" +
@@ -53,14 +53,14 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
     },
     {
       type: ElementType.SummationTable,
-      id: "idrc-specialized-services-required-table",
+      id: "idrc_specializedServicesRequiredTable",
       caption: "Resident dispositions: Specialized services only",
       required: true,
       rows: getResidentDispositionPresetRowsAndAnswer({
-        id: "idrc-specialized-services-required-table",
+        id: "idrc_specializedServicesRequiredTable",
       }).rows,
       answer: getResidentDispositionPresetRowsAndAnswer({
-        id: "idrc-specialized-services-required-table",
+        id: "idrc_specializedServicesRequiredTable",
       }).answer,
     },
     {
@@ -106,7 +106,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
     },
     {
       type: ElementType.SubHeader,
-      id: "idrc-specialized-services-not-required-subheader",
+      id: "idrc_specializedServicesNotRequiredSubheader",
       text: "Resident dispositions: No nursing facility care or services",
       helperText:
         "<p>Report Level II resident review data for individuals with an intellectual disability or related condition (ID/RC) by providing the number and disposition (resident status) of residents who:</p>" +
@@ -119,14 +119,14 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
     },
     {
       type: ElementType.SummationTable,
-      id: "idrc-specialized-services-not-required-table",
+      id: "idrc_specializedServicesNotRequiredTable",
       caption: "Resident dispositions: No nursing facility care or services",
       required: true,
       rows: getResidentDispositionPresetRowsAndAnswer({
-        id: "idrc-specialized-services-not-required-table",
+        id: "idrc_specializedServicesNotRequiredTable",
       }).rows,
       answer: getResidentDispositionPresetRowsAndAnswer({
-        id: "idrc-specialized-services-not-required-table",
+        id: "idrc_specializedServicesNotRequiredTable",
       }).answer,
     },
   ],

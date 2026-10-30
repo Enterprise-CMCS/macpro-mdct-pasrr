@@ -4,7 +4,6 @@ import {
   ActionRowElement,
   ElementType,
   FieldGroupElement,
-  MaskType,
   SummationTableAnswerShape,
 } from "../types/reports";
 
@@ -193,7 +192,7 @@ export const getResidentDispositionPresetRowsAndAnswer = ({
 }: {
   id: string;
 }): { rows: ActionRowElement[]; answer: SummationTableAnswerShape } => {
-  const dispositionColumnId = `${id}-disposition`;
+  const dispositionColumnId = `${id}Disposition`;
 
   const rows = [
     {
@@ -202,10 +201,9 @@ export const getResidentDispositionPresetRowsAndAnswer = ({
       type: ElementType.Textbox,
     },
     {
-      id: `${id}-number-of-residents`,
+      id: `${id}NumberOfResidents`,
       header: "# of residents",
       type: ElementType.NumberField,
-      mask: MaskType.CommaSeparated,
     },
   ];
 

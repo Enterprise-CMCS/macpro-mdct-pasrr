@@ -79,6 +79,9 @@ export const HeaderElement = ({
   );
 };
 
+const hasBlockLevelElements = (text?: string) =>
+  Boolean(text && /<\/?(div|p|ul|ol|li)\b/i.test(text));
+
 export const SubHeaderElement = ({
   element,
 }: PageElementProps<SubHeaderTemplate>) => {
@@ -88,13 +91,11 @@ export const SubHeaderElement = ({
   }
   const level = `h${element.headingLevel || 2}` as ReactElementType;
   const Wrapper = element.noWrapper ? Fragment : Stack;
-  const hasBlockLevelElements = Boolean(
-    element.helperText && /<\/?(div|p|ul|ol|li)\b/i.test(element.helperText)
-  );
-  let helperType: ReactElementType = hasBlockLevelElements ? "div" : "p";
+  const hasBlocks = hasBlockLevelElements(element.helperText);
+  let helperContainerType: ReactElementType = hasBlocks ? "div" : "p";
 
-  if (element.noWrapper && !hasBlockLevelElements) {
-    helperType = "span";
+  if (element.noWrapper && !hasBlocks) {
+    helperContainerType = "span";
   }
 
   return (
@@ -104,7 +105,7 @@ export const SubHeaderElement = ({
       </Heading>
       {element.helperText && (
         <Text
-          as={helperType}
+          as={helperContainerType}
           display="flex"
           flexDirection="column"
           gap="spacer1"
