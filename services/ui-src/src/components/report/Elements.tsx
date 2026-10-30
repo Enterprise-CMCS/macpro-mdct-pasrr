@@ -79,7 +79,7 @@ export const HeaderElement = ({
   );
 };
 
-const hasBlockLevelElements = (text: string) =>
+const hasBlockLevelElements = (text?: string) =>
   Boolean(text && /<\/?(div|p|ul|ol|li)\b/i.test(text));
 
 export const SubHeaderElement = ({
