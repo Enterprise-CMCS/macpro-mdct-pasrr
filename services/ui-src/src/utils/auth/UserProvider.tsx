@@ -13,6 +13,7 @@ import {
 } from "aws-amplify/auth";
 import config from "config";
 import { initAuthManager, updateTimeout, getExpiration, useStore } from "utils";
+import { clearSessionVisitedLinks } from "utils/other/sessionVisitedLinks";
 import { PRODUCTION_HOST_DOMAIN } from "../../constants";
 import { User, UserContextShape } from "types/users";
 import { UserRoles } from "@pasrr/shared";
@@ -43,6 +44,9 @@ const authenticateWithIDM = async () => {
   } catch {
     // Ignore — we only care about clearing local state, not server-side.
   }
+  // Each IDM login starts a new session, so reset visited links before
+  // redirecting. sessionStorage survives the redirect back to the app.
+  clearSessionVisitedLinks();
   await signInWithRedirect({ provider: { custom: "Okta" } });
 };
 
@@ -61,6 +65,7 @@ export const UserProvider = ({ children }: Props) => {
     try {
       setUser(undefined);
       await signOut();
+      clearSessionVisitedLinks();
       localStorage.clear();
     } catch (error) {
       console.log(error);

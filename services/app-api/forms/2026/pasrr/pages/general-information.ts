@@ -17,6 +17,12 @@ export const generalInformation: FormPageTemplate = {
       text: "General Information",
     },
     {
+      type: ElementType.Paragraph,
+      id: "gi_requiredParagraph",
+      style: "paragraph",
+      text: "All fields are required unless marked optional.",
+    },
+    {
       type: ElementType.SubHeader,
       id: "state-report-owner-subheader",
       text: "State report owner information",

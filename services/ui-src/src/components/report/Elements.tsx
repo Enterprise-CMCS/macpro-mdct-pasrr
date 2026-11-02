@@ -130,6 +130,8 @@ export const ParagraphElement = ({
         return { ...styleDefault, weight: "bold" };
       case "hint":
         return { ...styleDefault, size: "body_sm", color: "gray_dark" };
+      case "paragraph":
+        return { ...styleDefault, color: "gray_dark" };
     }
     return styleDefault;
   };
@@ -137,6 +139,11 @@ export const ParagraphElement = ({
   const obj = styleObject(element.style ?? "");
 
   const parsedHint = parseHintText(element, setModalComponent);
+  const textContainerType: ReactElementType = hasBlockLevelElements(
+    element.text
+  )
+    ? "div"
+    : "p";
 
   return (
     <Stack>
@@ -145,7 +152,12 @@ export const ParagraphElement = ({
           {element.title}
         </Text>
       )}
-      <Box fontSize={obj.size} fontWeight={obj.weight} color={obj.color}>
+      <Box
+        as={textContainerType}
+        fontSize={obj.size}
+        fontWeight={obj.weight}
+        color={obj.color}
+      >
         {parseHtml(element.text)}
       </Box>
       {parsedHint && <Text>{parsedHint}</Text>}

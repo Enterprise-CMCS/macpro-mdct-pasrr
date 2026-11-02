@@ -144,9 +144,8 @@ export const DashboardPage = () => {
             and monitor its status.
           </Text>
           <Text>
-            While this tool will not prevent you from creating multiple reports
-            for the same reporting period, you should only submit{" "}
-            <strong>one</strong> report per reporting period.
+            You can submit one report per year. You’ll be able to create your
+            next report at the start of the new year.
           </Text>
         </Box>
         <Accordion
