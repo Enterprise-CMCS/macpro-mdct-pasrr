@@ -40,6 +40,8 @@ export const HorizontalTable = (props: TableProps) => {
             scope="row"
             color={"black !important"}
             maxWidth={"14.25rem !important"}
+            fontSize="1rem !important"
+            padding="16px 16px 16px 0 !important"
           >
             {report.name ?? "{Name of form}"}
           </Th>
