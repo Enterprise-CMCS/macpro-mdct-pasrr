@@ -72,6 +72,7 @@ const buildRows = (
         const value = buildElement({
           element: formattedCol,
           defaultValue: element?.value!,
+          id: column.id,
           onChange: (value) =>
             onChange(value, answerRowIndex, column.id, formattedCol.type),
           label: generateAriaLabel(column.header, answerRow),

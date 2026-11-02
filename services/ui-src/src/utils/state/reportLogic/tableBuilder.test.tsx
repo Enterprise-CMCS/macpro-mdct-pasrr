@@ -43,6 +43,7 @@ describe("Test tableBuilder functions", () => {
         buildElement({
           element,
           defaultValue: "",
+          id: element.id,
           onChange: mockOnChange,
           label: element.label,
         })
@@ -77,6 +78,7 @@ describe("Test tableBuilder functions", () => {
             mask: MaskType.CommaSeparated,
           },
           defaultValue: value,
+          id: "mock-masked-textbox",
           onChange: ([nextValue]) => setValue(nextValue),
           label: "Masked textbox",
         });
@@ -115,6 +117,7 @@ describe("Test tableBuilder functions", () => {
     const component = buildElement({
       element: { id: "mock-accordion", type: ElementType.AccordionGroup },
       defaultValue: "",
+      id: "mock-accordion",
       onChange: mockOnChange,
       label: "Mock Accordion",
     });

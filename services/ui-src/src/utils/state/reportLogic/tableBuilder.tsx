@@ -17,6 +17,7 @@ export const buildElement = ({
   defaultValue,
   element,
   errorMessage,
+  id,
   key,
   label,
   onChange,
@@ -25,6 +26,7 @@ export const buildElement = ({
   defaultValue: string | number;
   element: ActionElement;
   errorMessage?: string;
+  id: string;
   key?: string;
   label?: string;
   onChange: (value: string[]) => void;
@@ -49,7 +51,7 @@ export const buildElement = ({
       return (
         <Dropdown
           key={`dropdown-${key || label}`}
-          name={label ?? "dropdown"}
+          name={id ?? "dropdown"}
           label={label}
           onChange={(event) => {
             onChange([event.target.value]);
@@ -68,6 +70,7 @@ export const buildElement = ({
           element={
             {
               ...element,
+              id,
               label: label ?? "textbox",
               answer: defaultValue,
               skipOptionalTag: true,
@@ -86,7 +89,7 @@ export const buildElement = ({
         <CmsdsTextField
           key={`textbox-${key || label}`}
           label={label}
-          name={label ?? "textbox"}
+          name={id ?? "textbox"}
           onChange={(event) => {
             onChange([event.target.value]);
           }}
@@ -105,7 +108,7 @@ export const buildElement = ({
         <CmsdsTextField
           key={`textarea-${key || label}`}
           label={label}
-          name={label ?? "textarea"}
+          name={id ?? "textarea"}
           onChange={(event) => {
             onChange([event.target.value]);
           }}
@@ -123,7 +126,7 @@ export const buildElement = ({
       return (
         <SingleInputDateField
           key={`date-${key || label}`}
-          name={label ?? "date-field"}
+          name={id ?? "date-field"}
           label={label}
           onChange={(_rawValue: string, maskedValue: string) => {
             onChange([_rawValue, maskedValue]);
