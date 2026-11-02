@@ -48,7 +48,9 @@ export const DevReportTools = () => {
           phone: "555-555-5555",
           zipcode: "55555",
         };
-        const field = Object.keys(textMap).find((f) => id?.includes(f));
+        const field = Object.keys(textMap).find((f) =>
+          id?.toLowerCase().includes(f)
+        );
         return field ? textMap[field] : "mock text input";
       case ElementType.TextAreaField:
         return "mock text area field";
