@@ -113,6 +113,7 @@ describe("DashboardPage with state user", () => {
       (th) => th.textContent!
     );
     const rows = [...table.querySelectorAll("tbody tr")].map((tr) => [
+      ...tr.querySelectorAll("th"),
       ...tr.querySelectorAll("td"),
     ]);
 
@@ -164,6 +165,7 @@ describe("DashboardPage with state user", () => {
       (th) => th.textContent!
     );
     const rows = [...table.querySelectorAll("tbody tr")].map((tr) => [
+      ...tr.querySelectorAll("th"),
       ...tr.querySelectorAll("td"),
     ]);
 
