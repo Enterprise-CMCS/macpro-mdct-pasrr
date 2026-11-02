@@ -192,7 +192,7 @@ export const getResidentDispositionPresetRowsAndAnswer = ({
 }: {
   id: string;
 }): { rows: ActionRowElement[]; answer: SummationTableAnswerShape } => {
-  const dispositionColumnId = `${id}Disposition`;
+  const dispositionColumnId = `${id}_disposition`;
 
   const rows = [
     {
@@ -201,7 +201,7 @@ export const getResidentDispositionPresetRowsAndAnswer = ({
       type: ElementType.Textbox,
     },
     {
-      id: `${id}NumberOfResidents`,
+      id: `${id}_numberOfResidents`,
       header: "# of residents",
       type: ElementType.NumberField,
     },
