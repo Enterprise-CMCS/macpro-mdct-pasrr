@@ -43,6 +43,9 @@ describe("Dashboard table with state user", () => {
   test("should render report name and edit button in table", async () => {
     render(dashboardTableComponent);
     expect(screen.getByText("report 1")).toBeVisible();
+    expect(
+      screen.getAllByRole("rowheader", { name: "report 1" })[0]
+    ).toBeVisible();
   });
   test("should render In revision text for a returned report", async () => {
     render(dashboardTableComponent);
