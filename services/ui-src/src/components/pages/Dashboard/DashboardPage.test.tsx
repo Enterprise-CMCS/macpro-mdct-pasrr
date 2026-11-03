@@ -102,21 +102,13 @@ describe("DashboardPage with state user", () => {
   });
 
   test("should render report data", async () => {
-    const { container } = render(dashboardComponent);
+    render(dashboardComponent);
     await waitFor(() => {
       expect(getReportsForState).toHaveBeenCalled();
       expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
     });
 
-    const table = container.querySelector("table")!;
-    const columns = [...table.querySelectorAll("tr th")].map(
-      (th) => th.textContent!
-    );
-    const rows = [...table.querySelectorAll("tbody tr")].map((tr) => [
-      ...tr.querySelectorAll("th"),
-      ...tr.querySelectorAll("td"),
-    ]);
-
+    // Get the different sections of the table
     const rowGroups = screen.getAllByRole("rowgroup");
     const thead = rowGroups[0];
     const tbody = rowGroups[1];
@@ -126,12 +118,24 @@ describe("DashboardPage with state user", () => {
     expect(tbody.tagName).toBe("TBODY");
     expect(tfoot.tagName).toBe("TFOOT");
 
-    rows.forEach(() => {
-      const headCell = within(thead).getByRole("columnheader", {
-        name: "Submission name",
-      });
-      expect(headCell).toBeVisible();
-    });
+    // Use within and getAllByRole instead of table.querySelectorAll("tr th"), which would also return th in tbody
+    const columns = within(thead)
+      .getAllByRole("columnheader")
+      .map((th) => th.textContent);
+
+    // Use within and getAllByRole instead of table.querySelectorAll("tbody tr") to take advantage of Testing Library a11y and error checks
+    const rows = within(tbody)
+      .getAllByRole("row")
+      .map((tr) => [...tr.children] as HTMLElement[]);
+
+    // Use exact expected length instead of toBeGreaterThanOrEqual, which could hide bugs
+    expect(columns).toHaveLength(6);
+    expect(rows).toHaveLength(2);
+
+    // Confirm the first cell in tbody row is a header
+    expect(
+      within(tbody).getByRole("rowheader", { name: "Mock Report Name" })
+    ).toBeVisible();
 
     const cellContent = (columnName: string) => {
       const columnIndex = columns.indexOf(columnName);
@@ -139,9 +143,13 @@ describe("DashboardPage with state user", () => {
       const cell = rows[0][columnIndex];
       return cell.textContent;
     };
+
     expect(cellContent("Submission name")).toBe("Mock Report Name");
     expect(cellContent("Last edited")).toBe("10/24/2026");
+    expect(cellContent("Reporting year")).toBe("2025");
     expect(cellContent("Edited by")).toBe("Mock User");
+    expect(cellContent("Status")).toBe("Not started");
+    expect(cellContent("Actions")).toBe("Enter Active ReportComment");
   });
 
   test("should list reporting years from reports, newest first", async () => {
