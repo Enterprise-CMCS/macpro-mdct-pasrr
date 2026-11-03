@@ -93,7 +93,7 @@ const HorizontalTable = ({
   return (
     <Table variant={variant}>
       {caption && (
-        <TableCaption height="0" margin="0" padding="0">
+        <TableCaption height="0" margin="0" padding="0" placement="top">
           <VisuallyHidden>{caption}</VisuallyHidden>
         </TableCaption>
       )}

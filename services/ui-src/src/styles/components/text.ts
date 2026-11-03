@@ -16,7 +16,7 @@ const tableEmptyVariant = {
 const helperTextVariant = {
   color: "gray_dark",
   "ol, ul": {
-    marginBlock: "0",
+    marginBlock: 0,
   },
 };
 const errorVariant = {

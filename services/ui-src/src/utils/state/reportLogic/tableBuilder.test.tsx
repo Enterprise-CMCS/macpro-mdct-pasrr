@@ -44,6 +44,7 @@ describe("Test tableBuilder functions", () => {
           element,
           defaultValue: "",
           id: element.id,
+          key: `element-${element.id}`,
           onChange: mockOnChange,
           label: element.label,
         })
@@ -79,6 +80,7 @@ describe("Test tableBuilder functions", () => {
           },
           defaultValue: value,
           id: "mock-masked-textbox",
+          key: "element-mock-masked-textbox",
           onChange: ([nextValue]) => setValue(nextValue),
           label: "Masked textbox",
         });
@@ -118,6 +120,7 @@ describe("Test tableBuilder functions", () => {
       element: { id: "mock-accordion", type: ElementType.AccordionGroup },
       defaultValue: "",
       id: "mock-accordion",
+      key: "element-mock-accordion",
       onChange: mockOnChange,
       label: "Mock Accordion",
     });

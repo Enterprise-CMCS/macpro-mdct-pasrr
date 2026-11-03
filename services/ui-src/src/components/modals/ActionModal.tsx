@@ -93,6 +93,7 @@ export const ActionModal = ({
               defaultValue: formData.find((data) => data.id === element.id)
                 ?.value!,
               id: element.id,
+              key: `element-${element.id}-${index}`,
               onChange: (value) => onModalChange(value, element.id, index),
               label: element.label,
               errorMessage: errorMessages.get(element.id),
