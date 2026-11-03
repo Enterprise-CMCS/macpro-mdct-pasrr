@@ -110,29 +110,22 @@ describe("DashboardPage with state user", () => {
 
     // Get the different sections of the table
     const rowGroups = screen.getAllByRole("rowgroup");
-    const thead = rowGroups[0];
-    const tbody = rowGroups[1];
-    const tfoot = rowGroups[2];
+    const [thead, tbody, tfoot] = rowGroups;
     expect(rowGroups).toHaveLength(3);
     expect(thead.tagName).toBe("THEAD");
     expect(tbody.tagName).toBe("TBODY");
     expect(tfoot.tagName).toBe("TFOOT");
 
-    // Use within and getAllByRole instead of table.querySelectorAll("tr th"), which would also return th in tbody
     const columns = within(thead)
       .getAllByRole("columnheader")
       .map((th) => th.textContent);
 
-    // Use within and getAllByRole instead of table.querySelectorAll("tbody tr") to take advantage of Testing Library a11y and error checks
     const rows = within(tbody)
       .getAllByRole("row")
       .map((tr) => [...tr.children] as HTMLElement[]);
 
-    // Use exact expected length instead of toBeGreaterThanOrEqual, which could hide bugs
     expect(columns).toHaveLength(6);
     expect(rows).toHaveLength(2);
-
-    // Confirm the first cell in tbody row is a header
     expect(
       within(tbody).getByRole("rowheader", { name: "Mock Report Name" })
     ).toBeVisible();
@@ -170,7 +163,6 @@ describe("DashboardPage with state user", () => {
   });
 
   test("should be able to filter reports by reporting year", async () => {
-    const { container } = render(dashboardComponent);
     await waitFor(() => {
       expect(getReportsForState).toHaveBeenCalled();
       expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
@@ -181,17 +173,27 @@ describe("DashboardPage with state user", () => {
       "2025"
     );
 
-    const table = container.querySelector("table")!;
-    const columns = [...table.querySelectorAll("tr th")].map(
-      (th) => th.textContent!
-    );
-    const rows = [...table.querySelectorAll("tbody tr")].map((tr) => [
-      ...tr.querySelectorAll("th"),
-      ...tr.querySelectorAll("td"),
-    ]);
+    // Get the different sections of the table
+    const rowGroups = screen.getAllByRole("rowgroup");
+    const [thead, tbody, tfoot] = rowGroups;
+    expect(rowGroups).toHaveLength(3);
+    expect(thead.tagName).toBe("THEAD");
+    expect(tbody.tagName).toBe("TBODY");
+    expect(tfoot.tagName).toBe("TFOOT");
 
-    expect(columns.length).toBeGreaterThanOrEqual(4);
-    expect(rows.length).toBe(1);
+    const columns = within(thead)
+      .getAllByRole("columnheader")
+      .map((th) => th.textContent);
+
+    const rows = within(tbody)
+      .getAllByRole("row")
+      .map((tr) => [...tr.children] as HTMLElement[]);
+
+    expect(columns).toHaveLength(6);
+    expect(rows).toHaveLength(1);
+    expect(
+      within(tbody).getByRole("rowheader", { name: "Mock Report Name" })
+    ).toBeVisible();
 
     const cellContent = (columnName: string) => {
       const columnIndex = columns.indexOf(columnName);
