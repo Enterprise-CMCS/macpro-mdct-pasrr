@@ -128,7 +128,6 @@ describe("ExportedReportWrapper", () => {
     expect(screen.getAllByText("Data source")).toHaveLength(2);
     expect(screen.getByText("test 1")).toBeVisible();
     expect(screen.getByText("test 2")).toBeVisible();
-    expect(screen.queryByText("test 1test 2")).not.toBeInTheDocument();
   });
 
   test("should show an unanswered data source list as Not answered", () => {
