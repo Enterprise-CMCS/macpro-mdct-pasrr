@@ -1,5 +1,5 @@
 import { Mock, MockedFunction } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import { DashboardPage } from "components";
 import { RouterWrappedComponent, mockUseStore } from "utils/testing/setupTest";
 import { useStore } from "utils";
@@ -117,8 +117,21 @@ describe("DashboardPage with state user", () => {
       ...tr.querySelectorAll("td"),
     ]);
 
-    expect(columns.length).toBeGreaterThanOrEqual(4);
-    expect(rows.length).toBe(2);
+    const rowGroups = screen.getAllByRole("rowgroup");
+    const thead = rowGroups[0];
+    const tbody = rowGroups[1];
+    const tfoot = rowGroups[2];
+    expect(rowGroups).toHaveLength(3);
+    expect(thead.tagName).toBe("THEAD");
+    expect(tbody.tagName).toBe("TBODY");
+    expect(tfoot.tagName).toBe("TFOOT");
+
+    rows.forEach(() => {
+      const headCell = within(thead).getByRole("columnheader", {
+        name: "Submission name",
+      });
+      expect(headCell).toBeVisible();
+    });
 
     const cellContent = (columnName: string) => {
       const columnIndex = columns.indexOf(columnName);
