@@ -85,7 +85,7 @@ export const generalInformation: FormPageTemplate = {
     },
     {
       type: ElementType.SubHeader,
-      id: "data-sources-subheader",
+      id: "gi_dataSourcesSubheader",
       text: "Data sources",
       helperText:
         "Enter your state PASRR program records and tracking systems or other sources. For example, other sources may include fair hearings (appeals) or nursing facility data.",

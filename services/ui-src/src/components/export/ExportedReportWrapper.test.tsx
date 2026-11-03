@@ -113,7 +113,7 @@ describe("ExportedReportWrapper", () => {
     const elements: PageElement[] = [
       {
         type: ElementType.ListInput,
-        id: "data-sources",
+        id: "gi_dataSources",
         label: "Data source",
         fieldLabel: "Data source",
         buttonText: "Add data source",
@@ -134,7 +134,7 @@ describe("ExportedReportWrapper", () => {
     const elements: PageElement[] = [
       {
         type: ElementType.ListInput,
-        id: "data-sources",
+        id: "gi_dataSources",
         label: "Data source",
         fieldLabel: "Data source",
         buttonText: "Add data source",
