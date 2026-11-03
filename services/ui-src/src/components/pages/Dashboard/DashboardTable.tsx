@@ -36,15 +36,7 @@ export const HorizontalTable = (props: TableProps) => {
     <Table content={props.tableContent}>
       {props.reports.map((report) => (
         <Tr key={report.id}>
-          <Th
-            scope="row"
-            color={"black !important"}
-            maxWidth={"14.25rem !important"}
-            fontSize="1rem !important"
-            padding="16px 16px 16px 0 !important"
-          >
-            {report.name ?? "{Name of form}"}
-          </Th>
+          <Th scope="row">{report.name ?? "{Name of form}"}</Th>
           <Td>{report.reportingYear}</Td>
           <Td>
             {!!report.lastEdited && formatMonthDayYear(report.lastEdited)}

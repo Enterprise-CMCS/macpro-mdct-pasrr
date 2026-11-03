@@ -3,14 +3,16 @@ import { ComponentStyleConfig, theme } from "@chakra-ui/react";
 const baseStyles = {
   table: {
     th: {
-      padding: "0.5rem 0",
-      borderBottom: "1px solid",
-      borderColor: "gray_light",
-      color: "gray",
       fontWeight: "heading_sm_bold",
       textTransform: "none",
       letterSpacing: "normal",
       fontSize: "heading_sm",
+      "&:not([scope='row'])": {
+        padding: "0.5rem 0",
+        borderBottom: "1px solid",
+        borderColor: "gray_light",
+        color: "gray",
+      },
     },
     tr: {
       borderBottom: "1px solid",
