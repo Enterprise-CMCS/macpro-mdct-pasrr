@@ -1,7 +1,8 @@
-import { Accordion, Link, Text } from "@chakra-ui/react";
-import { AccordionItem, ReportIntroCard } from "components";
+import { Accordion, Text } from "@chakra-ui/react";
+import { AccordionItem, ExternalLink, ReportIntroCard } from "components";
 import { ReportIntroCardActions } from "./ReportIntroCardActions";
 import { ReportType } from "@pasrr/shared";
+import { PASRR_OVERVIEW_URL } from "../../constants";
 
 /**
  * This card appears on the state user home page.
@@ -12,12 +13,9 @@ export const PasrrIntroductionCard = () => {
     <ReportIntroCard title="PASRR Report">
       <Text>
         The{" "}
-        <Link
-          href="https://www.medicaid.gov/medicaid/long-term-services-supports/institutional-long-term-care/preadmission-screening-and-resident-review"
-          target="_blank"
-        >
+        <ExternalLink href={PASRR_OVERVIEW_URL}>
           Preadmission Screening and Resident Review (PASRR)
-        </Link>{" "}
+        </ExternalLink>{" "}
         annual reporting application is used by state Medicaid agencies to
         report the PASRR Level II resident review data required by section
         1919(e)(7)(C)(iv) of the Social Security Act and described in State

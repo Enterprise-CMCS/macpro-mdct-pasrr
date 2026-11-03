@@ -42,6 +42,9 @@ a {
   &:hover {
     color: var(--chakra-colors-gray_light);
   }
+  &:visited {
+    color: var(--chakra-colors-visited);
+  }
   transition: all 0.3s ease !important;
 }
 
@@ -235,6 +238,15 @@ button {
   height: 0.9rem;
 }
 
+// EXTERNAL LINK ICON
+
+.external-link-icon.ds-c-icon {
+  height: 1em;
+  margin-left: 0.25em;
+  margin-top: -2px;
+  width: 1em;
+}
+
 .column {
   display: flex;
   flex-flow: column;
@@ -249,4 +261,27 @@ button {
   }
   font-size: 14px;
   color: var(--chakra-colors-success_darker);
+}
+
+// PAGE ELEMENT OVERRIDES
+
+// SubHeaderElement heading
+.chakra-stack {
+  > .chakra-heading {
+    margin-top: 1rem;
+  }
+}
+
+// SubHeaderElement heading that follows ParagraphElement
+.chakra-stack + .chakra-stack {
+  > .chakra-heading {
+    margin-top: 0;
+  }
+}
+
+// SubHeaderElement heading that follows HeaderElement
+.chakra-heading + .chakra-stack {
+  > .chakra-heading {
+    margin-top: 0;
+  }
 }

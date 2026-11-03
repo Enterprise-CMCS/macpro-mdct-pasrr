@@ -20,6 +20,8 @@ export { HelpCard } from "./cards/HelpCard";
 export { ReportIntroCard } from "./cards/ReportIntroCard";
 export { ReportIntroCardActions } from "./cards/ReportIntroCardActions";
 export { PasrrIntroductionCard } from "./cards/PasrrIntroductionCard";
+// links
+export { ExternalLink } from "./links/ExternalLink";
 //drawer
 export { Drawer } from "./drawers/Drawer";
 // export

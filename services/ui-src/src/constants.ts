@@ -26,6 +26,13 @@ export const autoCalculatesText = "Auto-calculates from previous response";
 
 export const HELP_DESK_EMAIL_ADDRESS = "mdct_help@cms.hhs.gov" as const;
 
+export const PASRR_OVERVIEW_URL =
+  "https://www.medicaid.gov/medicaid/long-term-services-supports/institutional-long-term-care/preadmission-screening-and-resident-review";
+
+export const VISITED_LINKS_STORAGE_KEY = "mdctpasrr_visited_links";
+
+export const externalLinkAltText = "(Opens in a new tab)";
+
 // TIMEOUT PARAMS
 export const IDLE_WINDOW = 30 * 60 * 1000; // ms
 export const PROMPT_AT = 29 * 60 * 1000; //ms
