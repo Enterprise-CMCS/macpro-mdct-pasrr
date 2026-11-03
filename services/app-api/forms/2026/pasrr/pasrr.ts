@@ -4,6 +4,8 @@ import { generalInformation } from "./pages/general-information";
 import { intellectualDisabilityAndRelatedConditions } from "./pages/intellectual-disability-and-related-conditions";
 import { specializedServicesOnly } from "./pages/specialized-services-only";
 import { noNursingFacilityCare } from "./pages/no-nursing-facility-care";
+import { smiSpecializedServicesOnly } from "./pages/smi-specialized-services-only";
+import { smiNoNursingFacilityCare } from "./pages/smi-no-nursing-facility-care";
 import { seriousMentalIllness } from "./pages/serious-mental-illness";
 import { reviewAndSubmit } from "./pages/review-and-submit";
 
@@ -22,5 +24,7 @@ export const pasrrReportTemplate = (_state: string): ReportPages => [
   specializedServicesOnly,
   noNursingFacilityCare,
   seriousMentalIllness,
+  smiSpecializedServicesOnly,
+  smiNoNursingFacilityCare,
   reviewAndSubmit,
 ];

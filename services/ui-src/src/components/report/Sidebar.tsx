@@ -71,7 +71,11 @@ export const Sidebar = () => {
             onNavSelect(page.id);
           }}
         >
-          <Flex justifyContent="space-between" alignItems="flex-start">
+          <Flex
+            width="100%"
+            justifyContent="space-between"
+            alignItems="flex-start"
+          >
             <Box width="100%" paddingY="0.5rem">
               {navItem(page.title!, index)}
             </Box>
