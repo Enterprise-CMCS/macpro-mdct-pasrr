@@ -7,10 +7,10 @@ const baseStyles = {
       textTransform: "none",
       letterSpacing: "normal",
       fontSize: "heading_sm",
+      borderColor: "gray_light",
       "&:not([scope='row'])": {
         padding: "0.5rem 0",
         borderBottom: "1px solid",
-        borderColor: "gray_light",
         color: "gray",
       },
     },
