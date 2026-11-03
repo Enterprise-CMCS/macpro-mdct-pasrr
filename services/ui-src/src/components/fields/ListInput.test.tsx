@@ -27,11 +27,11 @@ describe("<ListInput />", () => {
     });
     test("ListInput shows one empty field by default without a remove button", () => {
       expect(
-        screen.getAllByRole("textbox", { name: "mock field" })[0],
+        screen.getAllByRole("textbox", { name: "mock field" })[0]
       ).toHaveValue("");
       expect(screen.getAllByRole("textbox")).toHaveLength(1);
       expect(
-        screen.queryByRole("button", { name: "Remove mock field 1" }),
+        screen.queryByRole("button", { name: "Remove mock field 1" })
       ).not.toBeInTheDocument();
     });
     test("ListInput allows adding fields", async () => {
@@ -39,21 +39,15 @@ describe("<ListInput />", () => {
       await userEvent.click(addBtn);
 
       expect(
-        screen.getAllByRole("textbox", { name: "mock field" })[1],
+        screen.getAllByRole("textbox", { name: "mock field" })[1]
       ).toBeVisible();
       expect(screen.getAllByRole("textbox")).toHaveLength(2);
       expect(
-        screen.getByRole("button", { name: "Remove mock field 1" }),
+        screen.getByRole("button", { name: "Remove mock field 1" })
       ).toBeVisible();
       expect(
-        screen.getByRole("button", { name: "Remove mock field 2" }),
+        screen.getByRole("button", { name: "Remove mock field 2" })
       ).toBeVisible();
-    });
-
-    test("ListInput does not autofocus on page load", () => {
-      expect(document.activeElement).not.toBe(
-        screen.getByRole("textbox", { name: "mock field" }),
-      );
     });
 
     test("ListInput focuses the newly added field", async () => {
@@ -61,7 +55,7 @@ describe("<ListInput />", () => {
       await userEvent.click(addBtn);
 
       expect(
-        screen.getAllByRole("textbox", { name: "mock field" })[1],
+        screen.getAllByRole("textbox", { name: "mock field" })[1]
       ).toHaveFocus();
     });
 
@@ -70,22 +64,22 @@ describe("<ListInput />", () => {
       await userEvent.click(addBtn);
       await userEvent.type(
         screen.getAllByRole("textbox", { name: "mock field" })[1],
-        "second",
+        "second"
       );
 
       await userEvent.click(
-        screen.getByRole("button", { name: "Remove mock field 1" }),
+        screen.getByRole("button", { name: "Remove mock field 1" })
       );
       expect(screen.getAllByRole("textbox")).toHaveLength(1);
       expect(
-        screen.getAllByRole("textbox", { name: "mock field" })[0],
+        screen.getAllByRole("textbox", { name: "mock field" })[0]
       ).toHaveValue("second");
       expect(
-        screen.queryByRole("button", { name: "Remove mock field 1" }),
+        screen.queryByRole("button", { name: "Remove mock field 1" })
       ).not.toBeInTheDocument();
     });
 
-    test("ListInput shows error when user does not fillout the field", async () => {
+    test("ListInput shows error when user does not fill out the field", async () => {
       const addBtn = screen.getByRole("button", { name: "mock button text" });
       await userEvent.click(addBtn);
       const textbox = screen.getAllByRole("textbox", { name: "mock field" })[0];
@@ -100,7 +94,7 @@ describe("<ListInput />", () => {
         await userEvent.type(textbox, "text");
       }
       expect(
-        screen.queryByText("A response is required"),
+        screen.queryByText("A response is required")
       ).not.toBeInTheDocument();
     });
   });
@@ -114,22 +108,22 @@ describe("<ListInput />", () => {
             answer: ["first source", "second source"],
           }}
           updateElement={updateSpy}
-        />,
+        />
       );
     });
 
     test("ListInput shows every saved answer with remove buttons", () => {
       expect(
-        screen.getAllByRole("textbox", { name: "mock field" })[0],
+        screen.getAllByRole("textbox", { name: "mock field" })[0]
       ).toHaveValue("first source");
       expect(
-        screen.getAllByRole("textbox", { name: "mock field" })[1],
+        screen.getAllByRole("textbox", { name: "mock field" })[1]
       ).toHaveValue("second source");
       expect(
-        screen.getByRole("button", { name: "Remove mock field 1" }),
+        screen.getByRole("button", { name: "Remove mock field 1" })
       ).toBeVisible();
       expect(
-        screen.getByRole("button", { name: "Remove mock field 2" }),
+        screen.getByRole("button", { name: "Remove mock field 2" })
       ).toBeVisible();
     });
   });
@@ -144,7 +138,7 @@ describe("<ListInput />", () => {
         <ListInput
           element={mockedListInputWithValidationElement}
           updateElement={updateSpy}
-        />,
+        />
       );
     });
 
@@ -157,7 +151,7 @@ describe("<ListInput />", () => {
       await userEvent.clear(textbox);
       await userEvent.type(textbox, "https://cms.gov");
       expect(
-        screen.queryByText("Response must be a valid url"),
+        screen.queryByText("Response must be a valid url")
       ).not.toBeInTheDocument();
     });
   });

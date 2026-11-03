@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ListInputTemplate } from "@pasrr/shared";
 import { PageElementProps } from "components/report/Elements";
-import { Box, Button, HStack, Image } from "@chakra-ui/react";
+import { Button, HStack, Image } from "@chakra-ui/react";
 import { Hint, TextField } from "@cmsgov/design-system";
 import cancelPrimary from "assets/icons/cancel/icon_cancel_primary.svg";
 import addPrimary from "assets/icons/add/icon_add_blue.svg";
@@ -95,10 +95,8 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
   };
 
   return (
-    <Box as="fieldset" ref={fieldsetRef} mt="-spacer1" key="list-input-field">
-      <Box mb={helperText ? "spacer3" : undefined}>
-        <Hint id={id}>{helperText}</Hint>
-      </Box>
+    <fieldset ref={fieldsetRef} key="list-input-field">
+      <Hint id={id}>{helperText}</Hint>
       {displayValue.map((field, index) => (
         <HStack
           alignItems="flex-end"
@@ -135,6 +133,6 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
       >
         {buttonText}
       </Button>
-    </Box>
+    </fieldset>
   );
 };
