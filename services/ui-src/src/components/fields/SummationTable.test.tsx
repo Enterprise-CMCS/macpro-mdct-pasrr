@@ -158,9 +158,7 @@ describe("<SummationTable />", () => {
     );
 
     const rowGroups = screen.getAllByRole("rowgroup");
-    const thead = rowGroups[0];
-    const tbody = rowGroups[1];
-    const tfoot = rowGroups[2];
+    const [thead, tbody, tfoot] = rowGroups;
     expect(rowGroups).toHaveLength(3);
     expect(thead.tagName).toBe("THEAD");
     expect(tbody.tagName).toBe("TBODY");
