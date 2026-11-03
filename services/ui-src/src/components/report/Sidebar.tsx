@@ -20,7 +20,7 @@ const getTitle = (report: Report) => {
   if (!isReportType(report.type)) return "";
   switch (report.type) {
     case ReportType.PASRR:
-      return "PASRR";
+      return "PASRR Report";
     default:
       assertExhaustive(report.type);
       return "";
