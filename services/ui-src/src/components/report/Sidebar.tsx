@@ -71,20 +71,16 @@ export const Sidebar = () => {
             onNavSelect(page.id);
           }}
         >
-          <Flex
-            width="100%"
-            justifyContent="space-between"
-            alignItems="flex-start"
-          >
-            <Box width="100%" paddingY="0.5rem">
+          <Flex justifyContent="space-between" alignItems="flex-start">
+            <Box width="100%" paddingY="spacer1">
               {navItem(page.title!, index)}
             </Box>
             {hasChildSections && (
               <Box
                 height="var(--chakra-sizes-10)"
-                flexShrink={0}
+                flexShrink="0"
                 marginLeft="spacer2"
-                paddingRight="1rem"
+                paddingRight="spacer2"
                 display="flex"
                 alignItems="center"
                 onClick={() => setToggle(page.id)}

@@ -25,7 +25,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
   title: "Intellectual Disability and Related Conditions (ID/RC)",
   type: PageType.Standard,
   sidebar: true,
-  childPageIds: ["specialized-services-only", "no-nursing-facility-care"],
+  childPageIds: ["idrc_specializedServicesOnly", "idrc_noNursingFacilityCare"],
   elements: [
     {
       type: ElementType.Header,
