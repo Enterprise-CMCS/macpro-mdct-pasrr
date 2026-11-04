@@ -137,28 +137,28 @@ export const getPostalAddressElements = ({
 }): FieldGroupElement[] => {
   return [
     {
-      id: `${id}-street`,
+      id: `${id}_street`,
       type: ElementType.Textbox,
       label: "Street address",
       required,
       skipOptionalTag,
     },
     {
-      id: `${id}-street-line-2`,
+      id: `${id}_streetLine2`,
       type: ElementType.Textbox,
       label: "Street address line 2",
       required: false,
       skipOptionalTag: false,
     },
     {
-      id: `${id}-city`,
+      id: `${id}_city`,
       type: ElementType.Textbox,
       label: "City",
       required,
       skipOptionalTag,
     },
     {
-      id: `${id}-state`,
+      id: `${id}_state`,
       type: ElementType.Dropdown,
       label: "State",
       options: [
@@ -172,7 +172,7 @@ export const getPostalAddressElements = ({
       skipOptionalTag,
     },
     {
-      id: `${id}-zipcode`,
+      id: `${id}_zipCode`,
       type: ElementType.Textbox,
       label: "Postal code",
       required,

@@ -7,7 +7,7 @@ import {
 } from "@pasrr/shared";
 
 export const reviewAndSubmit: ReviewSubmitTemplate = {
-  id: "review_submit",
+  id: "review-submit",
   title: "Review & Submit",
   type: PageType.ReviewSubmit,
   sidebar: true,
