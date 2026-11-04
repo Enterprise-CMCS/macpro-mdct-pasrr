@@ -28,17 +28,17 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
   elements: [
     {
       type: ElementType.Header,
-      id: "idrc-header",
+      id: "idrc_header",
       text: "Intellectual Disability and Related Conditions (ID/RC)",
     },
     {
       type: ElementType.Paragraph,
-      id: "idrc-information",
+      id: "idrc_information",
       text: "Section 1919(e)(7)(C)(iv) of the Act requires the state to report the number and disposition (resident status) of the nursing facility residents under Section II annually. 42 CFR § 483.132(a) specifies the settings the PASRR evaluator must assess. Report Level II resident review data for individuals with an intellectual disability or related condition (ID/RC). All data should reflect the number and disposition as of December 31 of the reporting year.",
     },
     residentReviewsAccordion,
     {
-      id: "idrc-did-residents-receive-multiple-reviews",
+      id: "idrc_didResidentsReceiveMultipleReviews",
       type: ElementType.TextAreaField,
       label:
         "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain.",
@@ -48,7 +48,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
       skipOptionalTag: true,
     },
     {
-      id: "idrc-did-residents-receive-specialized-services",
+      id: "idrc_didResidentsReceiveSpecializedServices",
       type: ElementType.Radio,
       label:
         "During this reporting period, did all eligible residents receive specialized services or have them arranged by the state?",
@@ -65,7 +65,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
           value: "No",
           checkedChildren: [
             {
-              id: "idrc-how-many-residents-did-not-receive-specialized-services",
+              id: "idrc_howManyResidentsDidNotReceiveSpecializedServices",
               type: ElementType.TextAreaField,
               label:
                 "How many residents did not receive services, and why were services not arranged or provided by the state?",
