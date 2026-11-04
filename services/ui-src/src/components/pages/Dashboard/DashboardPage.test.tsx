@@ -96,7 +96,6 @@ describe("DashboardPage with state user", () => {
 
   test("should not call reloadReports if no reportType passed in", async () => {
     (useParams as Mock).mockResolvedValueOnce(null).mockResolvedValueOnce(null);
-
     render(dashboardComponent);
     expect(getReportsForState).toHaveBeenCalledTimes(0);
   });
@@ -163,6 +162,7 @@ describe("DashboardPage with state user", () => {
   });
 
   test("should be able to filter reports by reporting year", async () => {
+    render(dashboardComponent);
     await waitFor(() => {
       expect(getReportsForState).toHaveBeenCalled();
       expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
