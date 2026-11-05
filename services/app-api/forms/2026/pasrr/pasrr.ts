@@ -1,7 +1,7 @@
 import { ReportPages } from "@pasrr/shared";
 // routes
 import { generalInformation } from "./pages/general-information";
-import { intellectualDisabilityAndRelatedConditions } from "./pages/intellectual-disability-and-related-conditions";
+import { intellectualDisabilityAndRelatedConditions } from "./pages/intellectual-disability-and-related-conditions/intellectual-disability-and-related-conditions";
 import { seriousMentalIllness } from "./pages/serious-mental-illness";
 import { reviewAndSubmit } from "./pages/review-and-submit";
 
