@@ -164,7 +164,7 @@ export const getErrorMessage = ({
       if (validators?.[type] && !validators[type](value[0])) {
         return ErrorMessages.mustBeANumber;
       }
-      if (!parseNumber(value[0])) {
+      if (parseNumber(value[0]) === undefined) {
         return ErrorMessages.mustBeANumber;
       }
       break;

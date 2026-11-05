@@ -151,42 +151,38 @@ describe("Test tableBuilder functions", () => {
       ).toBe("A response is required");
     });
 
-    test("Test NumberField error message", () => {
+    test.each([
+      { input: "mock text", message: "Response must be a valid number" },
+      { input: "0" },
+      { input: "1" },
+      { input: ".5" },
+      { input: "-1" },
+    ])("Test NumberField error message '$input'", ({ input, message = "" }) => {
       expect(
-        getErrorMessage({ type: ElementType.NumberField, value: ["abc"] })
-      ).toBe("Response must be a valid number");
-      expect(
-        getErrorMessage({ type: ElementType.NumberField, value: [""] })
-      ).toBe("A response is required");
-      expect(
-        getErrorMessage({ type: ElementType.NumberField, value: [".5"] })
-      ).toBe("");
-      expect(
-        getErrorMessage({ type: ElementType.NumberField, value: ["-1"] })
-      ).toBe("");
-      expect(
-        getErrorMessage({ type: ElementType.NumberField, value: ["1"] })
-      ).toBe("");
+        getErrorMessage({
+          type: ElementType.NumberField,
+          value: [input],
+        })
+      ).toBe(message);
     });
 
-    test("Test NumberField whole positive number error message", () => {
-      expect(
-        getErrorMessage({
-          type: ElementType.NumberField,
-          validators: { [ElementType.NumberField]: isWholePositiveNumber },
-          value: [".5"],
-        })
-      ).toBe("Response must be a valid number");
-      expect(
-        getErrorMessage({
-          type: ElementType.NumberField,
-          validators: { [ElementType.NumberField]: isWholePositiveNumber },
-          value: ["-1"],
-        })
-      ).toBe("Response must be a valid number");
-      expect(
-        getErrorMessage({ type: ElementType.NumberField, value: ["1"] })
-      ).toBe("");
-    });
+    test.each([
+      { input: "mock text", message: "Response must be a valid number" },
+      { input: "0" },
+      { input: "1" },
+      { input: ".5", message: "Response must be a valid number" },
+      { input: "-1", message: "Response must be a valid number" },
+    ])(
+      "Test NumberField whole positive number error message '$input'",
+      ({ input, message = "" }) => {
+        expect(
+          getErrorMessage({
+            type: ElementType.NumberField,
+            validators: { [ElementType.NumberField]: isWholePositiveNumber },
+            value: [input],
+          })
+        ).toBe(message);
+      }
+    );
   });
 });
