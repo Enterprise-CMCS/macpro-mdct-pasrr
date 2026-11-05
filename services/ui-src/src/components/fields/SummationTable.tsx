@@ -13,7 +13,11 @@ import {
   buildElement,
   getErrorMessage,
 } from "utils/state/reportLogic/tableBuilder";
-import { parseNumber, unmaskByType } from "utils/validation/inputValidation";
+import {
+  isWholePositiveNumber,
+  parseNumber,
+  unmaskByType,
+} from "utils/validation/inputValidation";
 import { ResponsiveTable } from "components/tables/ResponsiveTable";
 
 export const SummationTable = (
@@ -148,8 +152,9 @@ export const SummationTable = (
 
     const sumById = rows.reduce((sum, row) => {
       const cell = row.find((t) => t.id === id);
-      const parsedValue = Number(cell?.value);
-      return sum + (isNaN(parsedValue) ? 0 : parsedValue);
+      return (
+        sum + (isWholePositiveNumber(cell?.value) ? Number(cell?.value) : 0)
+      );
     }, 0);
 
     const newSumRow = { id, value: sumById, readonly: true };
@@ -193,7 +198,11 @@ export const SummationTable = (
     }
 
     const updatedErrorMessages = [...errorMessages];
-    const errorMessage = getErrorMessage(type, false, value);
+    const errorMessage = getErrorMessage({
+      type,
+      validators: { [ElementType.NumberField]: isWholePositiveNumber },
+      value,
+    });
     updatedErrorMessages[index].set(id, errorMessage);
     setErrorMessages(updatedErrorMessages);
 

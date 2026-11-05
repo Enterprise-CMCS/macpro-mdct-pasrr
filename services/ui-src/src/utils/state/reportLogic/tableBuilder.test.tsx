@@ -3,6 +3,7 @@ import { buildElement, getErrorMessage } from "./tableBuilder";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
+import { isWholePositiveNumber } from "utils/validation/inputValidation";
 
 const mockOnChange = vi.fn();
 vi.spyOn(console, "error").mockImplementation(vi.fn());
@@ -130,30 +131,62 @@ describe("Test tableBuilder functions", () => {
 
   describe("Test getErrorMessage function", () => {
     test("Test valid input", () => {
-      expect(getErrorMessage(ElementType.Textbox, true, ["mock value"])).toBe(
-        ""
-      );
+      expect(
+        getErrorMessage({ type: ElementType.Textbox, value: ["mock value"] })
+      ).toBe("");
     });
+
     test("Test Date error message", () => {
-      expect(getErrorMessage(ElementType.Date, true, ["not validate"])).toBe(
-        "Response must be a date in MMDDYYYY format"
-      );
+      expect(
+        getErrorMessage({ type: ElementType.Date, value: ["not validate"] })
+      ).toBe("Response must be a date in MMDDYYYY format");
     });
+
     test("Test Textbox & TextAreaField error message", () => {
-      expect(getErrorMessage(ElementType.Textbox, true, [""])).toBe(
+      expect(getErrorMessage({ type: ElementType.Textbox, value: [""] })).toBe(
         "A response is required"
       );
-      expect(getErrorMessage(ElementType.TextAreaField, true, [""])).toBe(
-        "A response is required"
-      );
+      expect(
+        getErrorMessage({ type: ElementType.TextAreaField, value: [""] })
+      ).toBe("A response is required");
     });
+
     test("Test NumberField error message", () => {
-      expect(getErrorMessage(ElementType.NumberField, true, ["abc"])).toBe(
-        "Response must be a valid number"
-      );
-      expect(getErrorMessage(ElementType.NumberField, true, [""])).toBe(
-        "A response is required"
-      );
+      expect(
+        getErrorMessage({ type: ElementType.NumberField, value: ["abc"] })
+      ).toBe("Response must be a valid number");
+      expect(
+        getErrorMessage({ type: ElementType.NumberField, value: [""] })
+      ).toBe("A response is required");
+      expect(
+        getErrorMessage({ type: ElementType.NumberField, value: [".5"] })
+      ).toBe("");
+      expect(
+        getErrorMessage({ type: ElementType.NumberField, value: ["-1"] })
+      ).toBe("");
+      expect(
+        getErrorMessage({ type: ElementType.NumberField, value: ["1"] })
+      ).toBe("");
+    });
+
+    test("Test NumberField whole positive number error message", () => {
+      expect(
+        getErrorMessage({
+          type: ElementType.NumberField,
+          validators: { [ElementType.NumberField]: isWholePositiveNumber },
+          value: [".5"],
+        })
+      ).toBe("Response must be a valid number");
+      expect(
+        getErrorMessage({
+          type: ElementType.NumberField,
+          validators: { [ElementType.NumberField]: isWholePositiveNumber },
+          value: ["-1"],
+        })
+      ).toBe("Response must be a valid number");
+      expect(
+        getErrorMessage({ type: ElementType.NumberField, value: ["1"] })
+      ).toBe("");
     });
   });
 });

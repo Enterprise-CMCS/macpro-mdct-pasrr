@@ -230,7 +230,7 @@ describe("<SummationTable />", () => {
     const numberField2 = within(tbody).getByRole("textbox", {
       name: "Discharged to Medicaid home and community-based services waiver # of residents",
     });
-    await userEvent.type(numberField2, "mock text");
+    await userEvent.type(numberField2, "-1");
     const updatedTotal = within(tfoot).getByRole("cell", {
       name: "12,345",
     });
