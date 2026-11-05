@@ -31,17 +31,19 @@ export const SummationTable = (
 
   const formatAnswer = (
     answerCell: SummationTableCellAnswerShape,
-    rows: ActionRowElement[]
+    rows: ActionRowElement[],
+    type: ElementType
   ) => {
     const element = rows.find((t) => t.id === answerCell.id);
-    const value = element?.mask
-      ? unmaskByType(element.mask, answerCell.value)
-      : answerCell.value;
+    let value = answerCell.value;
 
-    return {
-      ...answerCell,
-      value,
-    };
+    if (element?.mask) {
+      value = unmaskByType(element.mask, value);
+    } else if (type === ElementType.NumberField && value) {
+      value = isWholePositiveNumber(value.toString()) ? Number(value) : value;
+    }
+
+    return value;
   };
 
   const generateAriaLabel = (
@@ -179,7 +181,7 @@ export const SummationTable = (
     const answerRows = [...(answer?.rows ?? [])];
     const totalRows = [...(answer?.total ?? [])];
     const updatedCell = { id, value: value[0] };
-    const formattedValue = formatAnswer(updatedCell, rows).value;
+    const formattedValue = formatAnswer(updatedCell, rows, type);
     const rowToUpdate = answerRows[index] ?? [];
     answerRows[index] = rowToUpdate;
     const cellToUpdate = rowToUpdate.find((t) => t.id === id);
