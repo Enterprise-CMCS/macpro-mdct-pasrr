@@ -8,7 +8,7 @@ import {
 // accordions
 const specializedServicesOnlyAccordion: AccordionTemplate = {
   type: ElementType.Accordion,
-  id: "specialized-services-only-accordion",
+  id: "sso_accordion",
   label: "Reporting criteria and regulations",
   value:
     "<p><b>Reporting criteria</b></p>" +
@@ -31,18 +31,18 @@ export const specializedServicesOnly: FormPageTemplate = {
   elements: [
     {
       type: ElementType.FormEyebrow,
-      id: "sso-form-eyebrow",
+      id: "sso_formEyebrow",
       text: "Intellectual Disability and Related Conditions (ID/RC)",
     },
     {
       type: ElementType.Header,
-      id: "sso-header",
+      id: "sso_header",
       text: "Residents who don’t require nursing facility care, but do require specialized services",
     },
     specializedServicesOnlyAccordion,
     // DISPOSITIONS TABLE
     {
-      id: "sso-did-residents-receive-multiple-reviews",
+      id: "sso_didResidentsReceiveMultipleReviews",
       type: ElementType.TextAreaField,
       label:
         "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain.",
@@ -51,7 +51,7 @@ export const specializedServicesOnly: FormPageTemplate = {
       required: false,
     },
     {
-      id: "sso-did-all-eligible-residents-receive-specialized-services",
+      id: "sso_didAllEligibleResidentsReceiveSpecializedServices",
       type: ElementType.Radio,
       label:
         "During this reporting period, did all eligible residents receive specialized services or have them arranged by the state?",
@@ -68,7 +68,7 @@ export const specializedServicesOnly: FormPageTemplate = {
           value: "No",
           checkedChildren: [
             {
-              id: "sso-how-many-residents-did-not-receive-specialized-services",
+              id: "sso_howManyResidentsDidNotReceiveSpecializedServices",
               type: ElementType.Textbox,
               label:
                 "How many residents did not receive services, and why were services not arranged or provided by the state?",
