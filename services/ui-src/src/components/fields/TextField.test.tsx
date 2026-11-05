@@ -204,7 +204,7 @@ describe("<TextField />", () => {
     const textField = screen.getByRole("textbox");
     await userEvent.clear(textField);
     await userEvent.type(textField, "test");
-    expect(screen.getByText("Response must be a number")).toBeVisible();
+    expect(screen.getByText("Response must be a valid number")).toBeVisible();
 
     await userEvent.clear(textField);
     expect(screen.getByText("A response is required")).toBeVisible();
@@ -214,7 +214,7 @@ describe("<TextField />", () => {
       screen.queryByText("A response is required")
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText("Response must be a number")
+      screen.queryByText("Response must be a valid number")
     ).not.toBeInTheDocument();
   });
 

@@ -184,6 +184,13 @@ const elements: PageElement[] = [
     required: true,
     elements: [],
   },
+  {
+    type: ElementType.SummationTable,
+    id: "mock-summation-table-id",
+    caption: "SummationTable caption",
+    required: true,
+    rows: [],
+  },
 ];
 
 const textFieldElement: PageElement[] = [

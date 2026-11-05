@@ -1,4 +1,4 @@
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, Flex, Stack } from "@chakra-ui/react";
 import {
   ElementType,
   PageElement,
@@ -35,9 +35,15 @@ export const FieldGroup = (props: PageElementProps<FieldGroupTemplate>) => {
 
   return (
     <Box as="fieldset" width="100%">
-      <Box as="legend" marginBottom={"spacer2"} marginTop={0}>
+      <Flex
+        as="legend"
+        flexDirection="column"
+        gap="spacer1"
+        marginBottom="spacer2"
+        marginTop="0"
+      >
         <SubHeaderElement element={subHeaderElement} />
-      </Box>
+      </Flex>
       <Page
         id="field-group-children"
         setElements={setFieldGroupElements}
