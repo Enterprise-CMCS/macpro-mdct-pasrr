@@ -5,7 +5,10 @@ export const seriousMentalIllness: FormPageTemplate = {
   title: "Serious Mental Illness (SMI)",
   type: PageType.Standard,
   sidebar: true,
-  childPageIds: ["smi_specializedServicesOnly", "smi_noNursingFacilityCare"],
+  childPageIds: [
+    "smi-specialized-services-only",
+    "smi-no-nursing-facility-care",
+  ],
   elements: [
     {
       type: ElementType.Header,

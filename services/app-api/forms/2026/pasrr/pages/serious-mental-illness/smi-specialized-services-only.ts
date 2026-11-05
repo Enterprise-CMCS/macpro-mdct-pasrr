@@ -1,14 +1,14 @@
 import { FormPageTemplate, PageType, ElementType } from "@pasrr/shared";
 
 export const smiSpecializedServicesOnly: FormPageTemplate = {
-  id: "smi_specializedServicesOnly",
+  id: "smi-specialized-services-only",
   title: "Specialized services only",
   type: PageType.Standard,
   sidebar: true,
   elements: [
     {
       type: ElementType.Header,
-      id: "smi_specializedServicesOnlyHeader",
+      id: "smi-specialized-services-only-header",
       text: "Specialized services only",
     },
   ],
