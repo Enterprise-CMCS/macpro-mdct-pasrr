@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "react-router";
 import {
   Button,
+  Image,
   Table,
   Tbody,
   Td,
@@ -12,6 +13,7 @@ import {
 import { useStore } from "utils";
 import { TableStatusIcon } from "components/tables/TableStatusIcon";
 import { submittableMetricsSelector } from "utils/state/selectors";
+import editIcon from "assets/icons/edit/icon_edit_primary.svg";
 
 export const StatusTableElement = () => {
   const { report } = useStore();
@@ -44,6 +46,7 @@ export const StatusTableElement = () => {
           <Button
             variant="outline"
             width="100%"
+            leftIcon={<Image src={editIcon} alt="" />}
             onClick={() => handleEditClick(section.id)}
           >
             Edit
@@ -60,7 +63,7 @@ export const StatusTableElement = () => {
           <Tr>
             <Th>Section</Th>
             <Th>Status</Th>
-            <Th></Th>
+            <Th>Actions</Th>
           </Tr>
         </Thead>
         <Tbody>{rows}</Tbody>
