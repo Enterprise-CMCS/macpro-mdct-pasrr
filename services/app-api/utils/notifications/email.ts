@@ -32,7 +32,7 @@ const getRecipients = async (
       (page) => page.id === "general-information"
     );
     recipientEmails = (generalInformationPage?.elements ?? [])
-      .filter((element) => element.id.includes("email"))
+      .filter((element) => element.id.toLowerCase().includes("email"))
       .map((element) => ("answer" in element ? element.answer : undefined))
       .filter((answer) => typeof answer === "string")
       .filter((answer) => answer !== "");

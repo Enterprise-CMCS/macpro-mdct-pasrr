@@ -8,7 +8,7 @@ export const seriousMentalIllness: FormPageTemplate = {
   elements: [
     {
       type: ElementType.Header,
-      id: "smi-header",
+      id: "smi_header",
       text: "Serious Mental Illness (SMI)",
     },
   ],
