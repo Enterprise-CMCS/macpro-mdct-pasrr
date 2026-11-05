@@ -93,10 +93,17 @@ const statusVariant = {
 
 const exportVariant = {
   table: {
-    "tr, th, td": {
+    tr: {
       borderColor: "gray_lighter",
     },
+    th: {
+      borderColor: "gray_lighter",
+      "&:not([scope='row'])": {
+        borderColor: "gray_lighter",
+      },
+    },
     td: {
+      borderColor: "gray_lighter",
       fontSize: "heading_sm",
       width: "50%",
       "p:first-of-type": {
@@ -116,11 +123,15 @@ const reportDetailsVariant = {
   table: {
     tr: {
       border: "none",
-      "th, td": {
+    },
+    th: {
+      borderColor: "transparent",
+      "&:not([scope='row'])": {
         borderColor: "transparent",
       },
     },
     td: {
+      borderColor: "transparent",
       fontSize: "body_sm",
       padding: "0",
       color: "black",
@@ -134,8 +145,10 @@ const metricVariant = {
     boxShadow: "0px 2px 8px 0px #0000001F",
     th: {
       background: "primary_darkest",
-      color: "white",
-      padding: "1rem 0.75rem",
+      "&:not([scope='row'])": {
+        color: "white",
+        padding: "1rem 0.75rem",
+      },
     },
     tr: {
       padding: "1rem",
@@ -252,10 +265,13 @@ const summationVariant = {
     thead: {
       th: {
         background: "primary_darkest",
-        color: "white",
         fontSize: "body_lg",
-        paddingX: "spacer2",
-        paddingY: "1.25rem",
+        "&:not([scope='row'])": {
+          borderBottom: "1px solid",
+          color: "white",
+          paddingX: "spacer2",
+          paddingY: "1.25rem",
+        },
       },
     },
     tfoot: {
@@ -275,7 +291,9 @@ const summationVariant = {
 const pdfVariant = {
   table: {
     th: {
-      borderBottomWidth: "2px",
+      "&:not([scope='row'])": {
+        borderBottomWidth: "2px",
+      },
     },
     tr: {
       "&.borderless": {

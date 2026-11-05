@@ -7,6 +7,7 @@ import {
   ElementType,
   SummationTableCellAnswerShape,
   SummationTableRowAnswerShape,
+  MaskType,
 } from "@pasrr/shared";
 import {
   buildElement,
@@ -62,6 +63,7 @@ export const SummationTable = (
     disabled = false,
     errorMessages = [],
     onChange,
+    readonly = false,
     rows,
   }: {
     answer?: SummationTableRowAnswerShape[];
@@ -80,6 +82,7 @@ export const SummationTable = (
       type: ElementType;
       value: string[];
     }) => void;
+    readonly?: boolean;
     rows: ActionRowElement[];
   }) => {
     const firstCellId = rows?.[0]?.id ?? "";
@@ -88,9 +91,15 @@ export const SummationTable = (
         const rowElements: (JSX.Element | string | number)[] = rows.map(
           (column) => {
             const answerCell = answerRow.find((t) => t.id === column.id);
+            const readonlyCell = Boolean(answerCell?.readonly) || readonly;
+            const readonlyNumberMask =
+              !column.mask &&
+              readonly &&
+              column.type === ElementType.NumberField;
             const formattedCell = {
               ...column,
               disabled,
+              mask: readonlyNumberMask ? MaskType.CommaSeparated : column.mask,
             };
             const value = buildElement({
               defaultValue: answerCell?.value ?? "",
@@ -107,7 +116,7 @@ export const SummationTable = (
                   type: formattedCell.type,
                   value,
                 }),
-              readonly: Boolean(answerCell?.readonly),
+              readonly: readonlyCell,
             });
             return value ?? "--";
           }
@@ -122,6 +131,42 @@ export const SummationTable = (
     return formattedBodyRows;
   };
 
+  const updateTotalRows = ({
+    rows,
+    total,
+    type,
+    id,
+  }: {
+    id: string;
+    rows: SummationTableRowAnswerShape[];
+    total: SummationTableRowAnswerShape[];
+    type: ElementType;
+  }) => {
+    if (type !== ElementType.NumberField) {
+      return total;
+    }
+
+    const sumById = rows.reduce((sum, row) => {
+      const cell = row.find((t) => t.id === id);
+      const parsedValue = Number(cell?.value);
+      return sum + (isNaN(parsedValue) ? 0 : parsedValue);
+    }, 0);
+
+    const newSumRow = { id, value: sumById, readonly: true };
+    const updatedTotalRows = total.length > 0 ? [...total] : [[newSumRow]];
+
+    for (const row of updatedTotalRows) {
+      const cellToUpdate = row.find((t) => t.id === id);
+      if (cellToUpdate) {
+        cellToUpdate.value = sumById;
+      } else {
+        row.push(newSumRow);
+      }
+    }
+
+    return updatedTotalRows;
+  };
+
   const onChangeHandler = ({
     id,
     index,
@@ -134,6 +179,7 @@ export const SummationTable = (
     value: string[];
   }) => {
     const answerRows = [...(answer?.rows ?? [])];
+    const totalRows = [...(answer?.total ?? [])];
     const updatedCell = { id, value: value[0] };
     const formattedValue = formatAnswer(updatedCell, rows, type).value;
     const rowToUpdate = answerRows[index] ?? [];
@@ -153,8 +199,7 @@ export const SummationTable = (
 
     const updatedAnswer = {
       rows: answerRows,
-      // TODO: SummationTable total
-      total: answer?.total ?? [],
+      total: updateTotalRows({ id, rows: answerRows, total: totalRows, type }),
     };
 
     props.updateElement({ answer: updatedAnswer });
@@ -170,6 +215,7 @@ export const SummationTable = (
 
   const formattedFootRows = buildRows({
     answer: answer?.total,
+    readonly: true,
     rows,
   });
 
