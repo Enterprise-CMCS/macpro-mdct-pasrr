@@ -25,8 +25,7 @@ const specializedServicesOnlyAccordion: AccordionTemplate = {
 
 export const specializedServicesOnly: FormPageTemplate = {
   id: "specialized-services-only",
-  title:
-    "Residents who don’t require nursing facility care, but do require specialized services",
+  title: "Specialized services only",
   type: PageType.Standard,
   sidebar: true,
   elements: [
