@@ -40,7 +40,10 @@ export const SummationTable = (
     if (element?.mask) {
       value = unmaskByType(element.mask, value);
     } else if (type === ElementType.NumberField && value) {
-      value = isWholePositiveNumber(value.toString()) ? Number(value) : value;
+      const cleanedInput = value.toString().trim().replaceAll(",", "");
+      value = isWholePositiveNumber(cleanedInput)
+        ? Number(cleanedInput)
+        : value;
     }
 
     return value;
