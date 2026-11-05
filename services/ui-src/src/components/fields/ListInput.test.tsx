@@ -34,6 +34,19 @@ describe("<ListInput />", () => {
         screen.queryByRole("button", { name: "Remove mock field 1" })
       ).not.toBeInTheDocument();
     });
+    test("ListInput is labeled by a visually hidden legend and shows its helper text", () => {
+      const group = screen.getByRole("group", {
+        name: "This is a mock list input",
+      });
+      expect(group).toBeInTheDocument();
+      expect(group.querySelector("legend")).toHaveStyle({
+        position: "absolute",
+        width: "1px",
+        height: "1px",
+        overflow: "hidden",
+      });
+      expect(screen.getByText("mock helper text")).toBeVisible();
+    });
     test("ListInput allows adding fields", async () => {
       const addBtn = screen.getByRole("button", { name: "mock button text" });
       await userEvent.click(addBtn);

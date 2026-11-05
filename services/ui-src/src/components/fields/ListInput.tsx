@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ListInputTemplate } from "@pasrr/shared";
 import { PageElementProps } from "components/report/Elements";
-import { Button, HStack, Image } from "@chakra-ui/react";
+import { Box, Button, HStack, Image, VStack } from "@chakra-ui/react";
 import { Hint, TextField } from "@cmsgov/design-system";
 import cancelPrimary from "assets/icons/cancel/icon_cancel_primary.svg";
 import addPrimary from "assets/icons/add/icon_add_blue.svg";
@@ -21,6 +21,7 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
   const { updateElement, disabled, element } = props;
   const {
     id,
+    label,
     fieldLabel,
     helperText,
     buttonText,
@@ -96,34 +97,36 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
 
   return (
     <fieldset ref={fieldsetRef} key="list-input-field">
+      <Box as="legend" srOnly>
+        {label}
+      </Box>
       <Hint id={id}>{helperText}</Hint>
-      {displayValue.map((field, index) => (
-        <HStack
-          alignItems="flex-end"
-          mt={index > 0 ? "1rem" : undefined}
-          key={`list-item-stack-${index}`}
-        >
-          <TextField
-            key={`list-item-${index}`}
-            name={`list-item-${index}`}
-            label={fieldLabel}
-            value={field}
-            onChange={(evt) => onChangeHandler(evt, index)}
-            onBlur={(evt) => onChangeHandler(evt, index)}
-            errorMessage={errorMessages?.[index]}
-            disabled={isDisabled()}
-          />
-          {displayValue.length > 1 && (
-            <Button
-              variant="unstyled"
-              onClick={() => onRemoveHandler(index)}
+      <VStack alignItems="flex-start" gap="spacer3">
+        {displayValue.map((field, index) => (
+          <HStack alignItems="flex-end" key={`list-item-stack-${index}`}>
+            <TextField
+              key={`list-item-${index}`}
+              name={`list-item-${index}`}
+              label={fieldLabel}
+              value={field}
+              onChange={(evt) => onChangeHandler(evt, index)}
+              onBlur={(evt) => onChangeHandler(evt, index)}
+              errorMessage={errorMessages?.[index]}
               disabled={isDisabled()}
-              aria-label={`Remove ${fieldLabel} ${index + 1}`}
-              leftIcon={<Image src={cancelPrimary} alt="Remove" />}
             />
-          )}
-        </HStack>
-      ))}
+            {displayValue.length > 1 && (
+              <Button
+                variant="unstyled"
+                onClick={() => onRemoveHandler(index)}
+                onMouseDown={(evt) => evt.preventDefault()}
+                disabled={isDisabled()}
+                aria-label={`Remove ${fieldLabel} ${index + 1}`}
+                leftIcon={<Image src={cancelPrimary} alt="Remove" />}
+              />
+            )}
+          </HStack>
+        ))}
+      </VStack>
       <Button
         mt="spacer3"
         variant="outline"
