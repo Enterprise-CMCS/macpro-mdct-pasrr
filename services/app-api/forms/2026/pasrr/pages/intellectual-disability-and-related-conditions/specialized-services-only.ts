@@ -2,6 +2,7 @@ import {
   AccordionTemplate,
   ElementType,
   FormPageTemplate,
+  getResidentDispositionPresetRowsAndAnswer,
   PageType,
 } from "@pasrr/shared";
 
@@ -40,7 +41,31 @@ export const specializedServicesOnly: FormPageTemplate = {
       text: "Residents who don’t require nursing facility care, but do require specialized services",
     },
     specializedServicesOnlyAccordion,
-    // DISPOSITIONS TABLE
+    {
+      type: ElementType.SubHeader,
+      id: "sso_specializedServicesRequiredSubheader",
+      text: "Resident dispositions: Specialized services only",
+      helperText:
+        "<p>Report Level II resident review data for individuals with an intellectual disability or related condition (ID/RC) by providing the number and disposition (resident status) of residents who:</p>" +
+        "<ul>" +
+        "<li>Were determined by a PASRR Level II resident review evaluation not to require the level of services provided by a nursing facility, but to require specialized services, <strong>and</strong></li>" +
+        "<li>Have not continuously resided in a nursing facility for at least 30 months before the date of the PASRR Level II resident review determination.</li>" +
+        "</ul>" +
+        "<p>All data should reflect the number and disposition as of December 31 of the reporting year.</p>" +
+        "<p>All fields are required unless marked optional.</p>",
+    },
+    {
+      type: ElementType.SummationTable,
+      id: "idrc_specializedServicesRequiredTable",
+      caption: "Resident dispositions: Specialized services only",
+      required: true,
+      rows: getResidentDispositionPresetRowsAndAnswer({
+        id: "idrc_specializedServicesRequiredTable",
+      }).rows,
+      answer: getResidentDispositionPresetRowsAndAnswer({
+        id: "idrc_specializedServicesRequiredTable",
+      }).answer,
+    },
     {
       id: "sso_didResidentsReceiveMultipleReviews",
       type: ElementType.TextAreaField,

@@ -169,15 +169,15 @@ export const elementSatisfiesRequired = (
     case element.type === ElementType.Textbox: {
       const textboxValidations = (value: string) => [
         {
-          match: element.id.includes("email"),
+          match: element.id.toLowerCase().includes("email"),
           validation: isEmail(value),
         },
         {
-          match: element.id.includes("phone"),
+          match: element.id.toLowerCase().includes("phone"),
           validation: isPhone(value),
         },
         {
-          match: element.id.includes("zipcode"),
+          match: element.id.toLowerCase().includes("zipcode"),
           validation: isZipCode(value),
         },
       ];

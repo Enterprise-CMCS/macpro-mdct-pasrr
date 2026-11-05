@@ -44,15 +44,15 @@ export const TextField = (
 
   const textboxValidations = (value: string) => [
     {
-      match: textbox.id.includes("email") && !isEmail(value),
+      match: textbox.id.toLowerCase().includes("email") && !isEmail(value),
       message: ErrorMessages.mustBeAnEmail,
     },
     {
-      match: textbox.id.includes("phone") && !isPhone(value),
+      match: textbox.id.toLowerCase().includes("phone") && !isPhone(value),
       message: ErrorMessages.mustBeAPhone,
     },
     {
-      match: textbox.id.includes("zipcode") && !isZipCode(value),
+      match: textbox.id.toLowerCase().includes("zipcode") && !isZipCode(value),
       message: ErrorMessages.mustBeAZipCode,
     },
   ];
@@ -164,7 +164,10 @@ export const TextField = (
   }
 
   const getWidth = (id: string) => {
-    if (id.includes("phone") || id.includes("zipcode")) {
+    if (
+      id.toLowerCase().includes("phone") ||
+      id.toLowerCase().includes("zipcode")
+    ) {
       return "14.5rem";
     }
 
