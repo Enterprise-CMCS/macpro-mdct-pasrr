@@ -61,6 +61,28 @@ export const elementObject: {
     id?: string;
   };
 } = {
+  [ElementType.FormEyebrow]: {
+    description: "Small text at the top of the page",
+    id: "id-form-eyebrow",
+    variants: [
+      <HeaderElement
+        element={{
+          type: ElementType.Header,
+          id: "id-header",
+          text: "HeaderElement",
+        }}
+      />,
+    ],
+    pdfVariants: [
+      <HeaderElement
+        element={{
+          type: ElementType.Header,
+          id: "id-header",
+          text: "HeaderElement",
+        }}
+      />,
+    ],
+  },
   [ElementType.Header]: {
     description: "Big text at the top of the page",
     id: "id-header",

@@ -7,6 +7,7 @@ import {
   AccordionElement,
   ButtonLinkElement,
   DividerElement,
+  FormEyebrowElement,
 } from "./Elements";
 import { assertExhaustive } from "types";
 import {
@@ -69,6 +70,8 @@ export const Page = ({ id, setElements, elements }: Props) => {
     };
 
     switch (element.type) {
+      case ElementType.FormEyebrow:
+        return <FormEyebrowElement {...{ element }} />;
       case ElementType.Header:
         return <HeaderElement {...{ element }} />;
       case ElementType.SubHeader:

@@ -30,7 +30,11 @@ export const specializedServicesOnly: FormPageTemplate = {
   type: PageType.Standard,
   sidebar: true,
   elements: [
-    // TODO: eyebrow
+    {
+      type: ElementType.FormEyebrow,
+      id: "sso-form-eyebrow",
+      text: "Intellectual Disability and Related Conditions (ID/RC)",
+    },
     {
       type: ElementType.Header,
       id: "sso-header",
