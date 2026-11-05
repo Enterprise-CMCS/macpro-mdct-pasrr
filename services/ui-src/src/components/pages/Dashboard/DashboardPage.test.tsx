@@ -1,5 +1,5 @@
 import { Mock, MockedFunction } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import { DashboardPage } from "components";
 import { RouterWrappedComponent, mockUseStore } from "utils/testing/setupTest";
 import { useStore } from "utils";
@@ -96,28 +96,38 @@ describe("DashboardPage with state user", () => {
 
   test("should not call reloadReports if no reportType passed in", async () => {
     (useParams as Mock).mockResolvedValueOnce(null).mockResolvedValueOnce(null);
-
     render(dashboardComponent);
     expect(getReportsForState).toHaveBeenCalledTimes(0);
   });
 
   test("should render report data", async () => {
-    const { container } = render(dashboardComponent);
+    render(dashboardComponent);
     await waitFor(() => {
       expect(getReportsForState).toHaveBeenCalled();
       expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
     });
 
-    const table = container.querySelector("table")!;
-    const columns = [...table.querySelectorAll("tr th")].map(
-      (th) => th.textContent!
-    );
-    const rows = [...table.querySelectorAll("tbody tr")].map((tr) => [
-      ...tr.querySelectorAll("td"),
-    ]);
+    // Get the different sections of the table
+    const rowGroups = screen.getAllByRole("rowgroup");
+    const [thead, tbody, tfoot] = rowGroups;
+    expect(rowGroups).toHaveLength(3);
+    expect(thead.tagName).toBe("THEAD");
+    expect(tbody.tagName).toBe("TBODY");
+    expect(tfoot.tagName).toBe("TFOOT");
 
-    expect(columns.length).toBeGreaterThanOrEqual(4);
-    expect(rows.length).toBe(2);
+    const columns = within(thead)
+      .getAllByRole("columnheader")
+      .map((th) => th.textContent);
+
+    const rows = within(tbody)
+      .getAllByRole("row")
+      .map((tr) => [...tr.children] as HTMLElement[]);
+
+    expect(columns).toHaveLength(6);
+    expect(rows).toHaveLength(2);
+    expect(
+      within(tbody).getByRole("rowheader", { name: "Mock Report Name" })
+    ).toBeVisible();
 
     const cellContent = (columnName: string) => {
       const columnIndex = columns.indexOf(columnName);
@@ -125,9 +135,13 @@ describe("DashboardPage with state user", () => {
       const cell = rows[0][columnIndex];
       return cell.textContent;
     };
+
     expect(cellContent("Submission name")).toBe("Mock Report Name");
     expect(cellContent("Last edited")).toBe("10/24/2026");
+    expect(cellContent("Reporting year")).toBe("2025");
     expect(cellContent("Edited by")).toBe("Mock User");
+    expect(cellContent("Status")).toBe("Not started");
+    expect(cellContent("Actions")).toBe("Enter Active ReportComment");
   });
 
   test("should list reporting years from reports, newest first", async () => {
@@ -148,7 +162,7 @@ describe("DashboardPage with state user", () => {
   });
 
   test("should be able to filter reports by reporting year", async () => {
-    const { container } = render(dashboardComponent);
+    render(dashboardComponent);
     await waitFor(() => {
       expect(getReportsForState).toHaveBeenCalled();
       expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
@@ -159,16 +173,27 @@ describe("DashboardPage with state user", () => {
       "2025"
     );
 
-    const table = container.querySelector("table")!;
-    const columns = [...table.querySelectorAll("tr th")].map(
-      (th) => th.textContent!
-    );
-    const rows = [...table.querySelectorAll("tbody tr")].map((tr) => [
-      ...tr.querySelectorAll("td"),
-    ]);
+    // Get the different sections of the table
+    const rowGroups = screen.getAllByRole("rowgroup");
+    const [thead, tbody, tfoot] = rowGroups;
+    expect(rowGroups).toHaveLength(3);
+    expect(thead.tagName).toBe("THEAD");
+    expect(tbody.tagName).toBe("TBODY");
+    expect(tfoot.tagName).toBe("TFOOT");
 
-    expect(columns.length).toBeGreaterThanOrEqual(4);
-    expect(rows.length).toBe(1);
+    const columns = within(thead)
+      .getAllByRole("columnheader")
+      .map((th) => th.textContent);
+
+    const rows = within(tbody)
+      .getAllByRole("row")
+      .map((tr) => [...tr.children] as HTMLElement[]);
+
+    expect(columns).toHaveLength(6);
+    expect(rows).toHaveLength(1);
+    expect(
+      within(tbody).getByRole("rowheader", { name: "Mock Report Name" })
+    ).toBeVisible();
 
     const cellContent = (columnName: string) => {
       const columnIndex = columns.indexOf(columnName);

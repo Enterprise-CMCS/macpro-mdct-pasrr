@@ -225,6 +225,8 @@ const getPageElementSchema = (value: PageElement): Schema => {
       return requestFeedbackButtonSchema;
     case ElementType.FieldGroup:
       return fieldGroupTemplateSchema;
+    case ElementType.SummationTable:
+      return summationTableTemplateSchema;
     default:
       throw new Error("ElementType is not valid");
   }
@@ -416,6 +418,27 @@ const fieldGroupTemplateSchema = object().shape({
   elements: array().of(fieldGroupElementSchema).required(),
   answer: array().of(mixed()).notRequired(),
   headingLevel: number().integer().min(1).max(6).notRequired(),
+});
+
+const summationTableTemplateSchema = object().shape({
+  type: string().required().matches(new RegExp(ElementType.SummationTable)),
+  id: string().required(),
+  caption: string().required(),
+  required: boolean().required(),
+  rows: array()
+    .of(
+      object().shape({
+        ...ActionElementsSchema,
+        header: string().required(),
+      })
+    )
+    .required(),
+  answer: object()
+    .shape({
+      rows: array().of(mixed()).notRequired(),
+      total: array().of(mixed()).notRequired(),
+    })
+    .notRequired(),
 });
 
 /**

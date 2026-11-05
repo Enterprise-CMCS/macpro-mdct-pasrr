@@ -457,7 +457,7 @@ export const NotificationsPage = () => {
           Add email
         </Button>
       </Box>
-      {ResponsiveTable(headers, rows)}
+      {ResponsiveTable({ headers, rows })}
       {rows.length === 0 &&
         (loading ? (
           <Box alignSelf={"center"}>
