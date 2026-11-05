@@ -15,7 +15,6 @@ import {
 } from "utils/state/reportLogic/tableBuilder";
 import {
   isWholePositiveNumber,
-  parseNumber,
   unmaskByType,
 } from "utils/validation/inputValidation";
 import { ResponsiveTable } from "components/tables/ResponsiveTable";
@@ -32,18 +31,12 @@ export const SummationTable = (
 
   const formatAnswer = (
     answerCell: SummationTableCellAnswerShape,
-    rows: ActionRowElement[],
-    type: ElementType
+    rows: ActionRowElement[]
   ) => {
     const element = rows.find((t) => t.id === answerCell.id);
-
-    let value = answerCell.value;
-
-    if (element?.mask) {
-      value = unmaskByType(element.mask, value);
-    } else if (type === ElementType.NumberField && value) {
-      value = parseNumber(value.toString()) ?? value;
-    }
+    const value = element?.mask
+      ? unmaskByType(element.mask, answerCell.value)
+      : answerCell.value;
 
     return {
       ...answerCell,
@@ -186,7 +179,7 @@ export const SummationTable = (
     const answerRows = [...(answer?.rows ?? [])];
     const totalRows = [...(answer?.total ?? [])];
     const updatedCell = { id, value: value[0] };
-    const formattedValue = formatAnswer(updatedCell, rows, type).value;
+    const formattedValue = formatAnswer(updatedCell, rows).value;
     const rowToUpdate = answerRows[index] ?? [];
     answerRows[index] = rowToUpdate;
     const cellToUpdate = rowToUpdate.find((t) => t.id === id);
