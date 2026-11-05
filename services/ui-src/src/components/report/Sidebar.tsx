@@ -72,9 +72,9 @@ export const Sidebar = () => {
           }}
         >
           <Flex justifyContent="space-between" alignItems="flex-start">
-            <Box width="100%" paddingY="spacer1">
+            <Flex width="100%" paddingY="spacer1">
               {navItem(page.title!, index)}
-            </Box>
+            </Flex>
             {hasChildSections && (
               <Box
                 height="var(--chakra-sizes-10)"
