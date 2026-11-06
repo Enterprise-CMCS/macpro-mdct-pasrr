@@ -19,6 +19,7 @@ import {
   HeaderIcon,
   PageElement,
   PasrrSubType,
+  FormEyebrowTemplate,
 } from "@pasrr/shared";
 import { AccordionItem } from "components";
 import arrowLeftIcon from "assets/icons/arrows/icon_arrow_left_blue.svg";
@@ -40,6 +41,16 @@ export type PageElementProps<T extends PageElement = PageElement> = T extends {
       element: T;
       disabled?: boolean;
     };
+
+export const FormEyebrowElement = ({
+  element,
+}: PageElementProps<FormEyebrowTemplate>) => {
+  return (
+    <Text color="gray" fontSize="body_md" fontWeight="heading_md">
+      {element.text}
+    </Text>
+  );
+};
 
 export const HeaderElement = ({
   element,

@@ -45,6 +45,12 @@ const hideConditionSchema = object()
   .notRequired()
   .default(undefined);
 
+const formEyebrowTemplateSchema = object().shape({
+  type: string().required().matches(new RegExp(ElementType.FormEyebrow)),
+  id: string().required(),
+  text: string().required(),
+});
+
 const headerTemplateSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.Header)),
   id: string().required(),
@@ -181,6 +187,8 @@ const getPageElementSchema = (value: PageElement): Schema => {
     throw new Error("ElementType is missing");
   }
   switch (value.type) {
+    case ElementType.FormEyebrow:
+      return formEyebrowTemplateSchema;
     case ElementType.Header:
       return headerTemplateSchema;
     case ElementType.SubHeader:
