@@ -55,37 +55,46 @@ export const Sidebar = () => {
     const childSections = page.childPageIds?.map((child) => pageMap.get(child));
     const hasChildSections = childSections && childSections.length > 0;
 
+    const isExpanded =
+      toggleList[page.id] || !!page.childPageIds?.includes(currentPageId!);
+
     return (
       <Box key={page.id} inert={!sidebarOpen}>
         <Link
           variant={"sidebar"}
           className={page.id === currentPageId ? "selected" : ""}
           href={`/report/${reportType}/${state}/${reportId}/${page.id}`}
+          height="auto"
+          minHeight="var(--chakra-sizes-10)"
           onClick={(e) => {
             e.preventDefault();
             onNavSelect(page.id);
           }}
         >
-          <Flex justifyContent="space-between" alignItems="center">
-            <Box width="100%" height="100%">
+          <Flex justifyContent="space-between" alignItems="flex-start">
+            <Flex width="100%" paddingY="spacer1">
               {navItem(page.title!, index)}
-            </Box>
+            </Flex>
             {hasChildSections && (
-              <Box onClick={() => setToggle(page.id)}>
+              <Box
+                height="var(--chakra-sizes-10)"
+                flexShrink="0"
+                marginLeft="spacer2"
+                paddingRight="spacer2"
+                display="flex"
+                alignItems="center"
+                onClick={() => setToggle(page.id)}
+              >
                 <Image
-                  src={toggleList[page.id] ? arrowUpIcon : arrowDownIcon}
-                  alt={
-                    toggleList[page.id]
-                      ? "Collapse subitems"
-                      : "Expand subitems"
-                  }
+                  src={isExpanded ? arrowUpIcon : arrowDownIcon}
+                  alt={isExpanded ? "Collapse subitems" : "Expand subitems"}
                 />
               </Box>
             )}
           </Flex>
         </Link>
         {hasChildSections &&
-          toggleList[page.id] &&
+          isExpanded &&
           childSections.map((sec) => navSection(sec!, index + 1))}
       </Box>
     );
