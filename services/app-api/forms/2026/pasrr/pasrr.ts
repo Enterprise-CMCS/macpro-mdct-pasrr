@@ -2,7 +2,11 @@ import { ReportPages } from "@pasrr/shared";
 // routes
 import { generalInformation } from "./pages/general-information";
 import { intellectualDisabilityAndRelatedConditions } from "./pages/intellectual-disability-and-related-conditions";
+import { specializedServicesOnly } from "./pages/intellectual-disability-and-related-conditions/specialized-services-only";
+import { noNursingFacilityCare } from "./pages/intellectual-disability-and-related-conditions/no-nursing-facility-care";
 import { seriousMentalIllness } from "./pages/serious-mental-illness";
+import { smiSpecializedServicesOnly } from "./pages/serious-mental-illness/smi-specialized-services-only";
+import { smiNoNursingFacilityCare } from "./pages/serious-mental-illness/smi-no-nursing-facility-care";
 import { reviewAndSubmit } from "./pages/review-and-submit";
 
 export const pasrrReportTemplate = (_state: string): ReportPages => [
@@ -17,6 +21,10 @@ export const pasrrReportTemplate = (_state: string): ReportPages => [
   },
   generalInformation,
   intellectualDisabilityAndRelatedConditions,
+  specializedServicesOnly,
+  noNursingFacilityCare,
   seriousMentalIllness,
+  smiSpecializedServicesOnly,
+  smiNoNursingFacilityCare,
   reviewAndSubmit,
 ];

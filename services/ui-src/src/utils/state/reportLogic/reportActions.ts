@@ -7,6 +7,13 @@ import { ReportState } from "types";
 import { putReport } from "utils/api/requestMethods/report";
 import { getLocalHourMinuteTime } from "utils";
 
+// Flatten list of page ids in sidebar order, so Continue/Previous visit nested pages
+const flattenPageIds = (report: Report, pageIds: string[]): string[] =>
+  pageIds.flatMap((id) => {
+    const page = report.pages.find((pg) => pg.id === id);
+    return [id, ...flattenPageIds(report, page?.childPageIds ?? [])];
+  });
+
 export const buildState = (
   report: Report | undefined,
   preserveCurrentPage: boolean
@@ -22,7 +29,7 @@ export const buildState = (
   const rootPage = report.pages[pageMap.get("root")!] as ParentPageTemplate; // this cast is safe, per unit tests
   const parentPage = {
     parent: rootPage.id,
-    childPageIds: rootPage.childPageIds,
+    childPageIds: flattenPageIds(report, rootPage.childPageIds),
     index: 0,
   };
 
@@ -39,19 +46,15 @@ export const buildState = (
 };
 
 export const setPage = (targetPageId: string, currentState: ReportState) => {
-  const parent = currentState.report?.pages.find((parentPage) =>
-    parentPage?.childPageIds?.includes(targetPageId)
-  );
-
+  const report = currentState.report;
+  const root = report?.pages.find((page) => page.id === "root");
   let parentPage = undefined;
-  if (parent) {
-    // @ts-ignore TODO
-    const pageIndex = parent.childPageIds?.indexOf(targetPageId) ?? -1;
-    parentPage = {
-      parent: parent.id,
-      childPageIds: parent.childPageIds!,
-      index: pageIndex,
-    };
+  if (report && root?.childPageIds) {
+    const flatIds = flattenPageIds(report, root.childPageIds);
+    const pageIndex = flatIds.indexOf(targetPageId);
+    if (pageIndex !== -1) {
+      parentPage = { parent: root.id, childPageIds: flatIds, index: pageIndex };
+    }
   }
   return { currentPageId: targetPageId, parentPage };
 };
