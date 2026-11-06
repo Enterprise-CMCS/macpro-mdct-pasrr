@@ -24,7 +24,7 @@ mockedUseStore.mockImplementation(
   }
 );
 
-const id = "mock-summation-table-id";
+const id = "mock_summationTableId";
 
 const mockedSummationTableElement: SummationTableTemplate = {
   id,
@@ -33,24 +33,24 @@ const mockedSummationTableElement: SummationTableTemplate = {
   required: true,
   rows: [
     {
-      id: `${id}-textbox`,
+      id: `${id}_textboxId`,
       header: "Textbox",
       type: ElementType.Textbox,
     },
     {
-      id: `${id}-number-field`,
+      id: `${id}_numberFieldId`,
       header: "NumberField",
       type: ElementType.NumberField,
     },
     {
-      id: `${id}-number-field-with-mask`,
+      id: `${id}_numberFieldWithMaskId`,
       header: "NumberField Mask",
       type: ElementType.NumberField,
       mask: MaskType.CommaSeparated,
     },
   ],
   answer: {
-    rows: [[{ id: `${id}-textbox`, value: "mock text" }]],
+    rows: [[{ id: `${id}_textboxId`, value: "mock text" }]],
     total: [],
   },
 };
@@ -97,7 +97,7 @@ describe("<SummationTable />", () => {
     await userEvent.clear(textbox);
     expect(updateSpy).toHaveBeenCalledWith({
       answer: {
-        rows: [[{ id: `${id}-textbox`, value: "" }]],
+        rows: [[{ id: `${id}_textboxId`, value: "" }]],
         total: [],
       },
     });
@@ -111,11 +111,11 @@ describe("<SummationTable />", () => {
       answer: {
         rows: [
           [
-            { id: `${id}-textbox`, value: "" },
-            { id: `${id}-number-field`, value: 123 },
+            { id: `${id}_textboxId`, value: "" },
+            { id: `${id}_numberFieldId`, value: 123 },
           ],
         ],
-        total: [[{ id: `${id}-number-field`, value: 123, readonly: true }]],
+        total: [[{ id: `${id}_numberFieldId`, value: 123, readonly: true }]],
       },
     });
 
@@ -131,16 +131,16 @@ describe("<SummationTable />", () => {
       answer: {
         rows: [
           [
-            { id: `${id}-textbox`, value: "" },
-            { id: `${id}-number-field`, value: 123 },
-            { id: `${id}-number-field-with-mask`, value: 12345 },
+            { id: `${id}_textboxId`, value: "" },
+            { id: `${id}_numberFieldId`, value: 123 },
+            { id: `${id}_numberFieldWithMaskId`, value: 12345 },
           ],
         ],
         total: [
           [
-            { id: `${id}-number-field`, value: 123, readonly: true },
+            { id: `${id}_numberFieldId`, value: 123, readonly: true },
             {
-              id: `${id}-number-field-with-mask`,
+              id: `${id}_numberFieldWithMaskId`,
               value: 12345,
               readonly: true,
             },

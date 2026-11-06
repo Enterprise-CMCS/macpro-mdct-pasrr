@@ -11,9 +11,9 @@ import assert from "node:assert";
 import { useState } from "react";
 
 const mockedDropdownElement: DropdownTemplate = {
-  id: "mock-dropdown-id",
+  id: "mock_dropdownId",
   type: ElementType.Dropdown,
-  label: "test-dropdown-field",
+  label: "Dropdown",
   helperText: "helper text",
   required: true,
   skipOptionalTag: true,
@@ -47,7 +47,7 @@ describe("<DropdownField />", () => {
   describe("Test DropdownField basic functionality", () => {
     test("DropdownField is visible", () => {
       render(<DropdownWrapper template={mockedDropdownElement} />);
-      const dropdown = screen.getAllByLabelText("test-dropdown-field")[0];
+      const dropdown = screen.getAllByLabelText("Dropdown")[0];
       expect(dropdown).toBeInTheDocument();
       assert.ok(dropdown instanceof HTMLSelectElement);
       expect(dropdown.options.length).toBe(4);
@@ -55,7 +55,7 @@ describe("<DropdownField />", () => {
 
     test("DropdownField should send updates to the Form", async () => {
       render(<DropdownWrapper template={mockedDropdownElement} />);
-      const dropdown = screen.getAllByLabelText("test-dropdown-field")[0];
+      const dropdown = screen.getAllByLabelText("Dropdown")[0];
 
       await userEvent.selectOptions(dropdown, "2027");
 
@@ -64,7 +64,7 @@ describe("<DropdownField />", () => {
 
     test("DropdownField should render error on change for required field", async () => {
       render(<DropdownWrapper template={mockedDropdownElement} />);
-      const dropdown = screen.getAllByLabelText("test-dropdown-field")[0];
+      const dropdown = screen.getAllByLabelText("Dropdown")[0];
       await userEvent.selectOptions(dropdown, "2026");
       await userEvent.selectOptions(dropdown, "");
       expect(screen.getByText("A response is required")).toBeVisible();
@@ -74,7 +74,7 @@ describe("<DropdownField />", () => {
       window.HTMLElement.prototype.scrollIntoView = vi.fn();
       render(<DropdownWrapper template={mockedDropdownElement} />);
       const dropdown = screen.getByRole("button", {
-        name: "- Select an option - test-dropdown-field",
+        name: "- Select an option - Dropdown",
       });
       await userEvent.click(dropdown);
       await userEvent.tab();

@@ -22,11 +22,13 @@ vi.mock("utils/api/requestMethods/fileMethods", async (importOriginal) => ({
   recordFileInDatabaseAndGetUploadUrl: vi
     .fn()
     .mockReturnValue({ presignedUploadUrl: "", fileId: "" }),
-  getUploadedFiles: vi
-    .fn()
-    .mockReturnValue([
-      { filename: "mock-name", fileSize: 100, fileId: "mock-id" },
-    ]),
+  getUploadedFiles: vi.fn().mockReturnValue([
+    {
+      filename: "mock-file-id.pdf",
+      fileSize: 100,
+      fileId: "mockKsuId_mock-file-id.pdf",
+    },
+  ]),
 }));
 vi.mock("utils", async (importOriginal) => ({
   ...(await importOriginal()),
@@ -42,18 +44,26 @@ vi.mock("utils", async (importOriginal) => ({
 const mockDeleteFromReport = vi.fn();
 
 const props = {
-  answer: [{ name: "mock-name", size: 100, fileId: "mock-id" }],
+  answer: [
+    {
+      name: "mock-file-id.pdf",
+      size: 100,
+      fileId: "mockKsuId_mock-file-id.pdf",
+    },
+  ],
   saveToReport: vi.fn(),
   updateElement: vi.fn(),
   deleteFromReport: mockDeleteFromReport,
   disabled: false,
 };
 
-const mockPng = new File(["0xMockPngData"], "bar.png", { type: "image/png" });
+const mockPng = new File(["0xMockPngData"], "mock-file-id.png", {
+  type: "image/png",
+});
 const mockInvalidPng = new File(["0xMockPngData"], ".png", {
   type: "image/png",
 });
-const mockInvalidType = new File(["0xMockEpubData"], "bar.epub", {
+const mockInvalidType = new File(["0xMockEpubData"], "mock-file-id.epub", {
   type: "application/epub+zip",
 });
 
@@ -115,10 +125,12 @@ describe("<Upload />", () => {
     render(<UploadArea {...props} />);
     await waitFor(() => {
       expect(
-        screen.getByRole("button", { name: "mock-name" })
+        screen.getByRole("button", { name: "mock-file-id.pdf" })
       ).toBeInTheDocument();
     });
-    await userEvent.click(screen.getByRole("button", { name: "mock-name" }));
+    await userEvent.click(
+      screen.getByRole("button", { name: "mock-file-id.pdf" })
+    );
     expect(getFileDownloadUrl).toHaveBeenCalled();
   });
 
@@ -153,7 +165,7 @@ describe("<Upload />", () => {
     });
     expect(
       screen.getByText(
-        "File bar.epub has unsupported file type and was not uploaded"
+        "File mock-file-id.epub has unsupported file type and was not uploaded"
       )
     ).toBeInTheDocument();
   });
@@ -162,11 +174,11 @@ describe("<Upload />", () => {
     render(<UploadArea {...props} />);
     await waitFor(() => {
       expect(
-        screen.getByRole("button", { name: "delete mock-name" })
+        screen.getByRole("button", { name: "delete mock-file-id.pdf" })
       ).toBeInTheDocument();
     });
     await userEvent.click(
-      screen.getByRole("button", { name: "delete mock-name" })
+      screen.getByRole("button", { name: "delete mock-file-id.pdf" })
     );
     expect(mockDeleteFromReport).toHaveBeenCalled();
   });

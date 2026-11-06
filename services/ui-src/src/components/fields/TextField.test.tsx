@@ -18,7 +18,7 @@ const mockedUseElementIsHidden = useElementIsHidden as MockedFunction<
 >;
 
 const mockedTextboxElement: TextboxTemplate = {
-  id: "mock-textbox-id",
+  id: "mock_textboxId",
   type: ElementType.Textbox,
   label: "test label",
   helperText: "helper text",
@@ -26,7 +26,7 @@ const mockedTextboxElement: TextboxTemplate = {
 };
 
 const mockedNumberField: NumberFieldTemplate = {
-  id: "mock-textbox-id",
+  id: "mock_numberFieldId",
   type: ElementType.NumberField,
   label: "test label",
   helperText: "helper text",
@@ -80,7 +80,7 @@ describe("<TextField />", () => {
   test("TextField should render error on load for invalid email", async () => {
     const mockedEmailField = {
       ...mockedTextboxElement,
-      id: "mock-email-field",
+      id: "mock_textboxId_email",
       answer: "not-an-email",
     };
     render(<TextFieldWrapper template={mockedEmailField} />);
@@ -104,7 +104,7 @@ describe("<TextField />", () => {
   test("TextField should render error on load for invalid phone", async () => {
     const mockedPhoneField = {
       ...mockedTextboxElement,
-      id: "mock-phone-field",
+      id: "mock_textboxId_phone",
       answer: "not-a-phone",
     };
     render(<TextFieldWrapper template={mockedPhoneField} />);
@@ -126,8 +126,8 @@ describe("<TextField />", () => {
   test("TextField should render error on load for invalid zip code", async () => {
     const mockedZipCodeField = {
       ...mockedTextboxElement,
-      id: "mock-zipcode-field",
-      answer: "not-a-zipcode",
+      id: "mock_textboxId_zipCode",
+      answer: "not-a-zipCode",
     };
     render(<TextFieldWrapper template={mockedZipCodeField} />);
     expect(screen.getByText("Enter a valid Zip code.")).toBeVisible();

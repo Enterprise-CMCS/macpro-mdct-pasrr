@@ -22,7 +22,7 @@ mockedUseStore.mockImplementation(
   }
 );
 
-const id = "mock-field-group-id";
+const id = "mock_fieldGroupId";
 
 const mockedFieldGroupElement: FieldGroupTemplate = {
   id,
@@ -31,7 +31,7 @@ const mockedFieldGroupElement: FieldGroupTemplate = {
   required: true,
   elements: [
     {
-      id: `${id}-textbox`,
+      id: `${id}_textboxId`,
       type: ElementType.Textbox,
       label: "Textbox",
       required: true,
@@ -67,7 +67,7 @@ describe("<FieldGroup />", () => {
           answer: "mock text",
         },
       ],
-      answer: [{ id: "mock-field-group-id-textbox", value: "mock text" }],
+      answer: [{ id: "mock_fieldGroupId_textboxId", value: "mock text" }],
     });
   });
 

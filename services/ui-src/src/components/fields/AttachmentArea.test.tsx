@@ -19,10 +19,16 @@ vi.mock("utils/api/requestMethods/fileMethods", async (importOriginal) => ({
 }));
 
 const mockAttachmentAreaElement: AttachmentAreaTemplate = {
-  id: "mock-attachment-area-id",
+  id: "mock_attachmentAreaId",
   type: ElementType.AttachmentArea,
   label: "mock attachment area",
-  answer: [{ name: "mock-name", size: 100, fileId: "mock-id" }],
+  answer: [
+    {
+      name: "mock-file-id.pdf",
+      size: 100,
+      fileId: "mockKsuId_mock-file-id.pdf",
+    },
+  ],
   required: true,
 };
 
@@ -93,10 +99,12 @@ describe("<AttachmentArea />", () => {
     });
     await waitFor(() => {
       expect(
-        screen.getByRole("button", { name: "mock-name" })
+        screen.getByRole("button", { name: "mock-file-id.pdf" })
       ).toBeInTheDocument();
     });
-    await userEvent.click(screen.getByRole("button", { name: "mock-name" }));
+    await userEvent.click(
+      screen.getByRole("button", { name: "mock-file-id.pdf" })
+    );
     expect(getFileDownloadUrl).toHaveBeenCalled();
   });
   test("test opening delete modal", async () => {
@@ -105,11 +113,11 @@ describe("<AttachmentArea />", () => {
     });
     await waitFor(() => {
       expect(
-        screen.getByRole("button", { name: "delete mock-name" })
+        screen.getByRole("button", { name: "delete mock-file-id.pdf" })
       ).toBeInTheDocument();
     });
     await userEvent.click(
-      screen.getByRole("button", { name: "delete mock-name" })
+      screen.getByRole("button", { name: "delete mock-file-id.pdf" })
     );
     expect(screen.getByText("Delete Attachment")).toBeInTheDocument();
     await userEvent.click(screen.getByText("Close"));
@@ -121,11 +129,11 @@ describe("<AttachmentArea />", () => {
     });
     await waitFor(() => {
       expect(
-        screen.getByRole("button", { name: "delete mock-name" })
+        screen.getByRole("button", { name: "delete mock-file-id.pdf" })
       ).toBeInTheDocument();
     });
     await userEvent.click(
-      screen.getByRole("button", { name: "delete mock-name" })
+      screen.getByRole("button", { name: "delete mock-file-id.pdf" })
     );
     expect(screen.getByText("Delete Attachment")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Delete" }));

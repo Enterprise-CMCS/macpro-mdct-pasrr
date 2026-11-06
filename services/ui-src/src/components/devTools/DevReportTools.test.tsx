@@ -16,23 +16,25 @@ vi.mock("utils/api/requestMethods/fileMethods", async (importOriginal) => ({
   recordFileInDatabaseAndGetUploadUrl: vi
     .fn()
     .mockReturnValue({ presignedUploadUrl: "", fileId: "" }),
-  getUploadedFiles: vi
-    .fn()
-    .mockReturnValue([
-      { filename: "mock-name", fileSize: 100, fileId: "mock-id" },
-    ]),
+  getUploadedFiles: vi.fn().mockReturnValue([
+    {
+      filename: "mock-file-id.pdf",
+      fileSize: 100,
+      fileId: "mockKsuId_mock-file-id.pdf",
+    },
+  ]),
 }));
 
 const reportUseStore = {
   report: {
-    id: "test-report",
+    id: "mock-report-id",
     pages: [
       {
-        id: "mock-optional",
+        id: "mock-page-id",
         elements: [],
       },
       {
-        id: "mock-page",
+        id: "mock-page-id-2",
         title: "Mock Page",
         status: PageStatus.IN_PROGRESS,
         elements: [],
@@ -44,12 +46,12 @@ const reportUseStore = {
 
 const sections = [
   {
-    section: { title: "Mock Page", id: "mock-page" },
+    section: { title: "Mock Page", id: "mock-page-id" },
     displayStatus: PageStatus.NOT_STARTED,
     submittable: true,
   },
   {
-    section: { title: "Mock Optional", id: "mock-optional" },
+    section: { title: "Mock Optional", id: "mock_optional" },
     displayStatus: PageStatus.OPTIONAL,
     submittable: true,
   },
@@ -60,40 +62,40 @@ const getElements = (showAnswers?: boolean) => {
     if (!showAnswers) return {};
 
     const answers: { [key: string]: any } = {
-      "mock-textbox-id": "mock text input",
-      "mock-textarea-id": "mock text area field",
-      "mock-number-field-id": "1234",
-      "mock-date-id": "02/02/2026",
-      "mock-dropdown-id": "2026",
-      "mock-action-table-id": [
+      mock_textboxId: "mock text input",
+      mock_textAreaFieldId: "mock text area field",
+      mock_numberFieldId: "1234",
+      mock_dateId: "02/02/2026",
+      mock_dropdownId: "2026",
+      mock_actionTableId: [
         [
           {
-            id: "row-1",
+            id: "mock_actionTableId_textboxId",
             value: "mock text",
           },
           {
-            id: "row-2",
+            id: "mock_actionTableId_numberFieldId",
             value: "1234",
           },
         ],
       ],
-      "mock-field-group-id": [
+      mock_fieldGroupId: [
         {
-          id: "mock-field-group-id-email",
+          id: "mock_fieldGroupId_email",
           value: "mock@email.com",
         },
         {
-          id: "mock-field-group-id-phone",
+          id: "mock_fieldGroupId_phone",
           value: "555-555-5555",
         },
         {
-          id: "mock-field-group-id-zipcode",
+          id: "mock_fieldGroupId_zipCode",
           value: "55555",
         },
       ],
-      "mock-field-group-id-email": "mock@email.com",
-      "mock-field-group-id-phone": "555-555-5555",
-      "mock-field-group-id-zipcode": "55555",
+      mock_fieldGroupId_email: "mock@email.com",
+      mock_fieldGroupId_phone: "555-555-5555",
+      mock_fieldGroupId_zipCode: "55555",
     };
 
     return { answer: answers[id] };
@@ -101,52 +103,52 @@ const getElements = (showAnswers?: boolean) => {
 
   return [
     {
-      id: "mock-textbox-id",
+      id: "mock_textboxId",
       type: ElementType.Textbox,
       required: true,
-      ...getAnswer("mock-textbox-id"),
+      ...getAnswer("mock_textboxId"),
     },
     {
-      id: "mock-textarea-id",
+      id: "mock_textAreaFieldId",
       type: ElementType.TextAreaField,
       required: true,
-      ...getAnswer("mock-textarea-id"),
+      ...getAnswer("mock_textAreaFieldId"),
     },
     {
-      id: "mock-date-id",
+      id: "mock_dateId",
       type: ElementType.Date,
       required: true,
-      ...getAnswer("mock-date-id"),
+      ...getAnswer("mock_dateId"),
     },
     {
-      id: "mock-number-field-id",
+      id: "mock_numberFieldId",
       type: ElementType.NumberField,
       required: true,
-      ...getAnswer("mock-number-field-id"),
+      ...getAnswer("mock_numberFieldId"),
     },
     {
-      id: "mock-number-field-optional-id",
+      id: "mock_number-field-optionalId",
       type: ElementType.NumberField,
       required: false,
     },
     {
-      id: "mock-action-table-id",
+      id: "mock_actionTableId",
       type: ElementType.ActionTable,
       required: true,
       rows: [
         {
           header: "Textbox Field",
-          id: "row-1",
+          id: "mock_actionTableId_textboxId",
           type: ElementType.Textbox,
         },
         {
           header: "NumberField",
-          id: "row-2",
+          id: "mock_actionTableId_numberFieldId",
           type: ElementType.NumberField,
         },
         {
           header: "Disabled Field",
-          id: "row-3",
+          id: "mock_actionTableId_disabledFieldId",
           type: ElementType.Textbox,
           disabled: true,
         },
@@ -154,19 +156,19 @@ const getElements = (showAnswers?: boolean) => {
       answer: [
         [
           {
-            id: "row-1",
+            id: "mock_actionTableId_textboxId",
             value: "mock text",
           },
           {
-            id: "row-2",
+            id: "mock_actionTableId_numberFieldId",
             value: "",
           },
         ],
       ],
-      ...getAnswer("mock-action-table-id"),
+      ...getAnswer("mock_actionTableId"),
     },
     {
-      id: "mock-dropdown-id",
+      id: "mock_dropdownId",
       type: ElementType.Dropdown,
       required: true,
       options: [
@@ -174,10 +176,10 @@ const getElements = (showAnswers?: boolean) => {
         { label: "2026", value: "2026" },
         { label: "2027", value: "2027" },
       ],
-      ...getAnswer("mock-dropdown-id"),
+      ...getAnswer("mock_dropdownId"),
     },
     {
-      id: "mock-checkbox-id",
+      id: "mock_checkboxId",
       type: ElementType.Checkbox,
       required: true,
       choices: [
@@ -199,30 +201,30 @@ const getElements = (showAnswers?: boolean) => {
       ],
     },
     {
-      id: "mock-field-group-id",
+      id: "mock_fieldGroupId",
       type: ElementType.FieldGroup,
       required: true,
       elements: [
         {
-          id: "mock-field-group-id-email",
+          id: "mock_fieldGroupId_email",
           type: ElementType.Textbox,
           required: true,
-          ...getAnswer("mock-field-group-id-email"),
+          ...getAnswer("mock_fieldGroupId_email"),
         },
         {
-          id: "mock-field-group-id-phone",
+          id: "mock_fieldGroupId_phone",
           type: ElementType.Textbox,
           required: true,
-          ...getAnswer("mock-field-group-id-phone"),
+          ...getAnswer("mock_fieldGroupId_phone"),
         },
         {
-          id: "mock-field-group-id-zipcode",
+          id: "mock_fieldGroupId_zipCode",
           type: ElementType.Textbox,
           required: true,
-          ...getAnswer("mock-field-group-id-zipcode"),
+          ...getAnswer("mock_fieldGroupId_zipCode"),
         },
       ],
-      ...getAnswer("mock-field-group-id"),
+      ...getAnswer("mock_fieldGroupId"),
     },
   ];
 };
@@ -234,7 +236,7 @@ vi.mock("utils/state/useStore", () => ({
       (selector?: (state: typeof mockUseStore) => unknown) => {
         if (selector) {
           return {
-            id: "mock-page",
+            id: "mock-page-id",
             title: "Mock Page",
             elements: getElements(false),
             sections,
@@ -262,12 +264,12 @@ describe("Test DevReportTools component", () => {
     await userEvent.click(autoBtn);
     expect(mockSetAnswer).toHaveBeenCalledWith(
       {
-        id: "mock-page",
+        id: "mock-page-id",
         title: "Mock Page",
         elements: getElements(true),
         sections,
       },
-      "mock-page"
+      "mock-page-id"
     );
   });
 
@@ -275,7 +277,7 @@ describe("Test DevReportTools component", () => {
     (useStore as unknown as Mock).mockImplementation((selector) => {
       if (selector) {
         return {
-          id: "mock-page",
+          id: "mock-page-id",
           title: "Mock Page",
           sections,
         };
@@ -306,12 +308,12 @@ describe("Test DevReportTools component", () => {
     await userEvent.click(screen.getByRole("button", { name: "Fill Report" }));
     expect(mockSetAnswer).toHaveBeenCalledWith(
       {
-        id: "mock-page",
+        id: "mock-page-id-2",
         title: "Mock Page",
         status: PageStatus.IN_PROGRESS,
         elements: [],
       },
-      "mock-page"
+      "mock-page-id-2"
     );
   });
 });

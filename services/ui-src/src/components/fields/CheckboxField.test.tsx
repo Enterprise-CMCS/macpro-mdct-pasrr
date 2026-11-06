@@ -7,7 +7,7 @@ import { testA11y } from "utils/testing/commonTests";
 const updateSpy = vi.fn();
 
 const mockCheckboxElement: CheckboxTemplate = {
-  id: "mock-checkbox-id",
+  id: "mock_checkboxId",
   type: ElementType.Checkbox,
   label: "mock label",
   required: true,

@@ -17,7 +17,7 @@ const mockGetComments = vi.fn().mockResolvedValue([
   {
     contextId: "mockContextId",
     created: 123456,
-    id: "mockId",
+    id: "mock_commentId",
     author: "Mock Author",
     authorEmail: "mockEmail",
     isInternal: false,
@@ -29,7 +29,7 @@ const mockGetComments = vi.fn().mockResolvedValue([
 const mockCreateComment = vi.fn().mockResolvedValue({
   contextId: "mockContextId",
   created: 123456,
-  id: "mockId",
+  id: "mock_commentId",
   author: "Mock Author",
   authorEmail: "mockEmail",
   isInternal: false,
@@ -143,7 +143,7 @@ describe("ReportCommentDrawer component", () => {
           {
             contextId: "mockContextId",
             created: 123456,
-            id: "mockId",
+            id: "mock_commentId",
             author: "CMS User",
             authorEmail: "mockEmail",
             isInternal: false,
@@ -153,7 +153,7 @@ describe("ReportCommentDrawer component", () => {
           {
             contextId: "mockContextId",
             created: 123456,
-            id: "mockId",
+            id: "mock_commentId",
             author: "CMS User",
             authorEmail: "mockEmail",
             isInternal: false,
@@ -162,7 +162,7 @@ describe("ReportCommentDrawer component", () => {
           {
             contextId: "mockContextId",
             created: 123456,
-            id: "mockId",
+            id: "mock_commentId",
             author: "CMS User",
             authorEmail: "mockEmail",
             isInternal: false,

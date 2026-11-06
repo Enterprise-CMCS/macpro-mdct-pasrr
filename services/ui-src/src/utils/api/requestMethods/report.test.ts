@@ -38,7 +38,7 @@ describe("utils/report", () => {
     vi.clearAllMocks();
   });
   test("getReport", async () => {
-    await getReport("reportType", "PA", "mock-id");
+    await getReport("reportType", "PA", "mock-report-id");
     expect(mockGet).toHaveBeenCalledTimes(1);
   });
 
@@ -76,7 +76,7 @@ describe("utils/report", () => {
     expect(mockPut).toHaveBeenCalledTimes(1);
   });
   test("deleteReport", async () => {
-    await deleteReport("reportType", "PA", "mock-id");
+    await deleteReport("reportType", "PA", "mock-report-id");
     expect(mockDel).toHaveBeenCalledTimes(1);
   });
   test("deleteReportsForState", async () => {

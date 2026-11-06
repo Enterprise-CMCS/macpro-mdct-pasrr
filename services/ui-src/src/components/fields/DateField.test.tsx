@@ -6,9 +6,9 @@ import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 
 const mockedDateTextboxElement: DateTemplate = {
-  id: "mock-date-id",
+  id: "mock_date_fieldId",
   type: ElementType.Date,
-  label: "test-date-field",
+  label: "Date",
   helperText: "helper text",
   required: true,
 };

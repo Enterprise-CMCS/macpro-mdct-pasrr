@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 
 const mockedListInputElement: ListInputTemplate = {
   type: ElementType.ListInput,
-  id: "mock-id",
+  id: "mock_listInputId",
   label: "This is a mock list input",
   fieldLabel: "mock field",
   helperText: "mock helper text",

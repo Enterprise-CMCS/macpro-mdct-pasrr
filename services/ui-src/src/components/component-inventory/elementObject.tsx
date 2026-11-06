@@ -68,14 +68,14 @@ export const elementObject: {
       <HeaderElement
         element={{
           type: ElementType.Header,
-          id: "id-header",
+          id: "mock_headerId",
           text: "HeaderElement",
         }}
       />,
       <HeaderElement
         element={{
           type: ElementType.Header,
-          id: "id-header-with-icon",
+          id: "mock_headerWithIconId",
           text: "HeaderElement with Icon",
           icon: HeaderIcon.Check,
         }}
@@ -85,7 +85,7 @@ export const elementObject: {
       <HeaderElement
         element={{
           type: ElementType.Header,
-          id: "id-header",
+          id: "mock_headerId",
           text: "HeaderElement",
         }}
       />,
@@ -98,7 +98,7 @@ export const elementObject: {
       <SubHeaderElement
         element={{
           type: ElementType.SubHeader,
-          id: "id-subheader",
+          id: "mock_subHeaderId",
           text: "SubHeaderElement",
         }}
       />,
@@ -107,7 +107,7 @@ export const elementObject: {
       <SubHeaderElement
         element={{
           type: ElementType.SubHeader,
-          id: "id-subheader",
+          id: "mock_subHeaderId",
           text: "SubHeaderElement",
         }}
       />,
@@ -121,7 +121,7 @@ export const elementObject: {
         updateElement={logNewElement}
         element={{
           type: ElementType.Textbox,
-          id: "id-textfield",
+          id: "mock_textboxId",
           label: "TextField",
           required: false,
         }}
@@ -137,7 +137,7 @@ export const elementObject: {
         updateElement={logNewElement}
         element={{
           type: ElementType.TextAreaField,
-          id: "id-textareafield",
+          id: "mock_textAreaFieldId",
           label: "TextAreaField",
           required: true,
         }}
@@ -152,7 +152,7 @@ export const elementObject: {
       <ParagraphElement
         element={{
           type: ElementType.Paragraph,
-          id: "id-paragraph",
+          id: "mock_paragraphId",
           text: "Useful for explanations or instructions.. lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
         }}
       />,
@@ -166,7 +166,7 @@ export const elementObject: {
       <DividerElement
         element={{
           type: ElementType.Divider,
-          id: "id-divider",
+          id: "mock_dividerId",
         }}
       />,
     ],
@@ -198,7 +198,7 @@ export const elementObject: {
         updateElement={logNewElement}
         element={{
           type: ElementType.Dropdown,
-          id: "id-dropdown",
+          id: "mock_dropdownId",
           label: "DropdownField",
           required: true,
           options: [
@@ -219,7 +219,7 @@ export const elementObject: {
         updateElement={logNewElement}
         element={{
           type: ElementType.Radio,
-          id: "id-radio",
+          id: "mock_radioId",
           label: "RadioField",
           required: true,
           choices: [
@@ -240,7 +240,7 @@ export const elementObject: {
         updateElement={logNewElement}
         element={{
           type: ElementType.Date,
-          id: "id-date-field",
+          id: "mock_dateId",
           label: "DateField",
           helperText: "DateFieldElement is used to select a date.",
           required: true,
@@ -277,7 +277,7 @@ export const elementObject: {
         element={
           {
             type: ElementType.NumberField,
-            id: "id-number-field",
+            id: "mock_numberFieldId",
             label: "Enter a number",
             helperText: "Helper text is optional",
             required: false,
@@ -289,7 +289,7 @@ export const elementObject: {
         element={
           {
             type: ElementType.NumberField,
-            id: "id-number-field-required",
+            id: "mock_numberFieldId_required",
             label: "NumberField with required validation",
             helperText: "This field is required.",
             required: true,
@@ -306,7 +306,7 @@ export const elementObject: {
       <ButtonLinkElement
         element={{
           type: ElementType.ButtonLink,
-          id: "id-button-link",
+          id: "mock_buttonLinkId",
           to: "page-link",
           label: "Button Link Label",
         }}
@@ -327,7 +327,7 @@ export const elementObject: {
       <StatusAlert
         element={{
           type: ElementType.StatusAlert,
-          id: "id-status",
+          id: "mock_statusAlertId",
           title: "Status Title",
           text: "AlertTypes.SUCCESS",
           status: AlertTypes.SUCCESS,
@@ -336,7 +336,7 @@ export const elementObject: {
       <StatusAlert
         element={{
           type: ElementType.StatusAlert,
-          id: "id-status",
+          id: "mock_statusAlertId_error",
           title: "Status Title",
           text: "AlertTypes.ERROR",
           status: AlertTypes.ERROR,
@@ -345,7 +345,7 @@ export const elementObject: {
       <StatusAlert
         element={{
           type: ElementType.StatusAlert,
-          id: "id-status",
+          id: "mock_statusAlertId_info",
           title: "Status Title",
           text: "AlertTypes.INFO",
           status: AlertTypes.INFO,
@@ -354,7 +354,7 @@ export const elementObject: {
       <StatusAlert
         element={{
           type: ElementType.StatusAlert,
-          id: "id-status",
+          id: "mock_statusAlertId_warning",
           title: "Status Title",
           text: "AlertTypes.WARNING",
           status: AlertTypes.WARNING,
@@ -377,7 +377,7 @@ export const elementObject: {
         updateElement={logNewElement}
         element={{
           type: ElementType.Checkbox,
-          id: "id-checkbox",
+          id: "mock_checkboxId",
           label: "CheckboxField",
           required: true,
           choices: [
@@ -398,7 +398,7 @@ export const elementObject: {
         updateElement={logNewElement}
         element={{
           type: ElementType.ListInput,
-          id: "id-listinput",
+          id: "mock_listInputId",
           buttonText: "Add list input",
           required: true,
           fieldLabel: "input",
@@ -416,7 +416,7 @@ export const elementObject: {
         updateElement={logNewElement}
         element={{
           type: ElementType.AttachmentArea,
-          id: "id-attachment",
+          id: "mock_attachmentAreaId",
           label: "label",
           required: true,
           answer: [
@@ -439,14 +439,14 @@ export const elementObject: {
       <AccordionGroup
         element={{
           type: ElementType.AccordionGroup,
-          id: "id-accordion-group",
+          id: "mock_accordionGroupId",
           accordions: [
             {
               label: "Accordion Group 1",
               elements: [
                 {
                   type: ElementType.Textbox,
-                  id: "",
+                  id: "mock_accordionId_textboxId",
                   label: "",
                   required: false,
                 },
@@ -457,7 +457,7 @@ export const elementObject: {
               elements: [
                 {
                   type: ElementType.Textbox,
-                  id: "",
+                  id: "mock_accordionId_textboxId",
                   label: "",
                   required: false,
                 },
@@ -479,7 +479,7 @@ export const elementObject: {
       <ActionTable
         element={{
           type: ElementType.ActionTable,
-          id: "id-action-table",
+          id: "mock_actionTableId",
           label: "Action Table",
           heading: "Action Table",
           helperText: "hint text",
@@ -490,30 +490,30 @@ export const elementObject: {
           rows: [
             {
               header: "Text Field",
-              id: "row-1",
+              id: "mock_actionTableId_paragraphId",
               type: ElementType.Paragraph,
             },
             {
               header: "Textbox Field",
-              id: "row-2",
+              id: "mock_actionTableId_textboxId",
               type: ElementType.Textbox,
             },
             {
               header: "Date Field",
-              id: "row-3",
+              id: "mock_actionTableId_dateId",
               type: ElementType.Date,
             },
           ],
           answer: [
             [
-              { id: "row-1", value: "1" },
-              { id: "row-2", value: "textbox 1" },
-              { id: "row-3", value: "01/01/2021" },
+              { id: "mock_actionTableId_paragraphId", value: "1" },
+              { id: "mock_actionTableId_textboxId", value: "textbox 1" },
+              { id: "mock_actionTableId_dateId", value: "01/01/2021" },
             ],
             [
-              { id: "row-1", value: "2" },
-              { id: "row-2", value: "textbox 2" },
-              { id: "row-3", value: "02/02/2022" },
+              { id: "mock_actionTableId_paragraphId", value: "2" },
+              { id: "mock_actionTableId_textboxId", value: "textbox 2" },
+              { id: "mock_actionTableId_dateId", value: "02/02/2022" },
             ],
           ],
           required: true,
@@ -536,7 +536,7 @@ export const elementObject: {
       <FieldGroup
         element={{
           type: ElementType.FieldGroup,
-          id: "id-field-group",
+          id: "mock_fieldGroupId",
           label: "FieldGroup",
           required: true,
           helperText: "Information to help user fill field group",
@@ -552,7 +552,7 @@ export const elementObject: {
           required: true,
           helperText: "Information to help user fill out postal address fields",
           elements: getPostalAddressElements({
-            id: "id-field-group",
+            id: "mock_fieldGroupId",
           }),
         }}
         updateElement={logNewElement}
