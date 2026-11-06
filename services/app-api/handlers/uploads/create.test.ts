@@ -26,18 +26,18 @@ vi.mock("../../libs/s3-lib", () => ({
 
 const testEvent: APIGatewayProxyEvent = {
   ...proxyEvent,
-  body: `{"uploadedFileName":"mock-id","uploadedFileType":"image/png"}`,
+  body: `{"uploadedFileName":"mock-file-id.pdf","uploadedFileType":"image/png"}`,
   pathParameters: {
     state: "PA",
     reportType: "PASRR",
-    id: "mock-id",
-    fileId: "mock-file-id",
+    id: "mock-report-id",
+    fileId: "mockKsuId_mock-file-id.pdf",
   },
   headers: { "cognito-identity-id": "test" },
 };
 
 const mockUploadRespond = {
-  Items: [{ uploadedState: "PA", fileId: "mock-id" }],
+  Items: [{ uploadedState: "PA", fileId: "mockKsuId_mock-file-id.pdf" }],
 };
 
 describe("Test createUpload API method", () => {

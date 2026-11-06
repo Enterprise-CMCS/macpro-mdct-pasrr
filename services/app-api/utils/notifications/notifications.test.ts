@@ -26,7 +26,7 @@ const mockNotificationData = {
     },
   },
   report: {
-    id: "123",
+    id: "mock-report-id",
     state: "AK",
   } as Report,
   user: {
@@ -36,7 +36,7 @@ const mockNotificationData = {
 };
 
 const mockExpectedNotificationBody = {
-  contextId: "123",
+  contextId: "mock-report-id",
   emailId: "3-2-1",
   state: "AK",
   recipients: {

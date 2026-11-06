@@ -31,7 +31,7 @@ const mockSendEmail = vi.mocked(sendEmail);
 const mockComment = {
   contextId: "mockContextId",
   created: 123456,
-  id: "mockId",
+  id: "mock_commentId",
   author: "Mock User",
   authorEmail: "mockuser@example.com",
   isInternal: false,
