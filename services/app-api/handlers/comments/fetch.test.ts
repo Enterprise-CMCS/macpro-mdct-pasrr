@@ -27,7 +27,7 @@ vi.mock("../../storage/comments", () => ({
 const mockComment = {
   contextId: "mockContextId",
   created: 123456,
-  id: "mockId",
+  id: "mock_commentId",
   author: "Mock Author",
   authorEmail: "mockEmail",
   isInternal: false,

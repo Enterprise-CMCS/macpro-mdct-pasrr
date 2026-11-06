@@ -26,7 +26,7 @@ vi.mock("../../../utils/authorization", () => ({
 const testEvent: APIGatewayProxyEvent = {
   ...proxyEvent,
   headers: { "cognito-identity-id": "test" },
-  pathParameters: { state: "PA", id: "123" },
+  pathParameters: { state: "PA", id: "mock-report-id" },
 };
 
 describe("Test deleteNotificationRecipient API method", () => {
@@ -52,7 +52,7 @@ describe("Test deleteNotificationRecipient API method", () => {
   test("state not provided throws 500 error", async () => {
     const noKeyEvent: APIGatewayProxyEvent = {
       ...testEvent,
-      pathParameters: { id: "123" },
+      pathParameters: { id: "mock-report-id" },
     };
     const res = await deleteNotificationRecipient(noKeyEvent);
 

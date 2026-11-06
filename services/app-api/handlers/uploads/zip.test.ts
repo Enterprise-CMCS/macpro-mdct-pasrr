@@ -26,7 +26,7 @@ mockCanRequestZip.mockReturnValue(true);
 
 vi.mock("../../utils/zips/polling", () => ({
   getPSURL: vi.fn(),
-  startZipWorker: vi.fn().mockReturnValue("zip-id-123"),
+  startZipWorker: vi.fn().mockReturnValue("mock-zip-id"),
   zipBuffer: vi.fn(),
 }));
 
@@ -41,7 +41,13 @@ vi.mock("../../storage/reports", () => ({
         elements: [
           {
             type: "attachmentArea",
-            answer: [{ name: "mockName", size: 123, fileId: "mock-id" }],
+            answer: [
+              {
+                name: "mockName",
+                size: 123,
+                fileId: "mockKsuId_mock-file-id.pdf",
+              },
+            ],
           },
         ],
       },
@@ -58,7 +64,7 @@ vi.mock("../../storage/reports", () => ({
                       {
                         name: "mockNameAccordion",
                         size: 123,
-                        fileId: "mock-id-accordion",
+                        fileId: "mockKsuId_mock-file-id.pdf",
                       },
                     ],
                   },
@@ -79,7 +85,7 @@ const mockTriggerReportZipEvent: APIGatewayProxyEvent = {
     report: {
       state: "PA",
       reportType: "PASRR",
-      id: "mock-id",
+      id: "mock-report-id",
     },
   }),
   headers: { "cognito-identity-id": "test" },
@@ -89,15 +95,15 @@ const mockGetZipEvent: APIGatewayProxyEvent = {
   ...proxyEvent,
   body: `{}`,
   headers: { "cognito-identity-id": "test" },
-  pathParameters: { id: "zip-id-123" },
+  pathParameters: { id: "mock-zip-id" },
 };
 
 const mockZipWorkerReportEvent: ZipReportWorkerEvent = {
   type: ZipRequestTypes.REPORT,
-  zipId: "zip-id-123",
+  zipId: "mock-zip-id",
   reportType: ReportType.PASRR,
   state: "PA",
-  id: "report-id-123",
+  id: "mock-report-id",
 };
 
 describe("Test zip methods", () => {
@@ -127,7 +133,7 @@ describe("Test zip methods", () => {
       expect(res.body).toEqual(
         JSON.stringify({
           status: "pending",
-          zipId: "zip-id-123",
+          zipId: "mock-zip-id",
         })
       );
     });

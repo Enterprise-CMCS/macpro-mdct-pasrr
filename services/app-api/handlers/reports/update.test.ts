@@ -40,7 +40,7 @@ const testEvent: APIGatewayProxyEvent = {
   pathParameters: {
     reportType: "PASRR",
     state: "NJ",
-    id: "2rRaoAFm8yLB2N2wSkTJ0iRTDu0",
+    id: "mock-report-id",
   },
   headers: { "cognito-identity-id": "test" },
   body: report,
@@ -69,7 +69,11 @@ describe("Test update report handler", () => {
   test("Test missing body", async () => {
     const emptyBodyEvent = {
       ...proxyEvent,
-      pathParameters: { reportType: "PASRR", state: "PA", id: "PASRRPA123" },
+      pathParameters: {
+        reportType: "PASRR",
+        state: "PA",
+        id: "mock-report-id",
+      },
       body: null,
     } as APIGatewayProxyEvent;
     const res = await updateReport(emptyBodyEvent);
@@ -79,17 +83,25 @@ describe("Test update report handler", () => {
   test("Test body + param mismatch", async () => {
     const badType = {
       ...proxyEvent,
-      pathParameters: { reportType: "ZZ", state: "PA", id: "PASRRPA123" },
+      pathParameters: { reportType: "ZZ", state: "PA", id: "mock-report-id" },
       body: report,
     } as APIGatewayProxyEvent;
     const badState = {
       ...proxyEvent,
-      pathParameters: { reportType: "PASRR", state: "PA", id: "PASRRPA123" },
+      pathParameters: {
+        reportType: "PASRR",
+        state: "PA",
+        id: "mock-report-id",
+      },
       body: JSON.stringify({ ...validReport, state: "OR" }),
     } as APIGatewayProxyEvent;
     const badId = {
       ...proxyEvent,
-      pathParameters: { reportType: "PASRR", state: "PA", id: "ZZOR1234" },
+      pathParameters: {
+        reportType: "PASRR",
+        state: "PA",
+        id: "mock-invalid-report-id",
+      },
       body: report,
     } as APIGatewayProxyEvent;
 
