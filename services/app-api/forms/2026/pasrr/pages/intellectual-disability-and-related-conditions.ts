@@ -9,7 +9,7 @@ import {
 // accordions
 const residentReviewsAccordion: AccordionTemplate = {
   type: ElementType.Accordion,
-  id: "resident_reviewsAccordion",
+  id: "idrc_residentReviewsAccordion",
   label: "Which resident reviews should I include?",
   value:
     "<p>Include all Level II resident reviews completed during the reporting period for individuals with ID/RC that meet the annual reporting criteria. This includes Level II resident reviews triggered by:</p>" +

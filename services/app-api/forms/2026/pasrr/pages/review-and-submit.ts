@@ -66,7 +66,7 @@ export const reviewAndSubmit: ReviewSubmitTemplate = {
     },
     {
       type: ElementType.Divider,
-      id: "divider",
+      id: "submitted_divider",
     },
     {
       type: ElementType.Paragraph,
