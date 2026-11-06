@@ -3,7 +3,6 @@ import {
   PageType,
   ElementType,
   AccordionTemplate,
-  getResidentDispositionPresetRowsAndAnswer,
 } from "@pasrr/shared";
 
 const reportingCriteriaAccordion: AccordionTemplate = {
