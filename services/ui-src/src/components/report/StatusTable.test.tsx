@@ -97,13 +97,13 @@ describe("StatusTable with state user", () => {
     );
 
     // Table headers
-    expect(screen.getByText("Section")).toBeInTheDocument();
-    expect(screen.getByText("Status")).toBeInTheDocument();
+    expect(screen.getByRole("columnheader", { name: "Section" })).toBeVisible();
+    expect(screen.getByRole("columnheader", { name: "Status" })).toBeVisible();
 
     // Section title and status for Section 1
-    expect(screen.getByText("Section 1")).toBeInTheDocument();
-    expect(screen.getByText("Complete")).toBeInTheDocument();
-    expect(screen.getByAltText("complete")).toBeInTheDocument();
+    expect(screen.getByRole("cell", { name: "Section 1" })).toBeVisible();
+    expect(screen.getByText("Complete")).toBeVisible();
+    expect(screen.getByRole("img", { name: "complete" })).toBeVisible();
   });
 
   test("should navigate to the correct editable page when the Edit button is clicked", async () => {
@@ -153,8 +153,8 @@ describe("StatusTable with state user", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText("Optional Page")).toBeInTheDocument();
-    expect(screen.getByText("Complete")).toBeInTheDocument();
+    expect(screen.getByRole("cell", { name: "Optional Page" })).toBeVisible();
+    expect(screen.getByText("Complete")).toBeVisible();
     expect(screen.queryByText("Optional")).not.toBeInTheDocument();
   });
 

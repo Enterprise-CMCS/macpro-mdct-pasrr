@@ -77,7 +77,6 @@ export const Sidebar = () => {
     return (
       <Box key={page.id} inert={!sidebarOpen}>
         {hasChildSections ? (
-          // Parent sections only organize their children, so they toggle instead of navigating.
           <Link
             as="button"
             variant={"sidebar"}
