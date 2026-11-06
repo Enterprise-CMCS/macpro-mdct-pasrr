@@ -2,6 +2,7 @@ import {
   isEmail,
   isPhone,
   isUrl,
+  isWholePositiveNumber,
   isZipCode,
   magicNumberMask,
   makeEmptyStringCopyOf,
@@ -324,5 +325,29 @@ describe("Input validation utilities", () => {
     ])("formats '$input' as '$expected'", ({ input, expected }) => {
       expect(numberNAMask(input)).toBe(expected);
     });
+  });
+
+  describe("isWholePositiveNumber()", () => {
+    test("should reject undefined", () => {
+      expect(isWholePositiveNumber(undefined)).toBe(false);
+    });
+
+    test("should reject the empty string", () => {
+      expect(isWholePositiveNumber("")).toBe(false);
+    });
+
+    test.each([{ input: "mock text" }, { input: ".5" }, { input: "-1" }])(
+      "should reject the string '$input'",
+      ({ input }) => {
+        expect(isWholePositiveNumber(input)).toBe(false);
+      }
+    );
+
+    test.each([{ input: "0" }, { input: "1" }])(
+      "should accept the string '$input'",
+      ({ input }) => {
+        expect(isWholePositiveNumber(input)).toBe(true);
+      }
+    );
   });
 });

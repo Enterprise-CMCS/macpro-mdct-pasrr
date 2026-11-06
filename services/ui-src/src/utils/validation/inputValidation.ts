@@ -127,6 +127,20 @@ export const parseNumber = (value: string) => {
   return parsed;
 };
 
+export const isWholePositiveNumber = (value?: string | number) => {
+  const rawValue = stringifyInput(value);
+  const parsedValue = parseNumber(rawValue);
+  if (
+    parsedValue === undefined ||
+    rawValue.includes(".") ||
+    parsedValue < 0 ||
+    !Number.isInteger(parsedValue)
+  ) {
+    return false;
+  }
+  return true;
+};
+
 /**
  * Convert the given number or string to a string.
  * If it is undefined, return an empty string.

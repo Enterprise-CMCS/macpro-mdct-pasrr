@@ -142,27 +142,29 @@ export const buildElement = ({
   return null;
 };
 
-export const getErrorMessage = (
-  type: string,
-  required: boolean,
-  value: string[]
-) => {
+export const getErrorMessage = ({
+  required = true,
+  type,
+  validators = {},
+  value,
+}: {
+  required?: boolean;
+  type: string;
+  validators?: {
+    [key: string]: (value: string) => boolean;
+  };
+  value: string[];
+}) => {
   if (!value[0] && required) {
     return ErrorMessages.requiredResponse;
   }
 
   switch (type) {
     case ElementType.NumberField:
-      const rawValue = value[0];
-      const parsedValue = parseNumber(rawValue);
-      const valueIsNonNumeric = parsedValue === undefined;
-
-      if (
-        valueIsNonNumeric ||
-        rawValue.includes(".") ||
-        parsedValue < 0 ||
-        !Number.isInteger(parsedValue)
-      ) {
+      if (validators?.[type] && !validators[type](value[0])) {
+        return ErrorMessages.mustBeANumber;
+      }
+      if (parseNumber(value[0]) === undefined) {
         return ErrorMessages.mustBeANumber;
       }
       break;
