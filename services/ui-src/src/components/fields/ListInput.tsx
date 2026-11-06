@@ -31,19 +31,19 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
   } = element;
   // A list always has at least one field, so start with a blank one when there are no saved answers.
   const [displayValue, setDisplayValue] = useState(
-    answer?.length ? answer : [""],
+    answer?.length ? answer : [""]
   );
   const [errorMessages, setErrorMessages] = useState([""]);
   const fieldsetRef = useRef<HTMLFieldSetElement>(null);
   const [pendingFocusIndex, setPendingFocusIndex] = useState<number | null>(
-    null,
+    null
   );
 
   useEffect(() => {
     if (pendingFocusIndex === null) return;
     fieldsetRef.current
       ?.querySelector<HTMLInputElement>(
-        `input[name="list-item-${pendingFocusIndex}"]`,
+        `input[name="list-item-${pendingFocusIndex}"]`
       )
       ?.focus();
     setPendingFocusIndex(null);
@@ -51,7 +51,7 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
 
   const onChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
-    index: number,
+    index: number
   ) => {
     const rawValue = event.target.value;
     const newDisplay = [...displayValue];

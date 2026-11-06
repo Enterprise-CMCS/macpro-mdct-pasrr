@@ -126,7 +126,7 @@ describe("ExportedReportWrapper", () => {
 
     expect(screen.getAllByRole("row")).toHaveLength(3);
     expect(screen.getAllByRole("cell", { name: "Data source" })).toHaveLength(
-      2,
+      2
     );
     expect(screen.getByRole("cell", { name: "test 1" })).toBeVisible();
     expect(screen.getByRole("cell", { name: "test 2" })).toBeVisible();
