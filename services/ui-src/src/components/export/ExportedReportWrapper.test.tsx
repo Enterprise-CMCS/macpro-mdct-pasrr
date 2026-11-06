@@ -109,6 +109,49 @@ describe("ExportedReportWrapper", () => {
     expect(screen.queryByText("bananya")).not.toBeInTheDocument();
   });
 
+  test("should split top-level ListInput answers into one row each", () => {
+    const elements: PageElement[] = [
+      {
+        type: ElementType.ListInput,
+        id: "gi_dataSources",
+        label: "Data source",
+        fieldLabel: "Data source",
+        buttonText: "Add data source",
+        required: true,
+        answer: ["test 1", "test 2"],
+      } as PageElement,
+    ];
+
+    render(<ExportedReportWrapper section={{ ...section, elements }} />);
+
+    expect(screen.getAllByRole("row")).toHaveLength(3);
+    expect(screen.getAllByRole("cell", { name: "Data source" })).toHaveLength(
+      2
+    );
+    expect(screen.getByRole("cell", { name: "test 1" })).toBeVisible();
+    expect(screen.getByRole("cell", { name: "test 2" })).toBeVisible();
+  });
+
+  test("should show an unanswered data source list as Not answered", () => {
+    const elements: PageElement[] = [
+      {
+        type: ElementType.ListInput,
+        id: "gi_dataSources",
+        label: "Data source",
+        fieldLabel: "Data source",
+        buttonText: "Add data source",
+        required: true,
+        answer: [],
+      } as PageElement,
+    ];
+
+    render(<ExportedReportWrapper section={{ ...section, elements }} />);
+
+    expect(screen.getAllByRole("row")).toHaveLength(2);
+    expect(screen.getByRole("cell", { name: "Data source" })).toBeVisible();
+    expect(screen.getByRole("cell", { name: "Not answered" })).toBeVisible();
+  });
+
   test("should expand answers in AccordionGroup types", () => {
     const elements: PageElement[] = [
       {
@@ -140,8 +183,7 @@ describe("ExportedReportWrapper", () => {
     expect(screen.getAllByRole("table")).toHaveLength(1);
     expect(screen.getAllByRole("row")).toHaveLength(3);
 
-    expect(screen.getByText("Mock: Links 1")).toBeVisible();
-    expect(screen.getByText("Mock: Links 2")).toBeVisible();
+    expect(screen.getAllByText("Mock: Links")).toHaveLength(2);
     expect(screen.getByText("http//:www.google.com")).toBeVisible();
     expect(screen.getByText("http//:www.fake.com")).toBeVisible();
   });

@@ -25,52 +25,82 @@ describe("<ListInput />", () => {
       vi.clearAllMocks();
       render(ListInputComponent);
     });
-    test("ListInput renders", () => {
-      expect(screen.getByText("This is a mock list input")).toBeVisible();
-      expect(screen.getByText("mock helper text")).toBeVisible();
+    test("ListInput shows one empty field by default without a remove button", () => {
       expect(
-        screen.getByRole("button", { name: "mock button text" })
-      ).toBeVisible();
+        screen.getAllByRole("textbox", { name: "mock field" })[0]
+      ).toHaveValue("");
+      expect(screen.getAllByRole("textbox")).toHaveLength(1);
+      expect(
+        screen.queryByRole("button", { name: "Remove mock field 1" })
+      ).not.toBeInTheDocument();
+    });
+    test("ListInput is labeled by a visually hidden legend and shows its helper text", () => {
+      const group = screen.getByRole("group", {
+        name: "This is a mock list input",
+      });
+      expect(group).toBeInTheDocument();
+      expect(group.querySelector("legend")).toHaveStyle({
+        position: "absolute",
+        width: "1px",
+        height: "1px",
+        overflow: "hidden",
+      });
+      expect(screen.getByText("mock helper text")).toBeVisible();
     });
     test("ListInput allows adding fields", async () => {
       const addBtn = screen.getByRole("button", { name: "mock button text" });
       await userEvent.click(addBtn);
 
-      const textbox = screen.getByRole("textbox", { name: "mock field 1" });
-      expect(textbox).toBeVisible();
-
-      await userEvent.type(textbox, "text");
-      expect(updateSpy).toHaveBeenCalledTimes(5);
-    });
-
-    test("ListInput allows removing fields", async () => {
-      const addBtn = screen.getByRole("button", { name: "mock button text" });
-      await userEvent.click(addBtn);
       expect(
-        screen.getByRole("textbox", { name: "mock field 1" })
+        screen.getAllByRole("textbox", { name: "mock field" })[1]
       ).toBeVisible();
-      expect(updateSpy).toHaveBeenCalledTimes(1);
-
-      const removeBtn = screen.getByRole("button", {
-        name: "Remove mock field 1",
-      });
-      await userEvent.click(removeBtn);
+      expect(screen.getAllByRole("textbox")).toHaveLength(2);
       expect(
-        screen.queryByRole("textbox", { name: "mock field 1" })
-      ).not.toBeInTheDocument();
-      //autofocus will cause an extra run
-      expect(updateSpy).toHaveBeenCalledTimes(3);
+        screen.getByRole("button", { name: "Remove mock field 1" })
+      ).toBeVisible();
+      expect(
+        screen.getByRole("button", { name: "Remove mock field 2" })
+      ).toBeVisible();
     });
 
-    test("ListInput shows error when user does not fillout the field", async () => {
+    test("ListInput focuses the newly added field", async () => {
       const addBtn = screen.getByRole("button", { name: "mock button text" });
       await userEvent.click(addBtn);
-      const textbox = screen.getByRole("textbox", { name: "mock field 1" });
+
+      expect(
+        screen.getAllByRole("textbox", { name: "mock field" })[1]
+      ).toHaveFocus();
+    });
+
+    test("ListInput allows removing fields until one remains", async () => {
+      const addBtn = screen.getByRole("button", { name: "mock button text" });
+      await userEvent.click(addBtn);
+      await userEvent.type(
+        screen.getAllByRole("textbox", { name: "mock field" })[1],
+        "second"
+      );
+
+      await userEvent.click(
+        screen.getByRole("button", { name: "Remove mock field 1" })
+      );
+      expect(screen.getAllByRole("textbox")).toHaveLength(1);
+      expect(
+        screen.getAllByRole("textbox", { name: "mock field" })[0]
+      ).toHaveValue("second");
+      expect(
+        screen.queryByRole("button", { name: "Remove mock field 1" })
+      ).not.toBeInTheDocument();
+    });
+
+    test("ListInput shows error when user does not fill out the field", async () => {
+      const addBtn = screen.getByRole("button", { name: "mock button text" });
+      await userEvent.click(addBtn);
+      const textbox = screen.getAllByRole("textbox", { name: "mock field" })[0];
       // trigger the error message through a focus
       await userEvent.click(textbox);
       // remove focus by adding another textbox
       await userEvent.click(addBtn);
-      expect(screen.getByText("A response is required")).toBeVisible();
+      expect(screen.getAllByText("A response is required")).toHaveLength(2);
       //get all textboxes on the page and fill them out
       const textboxes = screen.getAllByRole("textbox");
       for (const textbox of textboxes) {
@@ -79,6 +109,35 @@ describe("<ListInput />", () => {
       expect(
         screen.queryByText("A response is required")
       ).not.toBeInTheDocument();
+    });
+  });
+  describe("list input with saved answers", () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+      render(
+        <ListInput
+          element={{
+            ...mockedListInputElement,
+            answer: ["first source", "second source"],
+          }}
+          updateElement={updateSpy}
+        />
+      );
+    });
+
+    test("ListInput shows every saved answer with remove buttons", () => {
+      expect(
+        screen.getAllByRole("textbox", { name: "mock field" })[0]
+      ).toHaveValue("first source");
+      expect(
+        screen.getAllByRole("textbox", { name: "mock field" })[1]
+      ).toHaveValue("second source");
+      expect(
+        screen.getByRole("button", { name: "Remove mock field 1" })
+      ).toBeVisible();
+      expect(
+        screen.getByRole("button", { name: "Remove mock field 2" })
+      ).toBeVisible();
     });
   });
   describe("list input with custom validation", () => {
@@ -99,7 +158,7 @@ describe("<ListInput />", () => {
     test("ListInput shows error when input does not pass validation", async () => {
       const addBtn = screen.getByRole("button", { name: "mock button text" });
       await userEvent.click(addBtn);
-      const textbox = screen.getByRole("textbox", { name: "mock field 1" });
+      const textbox = screen.getAllByRole("textbox", { name: "mock field" })[0];
       await userEvent.type(textbox, "test");
       expect(screen.getByText("Response must be a valid url")).toBeVisible();
       await userEvent.clear(textbox);
