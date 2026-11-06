@@ -64,6 +64,7 @@ function extractIdsWithContext(data: ReportPages) {
       });
     }
     if (Array.isArray(node.rows)) {
+      elementArrays.push(node.rows);
       node.rows.forEach(walkNestedElements);
     }
     if (node.answer) {
@@ -96,8 +97,9 @@ describe("pasrr template", () => {
     });
 
     test("page IDs are unique", () => {
-      const uniquePageIds = new Set(pageIds);
-      expect(uniquePageIds.size).toBe(pageIds.length);
+      const declaredPageIds = reportTemplate.map((page) => page.id);
+      const uniquePageIds = new Set(declaredPageIds);
+      expect(uniquePageIds.size).toBe(declaredPageIds.length);
     });
 
     test.each([
