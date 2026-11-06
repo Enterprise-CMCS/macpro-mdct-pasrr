@@ -99,7 +99,7 @@ export const generalInformation: FormPageTemplate = {
     {
       id: "gi_dataSources",
       type: ElementType.ListInput,
-      label: "Data source",
+      label: "Data sources",
       fieldLabel: "Data source",
       buttonText: "Add data source",
       required: true,

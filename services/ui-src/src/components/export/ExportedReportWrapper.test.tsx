@@ -125,9 +125,11 @@ describe("ExportedReportWrapper", () => {
     render(<ExportedReportWrapper section={{ ...section, elements }} />);
 
     expect(screen.getAllByRole("row")).toHaveLength(3);
-    expect(screen.getAllByText("Data source")).toHaveLength(2);
-    expect(screen.getByText("test 1")).toBeVisible();
-    expect(screen.getByText("test 2")).toBeVisible();
+    expect(screen.getAllByRole("cell", { name: "Data source" })).toHaveLength(
+      2,
+    );
+    expect(screen.getByRole("cell", { name: "test 1" })).toBeVisible();
+    expect(screen.getByRole("cell", { name: "test 2" })).toBeVisible();
   });
 
   test("should show an unanswered data source list as Not answered", () => {
@@ -146,8 +148,8 @@ describe("ExportedReportWrapper", () => {
     render(<ExportedReportWrapper section={{ ...section, elements }} />);
 
     expect(screen.getAllByRole("row")).toHaveLength(2);
-    expect(screen.getByText("Data source")).toBeVisible();
-    expect(screen.getByText("Not answered")).toBeVisible();
+    expect(screen.getByRole("cell", { name: "Data source" })).toBeVisible();
+    expect(screen.getByRole("cell", { name: "Not answered" })).toBeVisible();
   });
 
   test("should expand answers in AccordionGroup types", () => {

@@ -31,19 +31,19 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
   } = element;
   // A list always has at least one field, so start with a blank one when there are no saved answers.
   const [displayValue, setDisplayValue] = useState(
-    answer?.length ? answer : [""]
+    answer?.length ? answer : [""],
   );
   const [errorMessages, setErrorMessages] = useState([""]);
   const fieldsetRef = useRef<HTMLFieldSetElement>(null);
   const [pendingFocusIndex, setPendingFocusIndex] = useState<number | null>(
-    null
+    null,
   );
 
   useEffect(() => {
     if (pendingFocusIndex === null) return;
     fieldsetRef.current
       ?.querySelector<HTMLInputElement>(
-        `input[name="list-item-${pendingFocusIndex}"]`
+        `input[name="list-item-${pendingFocusIndex}"]`,
       )
       ?.focus();
     setPendingFocusIndex(null);
@@ -51,7 +51,7 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
 
   const onChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     const rawValue = event.target.value;
     const newDisplay = [...displayValue];
@@ -96,24 +96,31 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
   };
 
   return (
-    <fieldset ref={fieldsetRef} key="list-input-field">
+    <Box as="fieldset" ref={fieldsetRef} key="list-input-field">
       <Box as="legend" srOnly>
         {label}
       </Box>
-      <Hint id={id}>{helperText}</Hint>
+      {helperText && <Hint id={id}>{helperText}</Hint>}
       <VStack alignItems="flex-start" gap="spacer3">
         {displayValue.map((field, index) => (
-          <HStack alignItems="flex-end" key={`list-item-stack-${index}`}>
-            <TextField
-              key={`list-item-${index}`}
-              name={`list-item-${index}`}
-              label={fieldLabel}
-              value={field}
-              onChange={(evt) => onChangeHandler(evt, index)}
-              onBlur={(evt) => onChangeHandler(evt, index)}
-              errorMessage={errorMessages?.[index]}
-              disabled={isDisabled()}
-            />
+          <HStack
+            alignItems="flex-end"
+            key={`list-item-stack-${index}`}
+            gap="spacer2"
+          >
+            <Box width="25rem">
+              <TextField
+                key={`list-item-${index}`}
+                name={`list-item-${index}`}
+                label={fieldLabel}
+                value={field}
+                onChange={(evt) => onChangeHandler(evt, index)}
+                onBlur={(evt) => onChangeHandler(evt, index)}
+                errorMessage={errorMessages?.[index]}
+                disabled={isDisabled()}
+              />
+            </Box>
+
             {displayValue.length > 1 && (
               <Button
                 variant="unstyled"
@@ -136,6 +143,6 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
       >
         {buttonText}
       </Button>
-    </fieldset>
+    </Box>
   );
 };
