@@ -4,7 +4,13 @@ import {
   currentPageSelector,
   submittableMetricsSelector,
 } from "./selectors";
-import { BannerAreas, BannerShape, PageStatus } from "@pasrr/shared";
+import {
+  BannerAreas,
+  BannerShape,
+  ElementType,
+  PageStatus,
+  PageType,
+} from "@pasrr/shared";
 import { useStore } from "./useStore";
 
 vi.mock("utils/auth/authLifecycle", () => ({
@@ -27,6 +33,72 @@ describe("Selectors", () => {
     expect(result?.sections[0]?.submittable).toEqual(true);
     expect(result?.sections[0]?.displayStatus).toEqual(PageStatus.COMPLETE);
     expect(result?.submittable).toEqual(true);
+  });
+
+  test("submittableMetricsSelector reports child pages of a parent page", async () => {
+    const stateWithParent = (secondChildAnswer: string) => ({
+      ...mockUseStore,
+      pageMap: new Map([
+        ["root", 0],
+        ["PARENT", 1],
+        ["CHILD-1", 2],
+        ["CHILD-2", 3],
+      ]),
+      report: {
+        ...mockUseStore.report!,
+        pages: [
+          { id: "root", childPageIds: ["PARENT", "review-submit"] },
+          { id: "PARENT", elements: [], childPageIds: ["CHILD-1", "CHILD-2"] },
+          {
+            id: "CHILD-1",
+            type: PageType.Standard,
+            title: "child 1",
+            elements: [
+              {
+                id: "child-1-textbox",
+                label: "textbox",
+                type: ElementType.Textbox,
+                required: true,
+                answer: "test",
+              },
+            ],
+          },
+          {
+            id: "CHILD-2",
+            type: PageType.Standard,
+            title: "child 2",
+            elements: [
+              {
+                id: "child-2-textbox",
+                label: "textbox",
+                type: ElementType.Textbox,
+                required: true,
+                answer: secondChildAnswer,
+              },
+            ],
+          },
+        ],
+      },
+    });
+
+    const complete = submittableMetricsSelector(stateWithParent("test") as any);
+    expect(complete?.sections.map((s) => s?.section.id)).toEqual([
+      "CHILD-1",
+      "CHILD-2",
+    ]);
+    expect(complete?.rows).toHaveLength(1);
+    expect(complete?.rows[0]).toMatchObject({
+      kind: "group",
+      id: "PARENT",
+    });
+    expect(
+      complete?.rows[0].kind === "group" &&
+        complete.rows[0].children.map((c) => c?.section.id)
+    ).toEqual(["CHILD-1", "CHILD-2"]);
+    expect(complete?.submittable).toEqual(true);
+
+    const incomplete = submittableMetricsSelector(stateWithParent("") as any);
+    expect(incomplete?.submittable).toEqual(false);
   });
 
   describe("activeBannerSelector", () => {

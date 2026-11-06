@@ -55,35 +55,50 @@ export const Sidebar = () => {
     const childSections = page.childPageIds?.map((child) => pageMap.get(child));
     const hasChildSections = childSections && childSections.length > 0;
 
+    const rowContent = (
+      <Flex
+        width="100%"
+        paddingRight="1rem"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Box width="100%" height="100%">
+          {navItem(page.title!, index)}
+        </Box>
+        {hasChildSections && (
+          <Image
+            src={toggleList[page.id] ? arrowUpIcon : arrowDownIcon}
+            alt={toggleList[page.id] ? "Collapse subitems" : "Expand subitems"}
+          />
+        )}
+      </Flex>
+    );
+
     return (
       <Box key={page.id} inert={!sidebarOpen}>
-        <Link
-          variant={"sidebar"}
-          className={page.id === currentPageId ? "selected" : ""}
-          href={`/report/${reportType}/${state}/${reportId}/${page.id}`}
-          onClick={(e) => {
-            e.preventDefault();
-            onNavSelect(page.id);
-          }}
-        >
-          <Flex justifyContent="space-between" alignItems="center">
-            <Box width="100%" height="100%">
-              {navItem(page.title!, index)}
-            </Box>
-            {hasChildSections && (
-              <Box onClick={() => setToggle(page.id)}>
-                <Image
-                  src={toggleList[page.id] ? arrowUpIcon : arrowDownIcon}
-                  alt={
-                    toggleList[page.id]
-                      ? "Collapse subitems"
-                      : "Expand subitems"
-                  }
-                />
-              </Box>
-            )}
-          </Flex>
-        </Link>
+        {hasChildSections ? (
+          // Parent sections only organize their children, so they toggle instead of navigating.
+          <Link
+            as="button"
+            variant={"sidebar"}
+            aria-expanded={!!toggleList[page.id]}
+            onClick={() => setToggle(page.id)}
+          >
+            {rowContent}
+          </Link>
+        ) : (
+          <Link
+            variant={"sidebar"}
+            className={page.id === currentPageId ? "selected" : ""}
+            href={`/report/${reportType}/${state}/${reportId}/${page.id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              onNavSelect(page.id);
+            }}
+          >
+            {rowContent}
+          </Link>
+        )}
         {hasChildSections &&
           toggleList[page.id] &&
           childSections.map((sec) => navSection(sec!, index + 1))}

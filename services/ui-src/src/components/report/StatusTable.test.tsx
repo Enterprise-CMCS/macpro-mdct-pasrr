@@ -45,6 +45,26 @@ describe("StatusTable with state user", () => {
       (selector?: Parameters<typeof useStore>[0]) => {
         if (selector) {
           return {
+            rows: [
+              {
+                kind: "section",
+                id: "id-1",
+                section: {
+                  section: { title: "Section 1", id: "id-1" },
+                  displayStatus: PageStatus.COMPLETE,
+                  submittable: true,
+                },
+              },
+              {
+                kind: "section",
+                id: "id-2",
+                section: {
+                  section: { title: "Section 2", id: "id-2" },
+                  displayStatus: PageStatus.IN_PROGRESS,
+                  submittable: false,
+                },
+              },
+            ],
             sections: [
               {
                 section: { title: "Section 1", id: "id-1" },
@@ -97,6 +117,88 @@ describe("StatusTable with state user", () => {
     await userEvent.click(editButton);
 
     expect(editButton).toBeVisible();
+  });
+
+  test("optional page that is submittable renders as Complete", () => {
+    mockedUseStore.mockImplementation(
+      (selector?: Parameters<typeof useStore>[0]) => {
+        if (selector) {
+          return {
+            rows: [
+              {
+                kind: "section",
+                id: "optional-page",
+                section: {
+                  section: { title: "Optional Page", id: "optional-page" },
+                  displayStatus: PageStatus.OPTIONAL,
+                  submittable: true,
+                },
+              },
+            ],
+            sections: [],
+            submittable: true,
+          };
+        }
+        return {
+          ...mockStateUserStore,
+          pageMap: mockPageMap,
+          report: report,
+        };
+      }
+    );
+
+    render(
+      <MemoryRouter>
+        <StatusTableElement />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText("Optional Page")).toBeInTheDocument();
+    expect(screen.getByText("Complete")).toBeInTheDocument();
+    expect(screen.queryByText("Optional")).not.toBeInTheDocument();
+  });
+
+  test("parent page renders as a label row with its children nested beneath it", () => {
+    mockedUseStore.mockImplementation(
+      (selector?: Parameters<typeof useStore>[0]) => {
+        if (selector) {
+          return {
+            rows: [
+              {
+                kind: "group",
+                id: "PARENT",
+                title: "Parent Page",
+                children: [
+                  {
+                    section: { title: "Child A", id: "child-a" },
+                    displayStatus: PageStatus.COMPLETE,
+                    submittable: true,
+                  },
+                ],
+              },
+            ],
+            sections: [],
+            submittable: true,
+          };
+        }
+        return {
+          ...mockStateUserStore,
+          pageMap: mockPageMap,
+          report: report,
+        };
+      }
+    );
+
+    render(
+      <MemoryRouter>
+        <StatusTableElement />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText("Parent Page")).toBeInTheDocument();
+    expect(screen.getByText("Child A")).toBeInTheDocument();
+    // Only the child gets an Edit button; the parent row has none.
+    expect(screen.getAllByRole("button", { name: /Edit/i })).toHaveLength(1);
   });
 
   test("should not render anything if report is undefined", () => {

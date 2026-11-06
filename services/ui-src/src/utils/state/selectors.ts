@@ -30,38 +30,79 @@ export const checkIfStatusIsRequired = (section: FormPageTemplate) => {
   );
 };
 
+export type SectionDetails = {
+  section: FormPageTemplate;
+  displayStatus: PageStatus | undefined;
+  submittable: boolean;
+};
+
+/**
+ * A parent page is shown as a group row with its child pages nested beneath it.
+ * Any other page is shown as a single section row.
+ */
+export type ReviewRow =
+  | { kind: "section"; id: string; section: SectionDetails | null }
+  | {
+      kind: "group";
+      id: string;
+      title: string;
+      children: (SectionDetails | null)[];
+    };
+
 export const submittableMetricsSelector = (state: ReportState) => {
   const { report, pageMap } = state;
   if (!report || !pageMap) {
     return null;
   }
 
-  const childPages = (report.pages[pageMap.get("root")!] as ParentPageTemplate)
-    .childPageIds;
-  const sections = childPages.slice(0, -1).map((id) => {
+  const getPage = (id: string) => {
+    const pageIdx = pageMap.get(id);
+    return pageIdx ? report.pages[pageIdx] : undefined;
+  };
+
+  const toSectionDetails = (id: string): SectionDetails | null => {
     const pageIdx = pageMap.get(id);
     if (!pageIdx) return null;
 
     const section = report.pages[pageIdx] as FormPageTemplate;
 
     const displayStatus = inferredReportStatus(report, section.id);
-    let submittable = displayStatus === PageStatus.COMPLETE;
 
     return {
       section: section,
       displayStatus: !checkIfStatusIsRequired(section)
         ? PageStatus.OPTIONAL
         : displayStatus,
-      submittable: submittable,
+      submittable: displayStatus === PageStatus.COMPLETE,
     };
+  };
+
+  const childPages = (report.pages[pageMap.get("root")!] as ParentPageTemplate)
+    .childPageIds;
+  // The last root page is the review page, which is not reported.
+  const rows: ReviewRow[] = childPages.slice(0, -1).map((id) => {
+    const page = getPage(id);
+    if (page?.childPageIds) {
+      return {
+        kind: "group",
+        id,
+        title: page.title ?? "",
+        children: page.childPageIds.map(toSectionDetails),
+      };
+    }
+    return { kind: "section", id, section: toSectionDetails(id) };
   });
+
+  const sections = rows.flatMap((row) =>
+    row.kind === "group" ? row.children : [row.section]
+  );
 
   const allPagesSubmittable = sections.every(
     (sectionInfo) => !!sectionInfo?.submittable
   );
   const submittable = !isCompleteStatus(report.status) && allPagesSubmittable;
 
-  return { sections: sections, submittable: submittable };
+  return { rows: rows, sections: sections, submittable: submittable };
 };
 
 export const activeBannerSelector = (area: BannerArea) => {

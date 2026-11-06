@@ -100,7 +100,12 @@ export const SubHeaderElement = ({
 
   return (
     <Wrapper>
-      <Heading as={level} variant="subHeader">
+      {/* Inline style overrides the global .chakra-stack > .chakra-heading margin. */}
+      <Heading
+        as={level}
+        variant="subHeader"
+        style={element.noTopMargin ? { marginTop: 0 } : undefined}
+      >
         {element.text}
       </Heading>
       {element.helperText && (
@@ -132,6 +137,8 @@ export const ParagraphElement = ({
         return { ...styleDefault, size: "body_sm", color: "gray_dark" };
       case "paragraph":
         return { ...styleDefault, color: "gray_dark" };
+      case "eyebrow":
+        return { ...styleDefault, weight: "bold", color: "gray" };
     }
     return styleDefault;
   };

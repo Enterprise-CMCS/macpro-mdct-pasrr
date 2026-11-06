@@ -59,6 +59,7 @@ const subHeaderTemplateSchema = object().shape({
   helperText: string().notRequired(),
   hideCondition: hideConditionSchema,
   headingLevel: number().integer().min(1).max(6).notRequired(),
+  noTopMargin: boolean().notRequired(),
 });
 
 const paragraphTemplateSchema = object().shape({

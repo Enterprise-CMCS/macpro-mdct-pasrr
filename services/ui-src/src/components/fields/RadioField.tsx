@@ -108,6 +108,7 @@ export const RadioField = (props: PageElementProps<RadioTemplate>) => {
   return (
     <Box>
       <CmsdsChoiceList
+        className="radioField"
         name={radio.id}
         type={"radio"}
         label={labelText || ""}

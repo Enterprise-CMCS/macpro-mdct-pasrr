@@ -87,10 +87,43 @@ describe("Sidebar", () => {
         <Sidebar />
       </Router>
     );
-    const link = screen.getByText("Section 1");
+    const link = screen.getByText("Section 2");
     await userEvent.click(link);
-    const reportPath = "/report/exampleReport/exampleState/123/id-1";
+    const reportPath = "/report/exampleReport/exampleState/123/id-2";
     expect(mockUseNavigate).toHaveBeenCalledWith(reportPath);
+  });
+
+  test("should toggle, not navigate, when clicking a parent section", async () => {
+    mockUseNavigate.mockClear();
+    render(
+      <Router>
+        <Sidebar />
+      </Router>
+    );
+    const parent = screen.getByRole("button", { name: /Section 1/ });
+    expect(parent).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText("Child 1")).not.toBeInTheDocument();
+
+    await userEvent.click(parent);
+
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(parent).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("Child 1")).toBeInTheDocument();
+  });
+
+  test("should expand a parent section without navigating when its arrow is clicked", async () => {
+    mockUseNavigate.mockClear();
+    render(
+      <Router>
+        <Sidebar />
+      </Router>
+    );
+    expect(screen.queryByText("Child 1")).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByAltText("Expand subitems"));
+
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(screen.getByText("Child 1")).toBeInTheDocument();
   });
 
   test("toggle button exposes its state via aria-expanded", () => {

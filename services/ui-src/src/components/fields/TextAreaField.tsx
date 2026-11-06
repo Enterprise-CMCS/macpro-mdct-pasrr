@@ -49,6 +49,7 @@ export const TextAreaField = (props: PageElementProps<TextAreaBoxTemplate>) => {
   return (
     <Box width={"100%"}>
       <CmsdsTextField
+        className="textAreaField"
         name={textbox.id}
         label={optionalTag(textbox)}
         hint={parsedHint}
