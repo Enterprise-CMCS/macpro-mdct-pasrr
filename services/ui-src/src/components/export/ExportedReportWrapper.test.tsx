@@ -10,12 +10,12 @@ import {
 const elements: PageElement[] = [
   {
     type: ElementType.Header,
-    id: "",
+    id: "mock_headerId",
     text: "General Information",
   },
   {
     type: ElementType.Textbox,
-    id: "",
+    id: "mock_textboxId",
     label: "Contact title",
     required: true,
     helperText:
@@ -23,7 +23,7 @@ const elements: PageElement[] = [
   },
   {
     type: ElementType.Date,
-    id: "",
+    id: "mock_dateId",
     label: "Reporting period start date",
     required: true,
     helperText:
@@ -31,7 +31,7 @@ const elements: PageElement[] = [
   },
   {
     type: ElementType.Textbox,
-    id: "",
+    id: "mock_textboxOptionalId",
     label: "Additional comments",
     answer: "",
     required: false,
@@ -40,7 +40,7 @@ const elements: PageElement[] = [
 ];
 
 const section: FormPageTemplate = {
-  id: "mock-id",
+  id: "mock-page-id",
   title: "mock-title",
   type: PageType.Standard,
   elements: elements,
@@ -57,7 +57,7 @@ describe("ExportedReportWrapper", () => {
     const elements: PageElement[] = [
       {
         type: ElementType.Radio,
-        id: "banana-preference",
+        id: "mock_radioId",
         label: "Do you like bananas?",
         required: true,
         answer: "bananya",
@@ -69,7 +69,7 @@ describe("ExportedReportWrapper", () => {
             checkedChildren: [
               {
                 type: ElementType.Radio,
-                id: "banana-desire",
+                id: "mock_radioId_childId",
                 label: "Do you want some bananas?",
                 required: true,
                 answer: "yes",
@@ -81,7 +81,7 @@ describe("ExportedReportWrapper", () => {
                     checkedChildren: [
                       {
                         type: ElementType.TextAreaField,
-                        id: "banana-count",
+                        id: "mock_radioId_childId_choiceId",
                         label: "Describe your ideal banana",
                         required: true,
                         answer: "Oblong, yellow, not too soft",
@@ -155,15 +155,15 @@ describe("ExportedReportWrapper", () => {
   test("should expand answers in AccordionGroup types", () => {
     const elements: PageElement[] = [
       {
-        id: "mock-accordion-group",
+        id: "mock_accordion_groupId",
         type: ElementType.AccordionGroup,
         accordions: [
           {
-            label: "mock-label",
+            label: "Accordion",
             elements: [
               {
                 type: ElementType.ListInput,
-                id: "mock-links",
+                id: "mock_accordionId_listInputId",
                 label: "Mock: Links",
                 helperText: "mock helper text",
                 fieldLabel: "Link",

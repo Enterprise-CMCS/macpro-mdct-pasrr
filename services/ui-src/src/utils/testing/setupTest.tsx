@@ -179,11 +179,11 @@ export const mockReportStore: ReportState = {
   currentPageId: "root",
   pageMap: new Map([
     ["root", 0],
-    ["MOCK-1", 1],
-    ["MOCK-2", 2],
+    ["mock-page-id", 1],
+    ["mock-empty-page-id", 2],
   ]),
   report: {
-    id: "mock-id",
+    id: "mock-report-id",
     type: ReportType.PASRR,
     status: ReportStatus.IN_PROGRESS,
     name: "mock-report-title",
@@ -197,15 +197,15 @@ export const mockReportStore: ReportState = {
     pages: [
       {
         id: "root",
-        childPageIds: ["MOCK-1", "MOCK-2"],
+        childPageIds: ["mock-page-id", "mock-empty-page-id"],
       },
       {
-        id: "MOCK-1",
+        id: "mock-page-id",
         type: PageType.Standard,
         title: "mock 1",
         elements: [
           {
-            id: "mock-textbox",
+            id: "mock_textboxId",
             label: "textbox",
             type: ElementType.Textbox,
             required: true,
@@ -214,7 +214,7 @@ export const mockReportStore: ReportState = {
         ],
       },
       {
-        id: "MOCK-2",
+        id: "mock-empty-page-id",
         type: PageType.Standard,
         title: "mock 2",
         elements: [],
@@ -225,7 +225,7 @@ export const mockReportStore: ReportState = {
         title: "mock attachments",
         elements: [
           {
-            id: "mock-attachment-area",
+            id: "mock_attachmentAreaId",
             label: "mock attachment area",
             required: false,
             type: ElementType.AttachmentArea,

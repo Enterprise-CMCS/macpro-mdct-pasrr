@@ -5,7 +5,7 @@ import { SubHeaderElement } from "../report/Elements";
 describe("Elements", () => {
   describe("<SubHeaderElement />", () => {
     const mockedSubheaderElement: PageElement = {
-      id: "mock-subheader-id",
+      id: "mock_subHeaderId",
       type: ElementType.SubHeader,
       text: "SubHeader",
       helperText: "mock text",

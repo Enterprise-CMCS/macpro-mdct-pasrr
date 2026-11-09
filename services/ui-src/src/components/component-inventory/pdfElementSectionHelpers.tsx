@@ -7,13 +7,13 @@ import {
 import { mockDropdown, mockTextboxOptional } from "utils/testing/mockForm";
 
 export const textboxSection: FormPageTemplate = {
-  id: "mock-textbox-id",
-  title: "mock-textbox-title",
+  id: "mock-page-id",
+  title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.Textbox,
-      id: "Textbox",
+      id: "mock_textboxId",
       label: "Textbox",
       helperText: "Information to help user fill out textbox",
       answer: "sample text",
@@ -23,13 +23,13 @@ export const textboxSection: FormPageTemplate = {
 };
 
 export const textAreaSection: FormPageTemplate = {
-  id: "mock-textarea-id",
-  title: "mock-textarea-title",
+  id: "mock-page-id",
+  title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.TextAreaField,
-      id: "textarea",
+      id: "mock_textAreaFieldId",
       label: "TextArea",
       helperText: "Information to help user fill out textbox",
       answer: "sample text",
@@ -39,13 +39,13 @@ export const textAreaSection: FormPageTemplate = {
 };
 
 export const numberFieldSection: FormPageTemplate = {
-  id: "mock-numberfield-id",
-  title: "mock-number-title",
+  id: "mock-page-id",
+  title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.Textbox,
-      id: "numberField",
+      id: "mock_numberFieldId",
       label: "NumberField",
       helperText: "Information to help user fill out number field",
       answer: "5",
@@ -55,13 +55,13 @@ export const numberFieldSection: FormPageTemplate = {
 };
 
 export const dateFieldSection: FormPageTemplate = {
-  id: "mock-date-id",
-  title: "mock-date-title",
+  id: "mock-page-id",
+  title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.Date,
-      id: "date",
+      id: "mock_dateId",
       label: "Reporting period start date",
       helperText:
         "What is the reporting period Start Date applicable to the results?",
@@ -71,13 +71,13 @@ export const dateFieldSection: FormPageTemplate = {
 };
 
 export const radioFieldSection: FormPageTemplate = {
-  id: "mock-radio-id",
-  title: "mock-radio-title",
+  id: "mock-page-id",
+  title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.Radio,
-      id: "id-radio",
+      id: "mock_radioId",
       label: "RadioField",
       choices: [
         { value: "radio option 1", label: "radio option 1" },
@@ -91,13 +91,13 @@ export const radioFieldSection: FormPageTemplate = {
 };
 
 export const listFieldSection: FormPageTemplate = {
-  id: "mock-list-id",
-  title: "mock-list-title",
+  id: "mock-page-id",
+  title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.ListInput,
-      id: "id-listinput",
+      id: "mock_listInputId",
       buttonText: "Add list input",
       required: true,
       fieldLabel: "input",
@@ -108,13 +108,13 @@ export const listFieldSection: FormPageTemplate = {
 };
 
 export const attachmentAreaSection: FormPageTemplate = {
-  id: "mock-attachment-area-id",
-  title: "mock-attachment-area-title",
+  id: "mock-page-id",
+  title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.AttachmentArea,
-      id: "id-attachment",
+      id: "mock_attachmentId",
       label: "label",
       required: true,
       answer: [
@@ -129,20 +129,20 @@ export const attachmentAreaSection: FormPageTemplate = {
 };
 
 export const accordionGroupSection: FormPageTemplate = {
-  id: "mock-accordion-group-id",
-  title: "mock-accordion-group-title",
+  id: "mock-page-id",
+  title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.AccordionGroup,
-      id: "id-accordion-group",
+      id: "mock_accordionGroupId",
       accordions: [
         {
           label: "Accordion Group 1",
           elements: [
             {
               type: ElementType.Textbox,
-              id: "mock-textbox",
+              id: "mock_accordionId_textboxId",
               label: "Mock Textbox",
               required: false,
               answer: "answer",
@@ -156,13 +156,13 @@ export const accordionGroupSection: FormPageTemplate = {
 };
 
 export const actionTableSection: FormPageTemplate = {
-  id: "mock-action-table-id",
-  title: "mock-action-table-title",
+  id: "mock-page-id",
+  title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.ActionTable,
-      id: "id-action-table",
+      id: "mock_actionTableId",
       label: "Action Table",
       heading: "Action Table",
       helperText: "hint text",
@@ -173,30 +173,30 @@ export const actionTableSection: FormPageTemplate = {
       rows: [
         {
           header: "Text Field",
-          id: "row-1",
+          id: "mock_actionTableId_paragraphId",
           type: ElementType.Paragraph,
         },
         {
           header: "Textbox Field",
-          id: "row-2",
+          id: "mock_actionTableId_textboxId",
           type: ElementType.Textbox,
         },
         {
           header: "Date Field",
-          id: "row-3",
+          id: "mock_actionTableId_dateFieldId",
           type: ElementType.Date,
         },
       ],
       answer: [
         [
-          { id: "row-1", value: "1" },
-          { id: "row-2", value: "textbox 1" },
-          { id: "row-3", value: "01/01/2021" },
+          { id: "mock_actionTableId_paragraphId", value: "1" },
+          { id: "mock_actionTableId_textboxId", value: "textbox 1" },
+          { id: "mock_actionTableId_dateFieldId", value: "01/01/2021" },
         ],
         [
-          { id: "row-1", value: "2" },
-          { id: "row-2", value: "textbox 2" },
-          { id: "row-3", value: "02/02/2022" },
+          { id: "mock_actionTableId_paragraphId", value: "2" },
+          { id: "mock_actionTableId_textboxId", value: "textbox 2" },
+          { id: "mock_actionTableId_dateFieldId", value: "02/02/2022" },
         ],
       ],
       required: true,
@@ -205,13 +205,13 @@ export const actionTableSection: FormPageTemplate = {
 };
 
 export const fieldGroupSection: FormPageTemplate = {
-  id: "mock-field-group-id",
-  title: "mock-field-group-title",
+  id: "mock-page-id",
+  title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.FieldGroup,
-      id: "id-field-group",
+      id: "mock_fieldGroupId",
       label: "FieldGroup",
       helperText: "Information to help user fill field group",
       required: true,
@@ -221,18 +221,18 @@ export const fieldGroupSection: FormPageTemplate = {
 };
 
 export const postalAddressFieldGroupSection: FormPageTemplate = {
-  id: "mock-postal-address-id",
-  title: "mock-postal-address-title",
+  id: "mock-page-id",
+  title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.FieldGroup,
-      id: "id-postal-address",
+      id: "mock_postalAddressFieldGroupId",
       label: "Postal address FieldGroup",
       helperText: "Information to help user fill out postal address fields",
       required: true,
       elements: getPostalAddressElements({
-        id: "id-postal-address",
+        id: "mock_postalAddressFieldGroupId",
       }),
     },
   ],
