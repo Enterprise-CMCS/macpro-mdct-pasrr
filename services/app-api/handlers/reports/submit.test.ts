@@ -35,7 +35,7 @@ vi.mock("../../utils/notifications/email", () => ({
 const invalidReport = JSON.stringify({
   type: "PASRR",
   state: "PA",
-  id: "PASRRPA123",
+  id: "mock-invalid-report-id",
 });
 const report = JSON.stringify(validReport);
 
@@ -104,7 +104,7 @@ describe("Test submit report handler", () => {
     } as APIGatewayProxyEvent;
     const badId = {
       ...proxyEvent,
-      pathParameters: { ...validPath, id: "ZZOR1234" },
+      pathParameters: { ...validPath, id: "mock-invalid-report-id" },
       body: report,
     } as APIGatewayProxyEvent;
 

@@ -42,18 +42,18 @@ const mockReportEvent = {
   dynamodb: {
     Keys: {
       pKey: { S: "PASRR#CO" },
-      sortKey: { S: "report123" },
+      sortKey: { S: "mock-report-id" },
     },
     NewImage: {
       state: { S: "CO" },
-      id: { S: "report123" },
+      id: { S: "mock-report-id" },
       pKey: { S: "PASRR#CO" },
-      sortKey: { S: "report123" },
+      sortKey: { S: "mock-report-id" },
       status: { S: "In progress" },
     },
     OldImage: {
       state: { S: "CO" },
-      id: { S: "report123" },
+      id: { S: "mock-report-id" },
       pKey: { S: "PASRR#CO" },
       status: { S: "Not started" },
     },
@@ -85,9 +85,15 @@ const mockReport = {
   id: "mock-report-id",
   state: "CO",
   pages: [
-    { id: "root", childPageIds: ["pageA", "pageB"] },
-    { id: "pageA", elements: [{ type: ElementType.Header, text: "Page A" }] },
-    { id: "pageB", elements: [{ type: ElementType.Header, text: "Page B" }] },
+    { id: "root", childPageIds: ["mock-page-id", "mock-page-id-2"] },
+    {
+      id: "mock-page-id",
+      elements: [{ type: ElementType.Header, text: "Page A" }],
+    },
+    {
+      id: "mock-page-id-2",
+      elements: [{ type: ElementType.Header, text: "Page B" }],
+    },
   ],
 } as Report;
 
@@ -128,13 +134,13 @@ describe("Kafka message sending", () => {
                 eventID: "eid-123",
                 eventName: "en-123",
               },
-              key: "PASRR#CO#report123",
+              key: "PASRR#CO#mock-report-id",
               partition: 0,
               value: JSON.stringify({
                 NewImage: mockReport,
                 Keys: {
                   pKey: "PASRR#CO",
-                  sortKey: "report123",
+                  sortKey: "mock-report-id",
                 },
               }),
             },
@@ -161,13 +167,13 @@ describe("Kafka message sending", () => {
                 eventID: "eid-123",
                 eventName: "en-123",
               },
-              key: "PASRR#CO#report123",
+              key: "PASRR#CO#mock-report-id",
               partition: 0,
               value: JSON.stringify({
                 NewImage: mockReport,
                 Keys: {
                   pKey: "PASRR#CO",
-                  sortKey: "report123",
+                  sortKey: "mock-report-id",
                 },
               }),
             },
@@ -180,7 +186,7 @@ describe("Kafka message sending", () => {
   it("should ignore events for changed report pages", async () => {
     mockGetReport.mockResolvedValue(mockReport);
     const record = structuredClone(mockReportEvent);
-    record.dynamodb.NewImage.sortKey = { S: "report123#pageABC" };
+    record.dynamodb.NewImage.sortKey = { S: "mock-report-id#pageABC" };
     const event = { Records: [record] };
     await handler(event);
     expect(mockSendBatch).not.toHaveBeenCalled();
@@ -206,7 +212,9 @@ describe("Kafka message sending", () => {
       topicMessages: [
         {
           topic: "aws.mdct.pasrr.pasrr-reports.v0",
-          messages: [expect.objectContaining({ key: "PASRR#CO#report123" })],
+          messages: [
+            expect.objectContaining({ key: "PASRR#CO#mock-report-id" }),
+          ],
         },
         {
           topic: "aws.mdct.pasrr.pasrr-comments.v0",

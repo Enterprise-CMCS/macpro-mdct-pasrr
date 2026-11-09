@@ -21,7 +21,7 @@ export const validReport: Report = {
   reportingYear: 2026,
   pages: pages,
   state: "NJ" as StateAbbr,
-  id: "2rRaoAFm8yLB2N2wSkTJ0iRTDu0",
+  id: "mock-report-id",
   created: 1736524513631,
   lastEdited: 1736524513631,
   lastEditedBy: "Anthony Soprano",
@@ -50,7 +50,7 @@ export const invalidFormPageReport = {
   ...validReport,
   pages: [
     {
-      id: "general-info",
+      id: "general-information",
       // missing title field
       type: PageType.Standard,
       sidebar: true,
@@ -76,7 +76,7 @@ export const invalidParentPageReport = {
   pages: [
     {
       // missing id field
-      childPageIds: ["general-info", "review-submit"],
+      childPageIds: ["general-information", "review-submit"],
     },
   ],
 };
@@ -85,7 +85,7 @@ export const invalidPageElementType = {
   ...validReport,
   pages: [
     {
-      id: "general-info",
+      id: "general-information",
       title: "General Info",
       type: PageType.Standard,
       sidebar: true,
@@ -101,27 +101,33 @@ export const invalidPageElementType = {
 
 export const mockAccordionPages = [
   {
-    id: "mock-accordion-page",
+    id: "mock-accordion-page-id",
     title: "Mock Accordion Page",
     type: PageType.Standard,
     elements: [
       {
         type: ElementType.AccordionGroup,
-        id: "mock-accordion-group",
+        id: "mock_accordionFieldGroupId",
         accordions: [
           {
             label: "Mock Accordion 1",
             elements: [
               {
                 type: ElementType.Textbox,
-                id: "mock-accordion-1-textbox",
+                id: "mock_accordionId_textboxId",
                 label: "Mock Accordion 1 Textbox",
                 answer: "Mock Accordion 1 Answer",
               },
               {
                 type: ElementType.AttachmentArea,
-                id: "attachment-id",
-                answer: [{ name: "mock-name", size: 100, fileId: "mock-id" }],
+                id: "mock_accordionId_attachmentAreaId",
+                answer: [
+                  {
+                    name: "mock-file-id.pdf",
+                    size: 100,
+                    fileId: "mockKsuId_mock-file-id.pdf",
+                  },
+                ],
               },
             ],
           },
