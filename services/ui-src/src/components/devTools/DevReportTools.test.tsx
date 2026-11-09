@@ -30,11 +30,11 @@ const reportUseStore = {
     id: "mock-report-id",
     pages: [
       {
-        id: "mock-page-id",
+        id: "mock-optional-page-id",
         elements: [],
       },
       {
-        id: "mock-page-id-2",
+        id: "mock-page-id",
         title: "Mock Page",
         status: PageStatus.IN_PROGRESS,
         elements: [],
