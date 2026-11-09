@@ -321,6 +321,7 @@ interface InputElementTemplate {
   onlyCmsAdminCanEdit?: boolean;
   cmsAdminCanEditInSubmitted?: boolean;
   skipOptionalTag?: boolean;
+  fullWidth?: boolean;
 }
 
 export interface CheckboxTemplate extends InputElementTemplate {

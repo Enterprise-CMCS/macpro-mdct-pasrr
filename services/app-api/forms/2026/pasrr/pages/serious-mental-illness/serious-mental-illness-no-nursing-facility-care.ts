@@ -61,6 +61,7 @@ export const seriousMentalIllnessNoNursingFacilityCare: FormPageTemplate = {
       helperText:
         "Do not include personally identifiable information (PII) or protected health information (PHI).",
       required: false,
+      fullWidth: true,
     },
   ],
 };

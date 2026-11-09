@@ -61,6 +61,7 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
       helperText:
         "Do not include personally identifiable information (PII) or protected health information (PHI).",
       required: false,
+      fullWidth: true,
     },
     {
       id: "smi_specializedServicesReceivedServices",
@@ -68,6 +69,7 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
       label:
         "During this reporting period, did all eligible residents receive specialized services or have them arranged?",
       required: true,
+      fullWidth: true,
       helperText:
         "Select “No” if any individual in the table above did not have specialized services arranged or provided by the state.",
       choices: [

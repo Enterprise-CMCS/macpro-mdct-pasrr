@@ -189,22 +189,10 @@ button {
 }
 
 // CMSDS caps the question label and hint at 460px; let them fill the container.
-.radioField {
+.full-width {
+  .ds-c-field,
   .ds-c-label,
   .ds-c-hint {
-    max-width: 100%;
-  }
-}
-
-// CMSDS caps the text area, its hint, and its label at 460px; let them fill the container.
-.textAreaField {
-  .ds-c-label {
-    display: block;
-    max-width: 100%;
-  }
-
-  .ds-c-hint,
-  textarea.ds-c-field {
     max-width: 100%;
   }
 }

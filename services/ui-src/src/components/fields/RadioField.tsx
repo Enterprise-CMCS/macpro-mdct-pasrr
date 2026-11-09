@@ -106,9 +106,8 @@ export const RadioField = (props: PageElementProps<RadioTemplate>) => {
     return null;
   }
   return (
-    <Box>
+    <Box className={radio.fullWidth ? "full-width" : ""} width="100%">
       <CmsdsChoiceList
-        className="radioField"
         name={radio.id}
         type={"radio"}
         label={labelText || ""}
