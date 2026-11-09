@@ -144,7 +144,7 @@ export const elementSatisfiesRequired = (
       return true;
 
     case element.type === ElementType.ActionTable &&
-      element.id === "metrics-table": {
+      element.id.includes("metricsTable"): {
       //only get metric rows that haven't been abandoned
       const activeElements = element.answer
         .filter((rows) =>

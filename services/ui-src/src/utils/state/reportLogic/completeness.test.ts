@@ -382,18 +382,18 @@ describe("elementSatisfiesRequired", () => {
   test("handles Metrics Table", () => {
     const element = {
       type: ElementType.ActionTable,
-      id: "mock_actionTableId",
+      id: "mock_metricsTable",
       label: "action table",
       heading: "Heading",
       modal: { title: "", elements: [] },
       rows: [
         {
-          id: "mock_actionTableId_textboxId",
+          id: "mock_metricsTable_textboxId",
           type: ElementType.Paragraph,
           header: "",
         },
       ],
-      answer: [[{ id: "mock_actionTableId_textboxId", value: "2" as string }]],
+      answer: [[{ id: "mock_metricsTable_textboxId", value: "2" as string }]],
       required: true,
     } as ActionTableTemplate;
     expect(elementSatisfiesRequired(element, [element])).toBeTruthy();
@@ -402,19 +402,19 @@ describe("elementSatisfiesRequired", () => {
   test("ignores optional Metrics Table columns", () => {
     const element = {
       type: ElementType.ActionTable,
-      id: "mock_actionTableId",
+      id: "mock_metricsTable",
       label: "action table",
       heading: "Heading",
       modal: {
         title: "",
         elements: [
           {
-            id: "mock_actionTableId_textboxId",
+            id: "mock_metricsTable_textboxId",
             type: ElementType.Textbox,
             required: true,
           },
           {
-            id: "mock_actionTableId_textboxOptionalId",
+            id: "mock_metricsTable_textboxOptionalId",
             type: ElementType.Textbox,
             required: false,
           },
@@ -422,7 +422,7 @@ describe("elementSatisfiesRequired", () => {
       },
       rows: [
         {
-          id: "mock_actionTableId_textboxId",
+          id: "mock_metricsTable_textboxId",
           type: ElementType.Paragraph,
           header: "",
         },
@@ -430,8 +430,8 @@ describe("elementSatisfiesRequired", () => {
       answer: [
         [
           { id: "status", value: "Active" },
-          { id: "mock_actionTableId_textboxId", value: "complete" },
-          { id: "mock_actionTableId_textboxOptionalId", value: "" },
+          { id: "mock_metricsTable_textboxId", value: "complete" },
+          { id: "mock_metricsTable_textboxOptionalId", value: "" },
         ],
       ],
       required: true,

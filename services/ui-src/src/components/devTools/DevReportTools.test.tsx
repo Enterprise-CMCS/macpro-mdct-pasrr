@@ -51,7 +51,7 @@ const sections = [
     submittable: true,
   },
   {
-    section: { title: "Mock Optional", id: "mock_optional" },
+    section: { title: "Mock Optional", id: "mock-optional-page-id" },
     displayStatus: PageStatus.OPTIONAL,
     submittable: true,
   },
