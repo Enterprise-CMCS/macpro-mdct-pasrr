@@ -370,6 +370,17 @@ describe("elementSatisfiesRequired", () => {
     expect(elementSatisfiesRequired(element, [element])).toBeFalsy();
   });
 
+  test("required ListInput is incomplete until a value is entered", () => {
+    const element = {
+      type: ElementType.ListInput,
+      required: true,
+    } as ListInputTemplate;
+    expect(elementSatisfiesRequired(element, [element])).toBeFalsy();
+
+    const answered = { ...element, answer: ["data source"] };
+    expect(elementSatisfiesRequired(answered, [answered])).toBeTruthy();
+  });
+
   test("handles Metrics Table", () => {
     const element = {
       type: ElementType.ActionTable,
