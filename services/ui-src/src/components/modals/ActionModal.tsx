@@ -37,7 +37,14 @@ export const ActionModal = ({
     const element = renderElements[index];
     const newErrorMessages = new Map([
       ...errorMessages,
-      [id, getErrorMessage(element.type, element.required, value)],
+      [
+        id,
+        getErrorMessage({
+          type: element.type,
+          required: element.required,
+          value,
+        }),
+      ],
     ]);
     setErrorMessages(newErrorMessages);
   };
