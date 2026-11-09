@@ -1,5 +1,5 @@
 import { MockedFunction } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { StatusTableElement } from "./StatusTable";
 import { MemoryRouter } from "react-router";
@@ -113,7 +113,7 @@ describe("StatusTable with state user", () => {
       </MemoryRouter>
     );
 
-    const editButton = screen.getAllByRole("button", { name: /Edit/i })[0];
+    const editButton = screen.getAllByRole("button", { name: "Edit" })[0];
     await userEvent.click(editButton);
 
     expect(editButton).toBeVisible();
@@ -127,9 +127,12 @@ describe("StatusTable with state user", () => {
             rows: [
               {
                 kind: "section",
-                id: "optional-page",
+                id: "mock-optional-page-id",
                 section: {
-                  section: { title: "Optional Page", id: "optional-page" },
+                  section: {
+                    title: "Optional Page",
+                    id: "mock-optional-page-id",
+                  },
                   displayStatus: PageStatus.OPTIONAL,
                   submittable: true,
                 },
@@ -153,9 +156,14 @@ describe("StatusTable with state user", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("cell", { name: "Optional Page" })).toBeVisible();
-    expect(screen.getByText("Complete")).toBeVisible();
-    expect(screen.queryByText("Optional")).not.toBeInTheDocument();
+    const optionalCell = screen.getByRole("cell", { name: "Optional Page" });
+    const optionalRow = optionalCell.closest("tr") as HTMLTableRowElement;
+
+    expect(optionalCell).toBeVisible();
+    expect(
+      within(optionalRow).getByRole("img", { name: "complete" })
+    ).toBeVisible();
+    expect(within(optionalRow).queryByText("Optional")).not.toBeInTheDocument();
   });
 
   test("parent page renders as a label row with its children nested beneath it", () => {
@@ -166,11 +174,11 @@ describe("StatusTable with state user", () => {
             rows: [
               {
                 kind: "group",
-                id: "PARENT",
+                id: "mock-parent-page-id",
                 title: "Parent Page",
                 children: [
                   {
-                    section: { title: "Child A", id: "child-a" },
+                    section: { title: "Child A", id: "mock-child-page-id" },
                     displayStatus: PageStatus.COMPLETE,
                     submittable: true,
                   },
@@ -195,10 +203,17 @@ describe("StatusTable with state user", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText("Parent Page")).toBeInTheDocument();
-    expect(screen.getByText("Child A")).toBeInTheDocument();
+    const childCell = screen.getByRole("cell", { name: "Child A" });
+    const childRow = childCell.closest("tr") as HTMLTableRowElement;
+    const parentRow = screen.getByRole("row", { name: "Parent Page" });
+
+    expect(parentRow).toBeVisible();
+    expect(childRow).toBeVisible();
     // Only the child gets an Edit button; the parent row has none.
-    expect(screen.getAllByRole("button", { name: /Edit/i })).toHaveLength(1);
+    expect(
+      within(childRow).getByRole("button", { name: "Edit" })
+    ).toBeVisible();
+    expect(screen.getAllByRole("button", { name: "Edit" })).toHaveLength(1);
   });
 
   test("should not render anything if report is undefined", () => {
