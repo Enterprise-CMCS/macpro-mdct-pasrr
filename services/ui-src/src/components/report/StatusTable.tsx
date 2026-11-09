@@ -3,6 +3,7 @@ import { PageStatus } from "@pasrr/shared";
 import { useNavigate, useParams } from "react-router";
 import {
   Button,
+  Image,
   Table,
   Tbody,
   Td,
@@ -18,6 +19,7 @@ import {
   SectionDetails,
   submittableMetricsSelector,
 } from "utils/state/selectors";
+import editIcon from "assets/icons/edit/icon_edit_primary.svg";
 
 export const StatusTableElement = () => {
   const { report } = useStore();
@@ -58,6 +60,7 @@ export const StatusTableElement = () => {
           <Button
             variant="outline"
             width="100%"
+            leftIcon={<Image src={editIcon} alt="" />}
             onClick={() => handleEditClick(section.id)}
           >
             Edit
@@ -95,7 +98,7 @@ export const StatusTableElement = () => {
           <Tr>
             <Th>Section</Th>
             <Th>Status</Th>
-            <Th></Th>
+            <Th>Actions</Th>
           </Tr>
         </Thead>
         <Tbody>{submittableMetrics?.rows.map(renderRow)}</Tbody>

@@ -73,7 +73,7 @@ const mockStateUser = {
 const mockReportComment = {
   contextId: validReport.id,
   created: Date.now(),
-  id: "comment-id",
+  id: "mock_commentId",
   author: "mock user",
   authorEmail: "mockuser@email.com",
   isInternal: false,

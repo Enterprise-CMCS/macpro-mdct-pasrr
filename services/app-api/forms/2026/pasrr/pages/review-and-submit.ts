@@ -18,7 +18,7 @@ export const reviewAndSubmit: ReviewSubmitTemplate = {
       id: "review_alert",
       status: AlertTypes.ERROR,
       title: "Your form is not ready for submission",
-      text: "Some sections of the PASRR Report have errors or are missing required responses.",
+      text: "Some sections of the PASRR Report have errors or are missing required responses. Ensure all required fields are completed with valid responses before submitting.",
     },
     {
       type: ElementType.Header,
@@ -26,14 +26,26 @@ export const reviewAndSubmit: ReviewSubmitTemplate = {
       text: "Review & Submit",
     },
     {
-      type: ElementType.RequestFeedbackButton,
-      id: "review_requestFeedback",
+      type: ElementType.SubHeader,
+      id: "review_readyToSubmitHeader",
+      text: "Ready to submit?",
+      headingLevel: 5,
     },
     {
       type: ElementType.Paragraph,
       id: "review_text",
-      title: "Ready to Submit?",
-      text: "Double check that everything in your PASRR Report is accurate. To make edits to your report after submitting, contact your CMS PASRR Lead to unlock your report.",
+      text: "Double check that everything in your PASRR Report is accurate. You will be able to make edits after submitting if you contact the CMS PASRR team to unlock your report while it is in “Submitted” status.",
+    },
+    {
+      type: ElementType.SubHeader,
+      id: "review_complianceHeader",
+      text: "Compliance review",
+      headingLevel: 5,
+    },
+    {
+      type: ElementType.Paragraph,
+      id: "review_complianceHeaderText",
+      text: "The CMS PASRR team will review your report, and may contact you and unlock your report for editing if there are corrections to be made.",
     },
     {
       type: ElementType.StatusTable,
@@ -54,7 +66,7 @@ export const reviewAndSubmit: ReviewSubmitTemplate = {
     },
     {
       type: ElementType.Divider,
-      id: "divider",
+      id: "submitted_divider",
     },
     {
       type: ElementType.Paragraph,

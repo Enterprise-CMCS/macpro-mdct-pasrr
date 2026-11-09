@@ -35,6 +35,11 @@ export const shouldUseTable = (type: ElementType) => {
   return tableElementList.includes(type);
 };
 
+// A list with no non-blank entries has not been answered.
+export const isUnansweredList = (element: PageElement) =>
+  element.type === ElementType.ListInput &&
+  !element.answer?.some((item) => item.trim());
+
 export const renderElements = (element: PageElement) => {
   const { type } = element;
   if (!renderElementList.includes(type)) return;
@@ -61,6 +66,8 @@ export const renderElements = (element: PageElement) => {
     case ElementType.SummationTable:
       return SummationTableExport(element);
   }
+
+  if (isUnansweredList(element)) return notAnsweredText;
 
   if (!("answer" in element)) {
     return notAnsweredText;

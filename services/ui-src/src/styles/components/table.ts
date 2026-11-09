@@ -44,17 +44,18 @@ const stripedVariant = () => ({
       fontWeight: "semibold",
     },
     td: {
-      padding: "0.5rem",
+      padding: "spacer1",
     },
     "td, tr": {
-      border: "none",
+      border: 0,
     },
   },
 });
 const statusVariant = {
   td: {
     fontSize: "heading_sm",
-    padding: "0.75rem 0.75rem 0.75rem 0",
+    padding: "0.75rem",
+    paddingLeft: 0,
     "&:first-of-type": {
       width: "65%",
       fontWeight: "heading_sm_bold",
@@ -66,16 +67,16 @@ const statusVariant = {
       },
     },
     ".mobile &": {
-      border: "none",
+      border: 0,
       width: "100%",
-      paddingY: "0.5rem",
+      paddingY: "spacer1",
     },
   },
   tr: {
     ".mobile &": {
       display: "grid",
       gridTemplateColumns: "50% 50%",
-      paddingY: "0.5rem",
+      paddingY: "spacer1",
     },
   },
   th: {
@@ -83,20 +84,27 @@ const statusVariant = {
       "&:last-of-type": {
         display: "none",
       },
-      padding: "0",
+      padding: 0,
     },
     "tr &": {
-      border: "none",
+      border: 0,
     },
   },
 };
 
 const exportVariant = {
   table: {
-    "tr, th, td": {
+    tr: {
       borderColor: "gray_lighter",
     },
+    th: {
+      borderColor: "gray_lighter",
+      "&:not([scope='row'])": {
+        borderColor: "gray_lighter",
+      },
+    },
     td: {
+      borderColor: "gray_lighter",
       fontSize: "heading_sm",
       width: "50%",
       "p:first-of-type": {
@@ -115,14 +123,18 @@ const exportVariant = {
 const reportDetailsVariant = {
   table: {
     tr: {
-      border: "none",
-      "th, td": {
+      border: 0,
+    },
+    th: {
+      borderColor: "transparent",
+      "&:not([scope='row'])": {
         borderColor: "transparent",
       },
     },
     td: {
+      borderColor: "transparent",
       fontSize: "body_sm",
-      padding: "0",
+      padding: 0,
       color: "black",
       width: "25%",
     },
@@ -134,12 +146,15 @@ const metricVariant = {
     boxShadow: "0px 2px 8px 0px #0000001F",
     th: {
       background: "primary_darkest",
-      color: "white",
-      padding: "1rem 0.75rem",
+      "&:not([scope='row'])": {
+        color: "white",
+        paddingX: "0.75rem",
+        paddingY: "spacer2",
+      },
     },
     tr: {
-      padding: "1rem",
-      border: "none",
+      border: 0,
+      padding: "spacer2",
 
       "&:nth-of-type(even)": {
         background: "gray_lightest_highlight",
@@ -152,10 +167,11 @@ const metricVariant = {
       },
     },
     td: {
-      border: "none",
-      padding: "1rem 0.75rem",
+      border: 0,
+      paddingX: "0.75rem",
+      paddingY: "spacer2",
       "label, button": {
-        margin: "0",
+        margin: 0,
         display: "flex",
         justifyContent: "center",
       },
@@ -198,7 +214,7 @@ const metricVariant = {
 const summationVariant = {
   table: {
     tr: {
-      border: "none",
+      border: 0,
       "&:nth-of-type(even)": {
         background: "gray_lightest_highlight",
       },
@@ -210,7 +226,7 @@ const summationVariant = {
       },
     },
     td: {
-      border: "none",
+      border: 0,
       lineHeight: "body_md",
       paddingX: "spacer2",
       paddingY: "spacer1",
@@ -221,7 +237,7 @@ const summationVariant = {
         maxWidth: "12rem",
       },
       "label, button": {
-        margin: "0",
+        margin: 0,
         display: "flex",
         justifyContent: "center",
       },
@@ -252,10 +268,13 @@ const summationVariant = {
     thead: {
       th: {
         background: "primary_darkest",
-        color: "white",
         fontSize: "body_lg",
-        paddingX: "spacer2",
-        paddingY: "1.25rem",
+        "&:not([scope='row'])": {
+          border: 0,
+          color: "white",
+          paddingX: "spacer2",
+          paddingY: "1.25rem",
+        },
       },
     },
     tfoot: {
@@ -275,11 +294,13 @@ const summationVariant = {
 const pdfVariant = {
   table: {
     th: {
-      borderBottomWidth: "2px",
+      "&:not([scope='row'])": {
+        borderBottomWidth: "2px",
+      },
     },
     tr: {
       "&.borderless": {
-        border: "0",
+        border: 0,
       },
     },
   },

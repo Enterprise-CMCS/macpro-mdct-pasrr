@@ -20,7 +20,7 @@ vi.mock("../../utils/authorization", () => ({
 }));
 
 const mockGet = vi.fn().mockReturnValue({
-  id: "A report",
+  id: "mock-report-id",
   status: ReportStatus.SUBMITTED,
   name: "name",
 });
@@ -39,7 +39,7 @@ const testEvent: APIGatewayProxyEvent = {
   pathParameters: {
     reportType: "PASRR",
     state: "NJ",
-    id: "2rRaoAFm8yLB2N2wSkTJ0iRTDu0",
+    id: "mock-report-id",
   },
   headers: { "cognito-identity-id": "test" },
 };

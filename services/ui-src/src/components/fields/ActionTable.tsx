@@ -179,7 +179,7 @@ export const ActionTable = (props: PageElementProps<ActionTableTemplate>) => {
     const newAnswer = [...(answer ?? [])];
     const newErrorMessages = [...errorMessages];
     const rowIndex = newAnswer[index].findIndex((answer) => answer.id === id);
-    const errorMessage = getErrorMessage(type, false, value);
+    const errorMessage = getErrorMessage({ type, required: false, value });
     newErrorMessages[index].set(id, errorMessage);
     setErrorMessages(newErrorMessages);
     const formattedValue = formatAnswers(
