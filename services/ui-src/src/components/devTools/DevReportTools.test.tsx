@@ -308,12 +308,12 @@ describe("Test DevReportTools component", () => {
     await userEvent.click(screen.getByRole("button", { name: "Fill Report" }));
     expect(mockSetAnswer).toHaveBeenCalledWith(
       {
-        id: "mock-page-id-2",
+        id: "mock-page-id",
         title: "Mock Page",
         status: PageStatus.IN_PROGRESS,
         elements: [],
       },
-      "mock-page-id-2"
+      "mock-page-id"
     );
   });
 });
