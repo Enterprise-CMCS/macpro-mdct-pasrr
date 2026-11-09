@@ -63,19 +63,19 @@ export const elementObject: {
 } = {
   [ElementType.Header]: {
     description: "Big text at the top of the page",
-    id: "id-header",
+    id: "componentInventory_headerId",
     variants: [
       <HeaderElement
         element={{
           type: ElementType.Header,
-          id: "id-header",
+          id: "mock_headerId",
           text: "HeaderElement",
         }}
       />,
       <HeaderElement
         element={{
           type: ElementType.Header,
-          id: "id-header-with-icon",
+          id: "mock_headerWithIconId",
           text: "HeaderElement with Icon",
           icon: HeaderIcon.Check,
         }}
@@ -85,7 +85,7 @@ export const elementObject: {
       <HeaderElement
         element={{
           type: ElementType.Header,
-          id: "id-header",
+          id: "mock_headerId",
           text: "HeaderElement",
         }}
       />,
@@ -93,12 +93,12 @@ export const elementObject: {
   },
   [ElementType.SubHeader]: {
     description: "This is a subheader",
-    id: "id-subheader",
+    id: "componentInventory_subHeaderId",
     variants: [
       <SubHeaderElement
         element={{
           type: ElementType.SubHeader,
-          id: "id-subheader",
+          id: "mock_subHeaderId",
           text: "SubHeaderElement",
         }}
       />,
@@ -107,7 +107,7 @@ export const elementObject: {
       <SubHeaderElement
         element={{
           type: ElementType.SubHeader,
-          id: "id-subheader",
+          id: "mock_subHeaderId",
           text: "SubHeaderElement",
         }}
       />,
@@ -115,14 +115,14 @@ export const elementObject: {
   },
   [ElementType.Textbox]: {
     description: "A field for entering text",
-    id: "id-textfield",
+    id: "componentInventory_textboxId",
     variants: [
       <TextField
         updateElement={logNewElement}
         element={{
           type: ElementType.Textbox,
-          id: "id-textfield",
-          label: "TextField",
+          id: "mock_textboxId",
+          label: "Textbox",
           required: false,
         }}
       />,
@@ -131,13 +131,13 @@ export const elementObject: {
   },
   [ElementType.TextAreaField]: {
     description: "A field for entering text",
-    id: "id-textareafield",
+    id: "componentInventory_textAreaFieldId",
     variants: [
       <TextAreaField
         updateElement={logNewElement}
         element={{
           type: ElementType.TextAreaField,
-          id: "id-textareafield",
+          id: "mock_textAreaFieldId",
           label: "TextAreaField",
           required: true,
         }}
@@ -147,12 +147,12 @@ export const elementObject: {
   },
   [ElementType.Paragraph]: {
     description: "A paragraph of text for content.",
-    id: "id-paragraph",
+    id: "componentInventory_paragraphId",
     variants: [
       <ParagraphElement
         element={{
           type: ElementType.Paragraph,
-          id: "id-paragraph",
+          id: "mock_paragraphId",
           text: "Useful for explanations or instructions.. lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
         }}
       />,
@@ -161,12 +161,12 @@ export const elementObject: {
   },
   [ElementType.Divider]: {
     description: "A horizontal line to separate content",
-    id: "id-divider",
+    id: "componentInventory_dividerId",
     variants: [
       <DividerElement
         element={{
           type: ElementType.Divider,
-          id: "id-divider",
+          id: "mock_dividerId",
         }}
       />,
     ],
@@ -174,7 +174,7 @@ export const elementObject: {
   },
   [ElementType.Accordion]: {
     description: "A collapsible section for content",
-    id: "id-accordion",
+    id: "componentInventory_accordionId",
     variants: [
       <Accordion allowToggle={true} defaultIndex={[-1]}>
         <AccordionItem label="Accordion Item 1">
@@ -192,14 +192,14 @@ export const elementObject: {
   },
   [ElementType.Dropdown]: {
     description: "A dropdown field for selecting options",
-    id: "id-dropdown-field",
+    id: "componentInventory_dropdownId",
     variants: [
       <DropdownField
         updateElement={logNewElement}
         element={{
           type: ElementType.Dropdown,
-          id: "id-dropdown",
-          label: "DropdownField",
+          id: "mock_dropdownId",
+          label: "Dropdown",
           required: true,
           options: [
             { value: "dropdown option 1", label: "dropdown option 1" },
@@ -213,14 +213,14 @@ export const elementObject: {
   },
   [ElementType.Radio]: {
     description: "A radio button field for selecting one option",
-    id: "id-radio-field",
+    id: "componentInventory_radioId",
     variants: [
       <RadioField
         updateElement={logNewElement}
         element={{
           type: ElementType.Radio,
-          id: "id-radio",
-          label: "RadioField",
+          id: "mock_radioId",
+          label: "Radio",
           required: true,
           choices: [
             { value: "radio option 1", label: "radio option 1" },
@@ -234,15 +234,15 @@ export const elementObject: {
   },
   [ElementType.Date]: {
     description: "A field for selecting a date",
-    id: "id-date-field",
+    id: "componentInventory_dateId",
     variants: [
       <DateField
         updateElement={logNewElement}
         element={{
           type: ElementType.Date,
-          id: "id-date-field",
-          label: "DateField",
-          helperText: "DateFieldElement is used to select a date.",
+          id: "mock_dateId",
+          label: "Date",
+          helperText: "Date element is used to select a date.",
           required: true,
         }}
       />,
@@ -270,14 +270,14 @@ export const elementObject: {
   },
   [ElementType.NumberField]: {
     description: "A field for entering numbers",
-    id: "id-number-field",
+    id: "componentInventory_numberFieldId",
     variants: [
       <TextField
         updateElement={logNewElement}
         element={
           {
             type: ElementType.NumberField,
-            id: "id-number-field",
+            id: "mock_numberFieldId",
             label: "Enter a number",
             helperText: "Helper text is optional",
             required: false,
@@ -289,7 +289,7 @@ export const elementObject: {
         element={
           {
             type: ElementType.NumberField,
-            id: "id-number-field-required",
+            id: "mock_numberFieldId_required",
             label: "NumberField with required validation",
             helperText: "This field is required.",
             required: true,
@@ -301,33 +301,33 @@ export const elementObject: {
   },
   [ElementType.ButtonLink]: {
     description: "A link styled as a button",
-    id: "id-button-link",
+    id: "componentInventory_buttonLinkId",
     variants: [
       <ButtonLinkElement
         element={{
           type: ElementType.ButtonLink,
-          id: "id-button-link",
+          id: "mock_buttonLinkId",
           to: "page-link",
           label: "Button Link Label",
         }}
       />,
     ],
-    pdfVariants: ["Buttonlink currently not used in PDFs"],
+    pdfVariants: ["ButtonLink currently not used in PDFs"],
   },
   [ElementType.StatusTable]: {
     description: "A table for displaying statuses",
-    id: "id-status-table",
+    id: "componentInventory_statusTableId",
     variants: [<StatusTableElement />],
     pdfVariants: ["StatusTable currently not used in PDFs"],
   },
   [ElementType.StatusAlert]: {
     description: "Different Alert Types",
-    id: "id-status-alert",
+    id: "componentInventory_statusAlertId",
     variants: [
       <StatusAlert
         element={{
           type: ElementType.StatusAlert,
-          id: "id-status",
+          id: "mock_statusAlertId",
           title: "Status Title",
           text: "AlertTypes.SUCCESS",
           status: AlertTypes.SUCCESS,
@@ -336,7 +336,7 @@ export const elementObject: {
       <StatusAlert
         element={{
           type: ElementType.StatusAlert,
-          id: "id-status",
+          id: "mock_statusAlertId_error",
           title: "Status Title",
           text: "AlertTypes.ERROR",
           status: AlertTypes.ERROR,
@@ -345,7 +345,7 @@ export const elementObject: {
       <StatusAlert
         element={{
           type: ElementType.StatusAlert,
-          id: "id-status",
+          id: "mock_statusAlertId_info",
           title: "Status Title",
           text: "AlertTypes.INFO",
           status: AlertTypes.INFO,
@@ -354,7 +354,7 @@ export const elementObject: {
       <StatusAlert
         element={{
           type: ElementType.StatusAlert,
-          id: "id-status",
+          id: "mock_statusAlertId_warning",
           title: "Status Title",
           text: "AlertTypes.WARNING",
           status: AlertTypes.WARNING,
@@ -365,19 +365,19 @@ export const elementObject: {
   },
   [ElementType.SubmissionParagraph]: {
     description: "Submission Paragraph",
-    id: "id-submission-paragraph",
+    id: "componentInventory_submissionParagraphId",
     variants: [<SubmissionParagraph />],
     pdfVariants: ["SubmissionParagraph currently not used in PDFs"],
   },
   [ElementType.Checkbox]: {
     description: "A checkbox field for selecting options",
-    id: "id-checkbox",
+    id: "componentInventory_checkboxId",
     variants: [
       <CheckboxField
         updateElement={logNewElement}
         element={{
           type: ElementType.Checkbox,
-          id: "id-checkbox",
+          id: "mock_checkboxId",
           label: "CheckboxField",
           required: true,
           choices: [
@@ -392,13 +392,13 @@ export const elementObject: {
   },
   [ElementType.ListInput]: {
     description: "A field for adding a series of inputs",
-    id: "id-listinput",
+    id: "componentInventory_listInputId",
     variants: [
       <ListInput
         updateElement={logNewElement}
         element={{
           type: ElementType.ListInput,
-          id: "id-listinput",
+          id: "mock_listInputId",
           buttonText: "Add list input",
           required: true,
           fieldLabel: "input",
@@ -410,13 +410,13 @@ export const elementObject: {
   },
   [ElementType.AttachmentArea]: {
     description: "An area for uploading files.",
-    id: "id-attachment",
+    id: "componentInventory_attachmentAreaId",
     variants: [
       <AttachmentArea
         updateElement={logNewElement}
         element={{
           type: ElementType.AttachmentArea,
-          id: "id-attachment",
+          id: "mock_attachmentAreaId",
           label: "label",
           required: true,
           answer: [
@@ -434,19 +434,19 @@ export const elementObject: {
   [ElementType.AccordionGroup]: {
     description:
       "Accordion groups that can have an array of fields inside the accordion",
-    id: "id-accordion-group",
+    id: "componentInventory_accordionGroupId",
     variants: [
       <AccordionGroup
         element={{
           type: ElementType.AccordionGroup,
-          id: "id-accordion-group",
+          id: "mock_accordionGroupId",
           accordions: [
             {
               label: "Accordion Group 1",
               elements: [
                 {
                   type: ElementType.Textbox,
-                  id: "",
+                  id: "mock_accordionId_textboxId",
                   label: "",
                   required: false,
                 },
@@ -457,7 +457,7 @@ export const elementObject: {
               elements: [
                 {
                   type: ElementType.Textbox,
-                  id: "",
+                  id: "mock_accordionId_textboxId",
                   label: "",
                   required: false,
                 },
@@ -474,12 +474,12 @@ export const elementObject: {
   [ElementType.ActionTable]: {
     description:
       "Generic table that has a the ability to add more columns if you're an admin user",
-    id: "id-action-table",
+    id: "componentInventory_actionTableId",
     variants: [
       <ActionTable
         element={{
           type: ElementType.ActionTable,
-          id: "id-action-table",
+          id: "mock_actionTableId",
           label: "Action Table",
           heading: "Action Table",
           helperText: "hint text",
@@ -490,30 +490,30 @@ export const elementObject: {
           rows: [
             {
               header: "Text Field",
-              id: "row-1",
+              id: "mock_actionTableId_paragraphId",
               type: ElementType.Paragraph,
             },
             {
               header: "Textbox Field",
-              id: "row-2",
+              id: "mock_actionTableId_textboxId",
               type: ElementType.Textbox,
             },
             {
               header: "Date Field",
-              id: "row-3",
+              id: "mock_actionTableId_dateId",
               type: ElementType.Date,
             },
           ],
           answer: [
             [
-              { id: "row-1", value: "1" },
-              { id: "row-2", value: "textbox 1" },
-              { id: "row-3", value: "01/01/2021" },
+              { id: "mock_actionTableId_paragraphId", value: "1" },
+              { id: "mock_actionTableId_textboxId", value: "textbox 1" },
+              { id: "mock_actionTableId_dateId", value: "01/01/2021" },
             ],
             [
-              { id: "row-1", value: "2" },
-              { id: "row-2", value: "textbox 2" },
-              { id: "row-3", value: "02/02/2022" },
+              { id: "mock_actionTableId_paragraphId", value: "2" },
+              { id: "mock_actionTableId_textboxId", value: "textbox 2" },
+              { id: "mock_actionTableId_dateId", value: "02/02/2022" },
             ],
           ],
           required: true,
@@ -525,18 +525,18 @@ export const elementObject: {
   },
   [ElementType.RequestFeedbackButton]: {
     description: "A field that allows the user to send comments to the CMS PO.",
-    id: "id-request-feedback-button",
+    id: "componentInventory_requestFeedbackButtonId",
     variants: [<RequestFeedbackButton></RequestFeedbackButton>],
     pdfVariants: ["Request Feedback button currently not used in PDFs"],
   },
   [ElementType.FieldGroup]: {
     description: "Group fields into a fieldset",
-    id: "id-field-group",
+    id: "componentInventory_fieldGroupId",
     variants: [
       <FieldGroup
         element={{
           type: ElementType.FieldGroup,
-          id: "id-field-group",
+          id: "mock_fieldGroupId",
           label: "FieldGroup",
           required: true,
           helperText: "Information to help user fill field group",
@@ -547,12 +547,12 @@ export const elementObject: {
       <FieldGroup
         element={{
           type: ElementType.FieldGroup,
-          id: "id-field-group",
+          id: "componentInventory_fieldGroupId",
           label: "Postal address FieldGroup",
           required: true,
           helperText: "Information to help user fill out postal address fields",
           elements: getPostalAddressElements({
-            id: "id-field-group",
+            id: "mock_fieldGroupId",
           }),
         }}
         updateElement={logNewElement}

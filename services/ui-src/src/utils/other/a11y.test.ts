@@ -59,7 +59,7 @@ describe("a11y util test", () => {
         title: "Title",
         type: PageType.Standard,
         elements: [
-          { type: ElementType.Header, id: "mock-page", text: "Mock Page" },
+          { type: ElementType.Header, id: "mock-page-id", text: "Mock Page" },
         ],
       });
       expect(title).toBe("Mock Page - PASRR");

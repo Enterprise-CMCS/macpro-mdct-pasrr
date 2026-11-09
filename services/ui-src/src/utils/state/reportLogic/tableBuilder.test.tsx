@@ -10,26 +10,26 @@ vi.spyOn(console, "error").mockImplementation(vi.fn());
 
 const elements = [
   {
-    id: "mock-dropdown",
+    id: "mock_dropdownId",
     type: ElementType.Dropdown,
     disabled: false,
     children: [{ label: "option 1", value: "opt1" }],
     label: "Mock Dropdown",
   },
   {
-    id: "mock-textarea",
+    id: "mock_textAreaFieldId",
     type: ElementType.TextAreaField,
     disabled: false,
     label: "Mock TextAreaField",
   },
   {
-    id: "mock-textbox",
+    id: "mock_textboxId",
     type: ElementType.Textbox,
     disabled: false,
     label: "Mock Textbox",
   },
   {
-    id: "mock-date",
+    id: "mock_dateId",
     type: ElementType.Date,
     disabled: false,
     label: "Mock Date",
@@ -80,7 +80,7 @@ describe("Test tableBuilder functions", () => {
             mask: MaskType.CommaSeparated,
           },
           defaultValue: value,
-          id: "mock-masked-textbox",
+          id: "mock_maskedTextbox",
           key: "element-mock-masked-textbox",
           onChange: ([nextValue]) => setValue(nextValue),
           label: "Masked textbox",
@@ -118,9 +118,9 @@ describe("Test tableBuilder functions", () => {
 
   test("Test buildElement throws error no type is found", () => {
     const component = buildElement({
-      element: { id: "mock-accordion", type: ElementType.AccordionGroup },
+      element: { id: "mock_accordionId", type: ElementType.AccordionGroup },
       defaultValue: "",
-      id: "mock-accordion",
+      id: "mock_accordionId",
       key: "element-mock-accordion",
       onChange: mockOnChange,
       label: "Mock Accordion",

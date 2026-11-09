@@ -27,17 +27,21 @@ const mockUseNavigate = vi.fn();
 
 const mockPageMap = new Map([
   ["root", 0],
-  ["id-1", 1],
-  ["id-2", 2],
-  ["child-1", 3],
+  ["mock-page-id", 1],
+  ["mock-page-id-2", 2],
+  ["mock-child-page-id", 3],
 ]);
 
 const report = {
   pages: [
-    { childPageIds: ["id-1", "id-2"], id: "root" },
-    { title: "Section 1", id: "id-1", childPageIds: ["child-1"] },
-    { title: "Section 2", id: "id-2" },
-    { title: "Child 1", id: "child-1" },
+    { childPageIds: ["mock-page-id", "mock-page-id-2"], id: "root" },
+    {
+      title: "Section 1",
+      id: "mock-page-id",
+      childPageIds: ["mock-child-page-id"],
+    },
+    { title: "Section 2", id: "mock-page-id-2" },
+    { title: "Child 1", id: "mock-child-page-id" },
   ],
 };
 
@@ -46,7 +50,7 @@ describe("Sidebar", () => {
     (useStore as unknown as Mock).mockReturnValue({
       pageMap: mockPageMap,
       report,
-      currentPageId: "id-1",
+      currentPageId: "mock-page-id",
       setCurrentPageId,
     });
     (useParams as Mock).mockReturnValue({
@@ -89,7 +93,7 @@ describe("Sidebar", () => {
     );
     const link = screen.getByText("Section 1");
     await userEvent.click(link);
-    const reportPath = "/report/exampleReport/exampleState/123/id-1";
+    const reportPath = "/report/exampleReport/exampleState/123/mock-page-id";
     expect(mockUseNavigate).toHaveBeenCalledWith(reportPath);
   });
 
@@ -98,7 +102,7 @@ describe("Sidebar", () => {
       (useStore as unknown as Mock).mockReturnValue({
         pageMap: mockPageMap,
         report,
-        currentPageId: "id-1",
+        currentPageId: "mock-page-id",
         setCurrentPageId,
         setSidebar: vi.fn(),
         sidebarOpen,

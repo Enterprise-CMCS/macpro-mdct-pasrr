@@ -27,7 +27,7 @@ const testReport: Report = {
   type: ReportType.PASRR,
   name: "plan id",
   state: "NJ",
-  id: "NJPASRR123",
+  id: "mock-report-id",
   status: ReportStatus.NOT_STARTED,
   created: 1776449695077,
   subType: PasrrSubType.ANNUAL,
@@ -38,10 +38,10 @@ const testReport: Report = {
   pages: [
     {
       id: "root",
-      childPageIds: ["general-info", "mock-report-page"],
+      childPageIds: ["general-information", "mock-page-id"],
     },
     {
-      id: "general-info",
+      id: "general-information",
       title: "General Information",
       type: PageType.Standard,
       status: PageStatus.NOT_STARTED,
@@ -49,12 +49,12 @@ const testReport: Report = {
       elements: [
         {
           type: ElementType.Header,
-          id: "",
+          id: "mock_headerId",
           text: "General Information",
         },
         {
           type: ElementType.Textbox,
-          id: "",
+          id: "mock_textboxId",
           label: "Contact title",
           required: true,
           helperText:
@@ -63,19 +63,19 @@ const testReport: Report = {
       ],
     },
     {
-      id: "mock-report-page",
+      id: "mock-page-id",
       title: "Mock Report Page",
       type: PageType.Standard,
       sidebar: true,
       elements: [
         {
           type: ElementType.Header,
-          id: "",
+          id: "mock_headerId",
           text: "Mock Report Page",
         },
         {
           type: ElementType.Textbox,
-          id: "mock-textbox-id",
+          id: "mock_textboxId",
           label: "Contact title",
           required: true,
           helperText:
@@ -95,7 +95,7 @@ describe("reportActions", () => {
       expect(result.report).not.toBeUndefined();
       expect(result.rootPage).not.toBeUndefined();
       expect(result.parentPage?.parent).toEqual("root");
-      expect(result.currentPageId).toEqual("general-info");
+      expect(result.currentPageId).toEqual("general-information");
     });
 
     test("returns early when no report provided", () => {
@@ -107,8 +107,8 @@ describe("reportActions", () => {
   describe("state/management/reportState: setPage", () => {
     test("updates the page info", () => {
       const state = buildState(testReport, false) as ReportState;
-      const result = setPage("mock-report-page", state);
-      expect(result.currentPageId).toEqual("mock-report-page");
+      const result = setPage("mock-page-id", state);
+      expect(result.currentPageId).toEqual("mock-page-id");
     });
   });
 
@@ -237,8 +237,8 @@ describe("reportActions", () => {
 
       setAnswerInElement(
         testReport,
-        "mock-report-page",
-        "mock-textbox-id",
+        "mock-page-id",
+        "mock_textboxId",
         mockGetAnswer,
         mockSetAnswer
       );

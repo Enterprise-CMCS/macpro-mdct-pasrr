@@ -23,16 +23,16 @@ const report = {
   id: "mock-report-id",
   state: "CO",
   pages: [
-    { childPageIds: ["1", "2"] },
-    { title: "Section 1", id: "id-1" },
-    { title: "Section 2", id: "id-2" },
+    { childPageIds: ["mock-child-page-id", "mock-child-page-id-2"] },
+    { title: "Section 1", id: "mock-page-id" },
+    { title: "Section 2", id: "mock-page-id-2" },
   ],
 };
 
 const mockPageMap = new Map([
   ["root", 0],
-  ["1", 1],
-  ["2", 2],
+  ["mock-child-page-id", 1],
+  ["mock-child-page-id-2", 2],
 ]);
 
 const mockedUseStore = useStore as unknown as MockedFunction<typeof useStore>;
@@ -47,12 +47,12 @@ describe("StatusTable with state user", () => {
           return {
             sections: [
               {
-                section: { title: "Section 1", id: "id-1" },
+                section: { title: "Section 1", id: "mock-page-id" },
                 displayStatus: PageStatus.COMPLETE,
                 submittable: true,
               },
               {
-                section: { title: "Section 2", id: "id-2" },
+                section: { title: "Section 2", id: "mock-page-id-2" },
                 displayStatus: PageStatus.IN_PROGRESS,
                 submittable: false,
               },

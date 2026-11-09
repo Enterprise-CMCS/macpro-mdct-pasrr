@@ -20,7 +20,7 @@ mockedUseStore.mockReturnValue({
 });
 
 const mockRadioElement: RadioTemplate = {
-  id: "mock-radio-id",
+  id: "mock_radioId",
   type: ElementType.Radio,
   label: "mock label",
   required: true,
@@ -35,9 +35,9 @@ const mockRadioElement: RadioTemplate = {
       value: "B",
       checkedChildren: [
         {
-          id: "mock-text-box-id",
+          id: "mock_radioId_textboxId",
           type: ElementType.Textbox,
-          label: "mock-text-box",
+          label: "Textbox",
           required: true,
         },
       ],
@@ -50,7 +50,7 @@ const mockRadioElement: RadioTemplate = {
     },
   ],
   hideCondition: {
-    controllerElementId: "reporting-radio",
+    controllerElementId: "mock_controllerElementId",
     answer: "yes",
   },
 };
@@ -85,7 +85,7 @@ describe("<RadioField />", () => {
     const firstRadio = screen.getByLabelText("Choice 2");
     await userEvent.click(firstRadio);
     expect(updateSpy).toHaveBeenCalledWith({ answer: "B" });
-    expect(screen.getByLabelText("mock-text-boxRequired")).toBeInTheDocument();
+    expect(screen.getByLabelText("TextboxRequired")).toBeInTheDocument();
   });
 
   testA11y(RadioFieldComponent);
