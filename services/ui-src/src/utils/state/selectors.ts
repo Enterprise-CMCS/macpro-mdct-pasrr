@@ -40,31 +40,42 @@ export type SectionDetails = {
  * A parent page is shown as a group row with its child pages nested beneath it.
  * Any other page is shown as a single section row.
  */
-export type ReviewRow =
-  | { kind: "section"; id: string; section: SectionDetails | null }
-  | {
-      kind: "group";
-      id: string;
-      title: string;
-      children: (SectionDetails | null)[];
-    };
+export type SectionRow = {
+  id: string;
+  section: SectionDetails;
+};
 
-export const submittableMetricsSelector = (state: ReportState) => {
+export type GroupRow = {
+  id: string;
+  title: string;
+  children: SectionDetails[];
+};
+
+export type ReviewRow = SectionRow | GroupRow;
+export type SubmittableMetrics = {
+  rows: ReviewRow[];
+  sections: SectionDetails[];
+  submittable: boolean;
+} | null;
+
+export const submittableMetricsSelector = (
+  state: ReportState
+): SubmittableMetrics => {
   const { report, pageMap } = state;
   if (!report || !pageMap) {
     return null;
   }
 
   const getPage = (id: string) => {
-    const pageIdx = pageMap.get(id);
-    return pageIdx ? report.pages[pageIdx] : undefined;
+    const pageIndex = pageMap.get(id);
+    return pageIndex ? report.pages[pageIndex] : undefined;
   };
 
   const toSectionDetails = (id: string): SectionDetails | null => {
-    const pageIdx = pageMap.get(id);
-    if (!pageIdx) return null;
+    const pageIndex = pageMap.get(id);
+    if (!pageIndex) return null;
 
-    const section = report.pages[pageIdx] as FormPageTemplate;
+    const section = report.pages[pageIndex] as FormPageTemplate;
 
     const displayStatus = inferredReportStatus(report, section.id);
 
@@ -84,25 +95,26 @@ export const submittableMetricsSelector = (state: ReportState) => {
     const page = getPage(id);
     if (page?.childPageIds) {
       return {
-        kind: "group",
         id,
         title: page.title ?? "",
-        children: page.childPageIds.map(toSectionDetails),
+        children: page.childPageIds
+          .map(toSectionDetails)
+          .filter((item): item is SectionDetails => item !== null),
       };
     }
-    return { kind: "section", id, section: toSectionDetails(id) };
+    return { id, section: toSectionDetails(id) } as SectionRow;
   });
 
   const sections = rows.flatMap((row) =>
-    row.kind === "group" ? row.children : [row.section]
+    "children" in row ? row.children : [row.section]
   );
 
-  const allPagesSubmittable = sections.every(
-    (sectionInfo) => !!sectionInfo?.submittable
+  const allPagesSubmittable = sections.every((sectionInfo) =>
+    Boolean(sectionInfo?.submittable)
   );
   const submittable = !isCompleteStatus(report.status) && allPagesSubmittable;
 
-  return { rows: rows, sections: sections, submittable: submittable };
+  return { rows, sections, submittable };
 };
 
 export const activeBannerSelector = (area: BannerArea) => {

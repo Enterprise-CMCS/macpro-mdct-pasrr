@@ -72,7 +72,7 @@ export const StatusTableElement = () => {
 
   // Parent pages are labels only, so they have no status or Edit button.
   const renderRow = (row: ReviewRow) => {
-    if (row.kind === "section") {
+    if ("section" in row) {
       return renderSectionRow(row.section, row.id, false);
     }
     return (
