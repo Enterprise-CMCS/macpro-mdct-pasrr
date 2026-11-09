@@ -40,7 +40,6 @@ describe("Selectors", () => {
   test("submittableMetricsSelector reports child pages of a parent page", async () => {
     const stateWithParent = (secondChildAnswer: string) =>
       ({
-        ...mockUseStore,
         pageMap: new Map([
           ["root", 0],
           ["mock-parent-page-id", 1],
@@ -48,7 +47,6 @@ describe("Selectors", () => {
           ["mock-child-page-id-2", 3],
         ]),
         report: {
-          ...mockUseStore.report!,
           pages: [
             {
               id: "root",
@@ -56,7 +54,6 @@ describe("Selectors", () => {
             },
             {
               id: "mock-parent-page-id",
-              elements: [],
               childPageIds: ["mock-child-page-id", "mock-child-page-id-2"],
             },
             {
@@ -105,10 +102,10 @@ describe("Selectors", () => {
       "mock-child-page-id",
       "mock-child-page-id-2",
     ]);
-    expect(complete?.submittable).toEqual(true);
+    expect(complete?.submittable).toBe(true);
 
     const incomplete = submittableMetricsSelector(stateWithParent(""));
-    expect(incomplete?.submittable).toEqual(false);
+    expect(incomplete?.submittable).toBe(false);
   });
 
   describe("activeBannerSelector", () => {

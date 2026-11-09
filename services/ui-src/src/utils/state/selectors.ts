@@ -68,7 +68,7 @@ export const submittableMetricsSelector = (
 
   const getPage = (id: string) => {
     const pageIndex = pageMap.get(id);
-    return pageIndex ? report.pages[pageIndex] : undefined;
+    return report.pages[pageIndex ?? -1];
   };
 
   const toSectionDetails = (id: string): SectionDetails | null => {
