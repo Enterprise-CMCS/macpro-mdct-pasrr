@@ -52,7 +52,7 @@ describe("StatusTable with state user", () => {
                 submittable: true,
               },
               {
-                section: { title: "Section 2", id: "mock-page-" },
+                section: { title: "Section 2", id: "mock-page-id-2" },
                 displayStatus: PageStatus.IN_PROGRESS,
                 submittable: false,
               },
