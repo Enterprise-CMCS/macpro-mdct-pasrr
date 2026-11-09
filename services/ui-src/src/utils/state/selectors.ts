@@ -3,7 +3,6 @@ import {
   FormPageTemplate,
   isCompleteStatus,
   PageStatus,
-  ParentPageTemplate,
 } from "@pasrr/shared";
 import { BannerState, ReportState } from "types";
 import { inferredReportStatus } from "./reportLogic/completeness";
@@ -72,15 +71,13 @@ export const submittableMetricsSelector = (
   };
 
   const toSectionDetails = (id: string): SectionDetails | null => {
-    const pageIndex = pageMap.get(id);
-    if (!pageIndex) return null;
-
-    const section = report.pages[pageIndex] as FormPageTemplate;
+    const section = getPage(id) as FormPageTemplate;
+    if (!section) return null;
 
     const displayStatus = inferredReportStatus(report, section.id);
 
     return {
-      section: section,
+      section,
       displayStatus: !checkIfStatusIsRequired(section)
         ? PageStatus.OPTIONAL
         : displayStatus,
@@ -88,8 +85,7 @@ export const submittableMetricsSelector = (
     };
   };
 
-  const childPages = (report.pages[pageMap.get("root")!] as ParentPageTemplate)
-    .childPageIds;
+  const childPages = getPage("root")?.childPageIds || [];
   // The last root page is the review page, which is not reported.
   const rows: ReviewRow[] = childPages.slice(0, -1).map((id) => {
     const page = getPage(id);
