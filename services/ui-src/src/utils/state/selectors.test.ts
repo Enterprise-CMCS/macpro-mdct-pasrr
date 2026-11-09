@@ -40,22 +40,29 @@ describe("Selectors", () => {
       ...mockUseStore,
       pageMap: new Map([
         ["root", 0],
-        ["PARENT", 1],
-        ["CHILD-1", 2],
-        ["CHILD-2", 3],
+        ["mock-parent-page-id", 1],
+        ["mock-child-page-id", 2],
+        ["mock-child-page-id-2", 3],
       ]),
       report: {
         ...mockUseStore.report!,
         pages: [
-          { id: "root", childPageIds: ["PARENT", "review-submit"] },
-          { id: "PARENT", elements: [], childPageIds: ["CHILD-1", "CHILD-2"] },
           {
-            id: "CHILD-1",
+            id: "root",
+            childPageIds: ["mock-parent-page-id", "review-submit"],
+          },
+          {
+            id: "mock-parent-page-id",
+            elements: [],
+            childPageIds: ["mock-child-page-id", "mock-child-page-id-2"],
+          },
+          {
+            id: "mock-child-page-id",
             type: PageType.Standard,
             title: "child 1",
             elements: [
               {
-                id: "child-1-textbox",
+                id: "mock_childTextboxId",
                 label: "textbox",
                 type: ElementType.Textbox,
                 required: true,
@@ -64,12 +71,12 @@ describe("Selectors", () => {
             ],
           },
           {
-            id: "CHILD-2",
+            id: "mock-child-page-id-2",
             type: PageType.Standard,
             title: "child 2",
             elements: [
               {
-                id: "child-2-textbox",
+                id: "mock_child2TextboxId",
                 label: "textbox",
                 type: ElementType.Textbox,
                 required: true,
@@ -83,18 +90,18 @@ describe("Selectors", () => {
 
     const complete = submittableMetricsSelector(stateWithParent("test") as any);
     expect(complete?.sections.map((s) => s?.section.id)).toEqual([
-      "CHILD-1",
-      "CHILD-2",
+      "mock-child-page-id",
+      "mock-child-page-id-2",
     ]);
     expect(complete?.rows).toHaveLength(1);
     expect(complete?.rows[0]).toMatchObject({
       kind: "group",
-      id: "PARENT",
+      id: "mock-parent-page-id",
     });
     expect(
       complete?.rows[0].kind === "group" &&
         complete.rows[0].children.map((c) => c?.section.id)
-    ).toEqual(["CHILD-1", "CHILD-2"]);
+    ).toEqual(["mock-child-page-id", "mock-child-page-id-2"]);
     expect(complete?.submittable).toEqual(true);
 
     const incomplete = submittableMetricsSelector(stateWithParent("") as any);
