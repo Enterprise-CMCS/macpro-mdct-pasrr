@@ -293,15 +293,10 @@ button {
   }
 }
 
-// SubHeaderElement heading that follows ParagraphElement
-.chakra-stack + .chakra-stack {
-  > .chakra-heading {
-    margin-top: 0;
-  }
-}
-
-// SubHeaderElement heading that follows HeaderElement
-.chakra-heading + .chakra-stack {
+// SubHeaderElement heading that follows ParagraphElement, HeaderElement, or Accordion
+.chakra-stack + .chakra-stack,
+.chakra-heading + .chakra-stack,
+.chakra-accordion + .chakra-stack {
   > .chakra-heading {
     margin-top: 0;
   }

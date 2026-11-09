@@ -307,7 +307,6 @@ export interface SubHeaderTemplate extends DisplayElementTemplate {
   hideCondition?: HideCondition;
   headingLevel?: HeadingLevel;
   noWrapper?: boolean;
-  noTopMargin?: boolean;
 }
 
 interface InputElementTemplate {

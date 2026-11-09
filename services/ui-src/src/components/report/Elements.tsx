@@ -100,12 +100,7 @@ export const SubHeaderElement = ({
 
   return (
     <Wrapper>
-      {/* Inline style overrides the global .chakra-stack > .chakra-heading margin. */}
-      <Heading
-        as={level}
-        variant="subHeader"
-        style={element.noTopMargin ? { marginTop: 0 } : undefined}
-      >
+      <Heading as={level} variant="subHeader">
         {element.text}
       </Heading>
       {element.helperText && (

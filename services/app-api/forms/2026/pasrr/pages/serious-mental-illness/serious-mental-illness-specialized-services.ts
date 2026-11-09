@@ -44,7 +44,6 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
       type: ElementType.SubHeader,
       id: "smi_specializedServicesRequiredSubheader",
       text: "Resident dispositions: Specialized services only:",
-      noTopMargin: true,
       helperText:
         "<p>Report Level II resident review data for individuals with a serious mental illness (SMI) by providing the number and disposition (resident status) of residents who:</p>" +
         "<ul>" +

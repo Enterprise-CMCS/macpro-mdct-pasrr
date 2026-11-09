@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { ElementType, PageElement, SubHeaderTemplate } from "@pasrr/shared";
+import { ElementType, PageElement } from "@pasrr/shared";
 import { SubHeaderElement } from "../report/Elements";
 
 describe("Elements", () => {
@@ -10,19 +10,6 @@ describe("Elements", () => {
       text: "SubHeader",
       helperText: "mock text",
     };
-
-    test("removes the top margin when noTopMargin is set", () => {
-      const element = {
-        ...mockedSubheaderElement,
-        noTopMargin: true,
-      } as SubHeaderTemplate;
-      render(<SubHeaderElement element={element} />);
-      const heading = screen.getByRole("heading", {
-        name: "SubHeader",
-        level: 2,
-      });
-      expect(heading).toHaveStyle({ marginTop: "0px" });
-    });
 
     test("renders h2 heading and helper text in p within stack wrapper", () => {
       render(<SubHeaderElement element={mockedSubheaderElement} />);
