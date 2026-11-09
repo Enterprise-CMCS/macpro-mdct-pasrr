@@ -287,16 +287,16 @@ button {
 // PAGE ELEMENT OVERRIDES
 
 // SubHeaderElement heading
-.chakra-stack {
+.chakra-stack:has(> .chakra-heading:not(h1)) {
   > .chakra-heading {
     margin-top: 1rem;
   }
 }
 
 // SubHeaderElement heading that follows ParagraphElement, HeaderElement, or Accordion
-.chakra-stack + .chakra-stack,
-.chakra-heading + .chakra-stack,
-.chakra-accordion + .chakra-stack {
+.chakra-stack + .chakra-stack:has(> .chakra-heading:not(h1)),
+.chakra-heading + .chakra-stack:has(> .chakra-heading:not(h1)),
+.chakra-accordion + .chakra-stack:has(> .chakra-heading:not(h1)) {
   > .chakra-heading {
     margin-top: 0;
   }

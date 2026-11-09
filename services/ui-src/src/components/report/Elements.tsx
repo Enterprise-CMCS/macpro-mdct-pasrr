@@ -59,8 +59,8 @@ export const HeaderElement = ({
   const icon = buildIcon(element.icon);
 
   return (
-    <Heading as="h1" variant="h1" style={{ marginTop: 0 }}>
-      <Flex direction="row" width="100%">
+    <Heading as="h1" variant="h1">
+      <Flex as="span" direction="row" width="100%">
         {icon && (
           <span>
             <Image
