@@ -10,7 +10,7 @@ import { isReportType, Report, ReportType } from "@pasrr/shared";
 const navItem = (title: string = "", index: number) => {
   if (index <= 0) return title;
   return (
-    <Box paddingLeft="spacer2" key={`${title}.${index}`}>
+    <Box as="span" paddingLeft="spacer2" key={`${title}.${index}`}>
       {navItem(title, index - 1)}
     </Box>
   );
