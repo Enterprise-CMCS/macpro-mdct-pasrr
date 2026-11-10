@@ -38,10 +38,8 @@ export const Sidebar = () => {
   }
 
   const title = getTitle(report);
-  const setToggle = (sectionId: string) => {
-    const list = toggleList;
-    list[sectionId] = !toggleList[sectionId];
-    setToggleList({ ...list });
+  const setToggle = (sectionId: string, currentlyExpanded: boolean) => {
+    setToggleList((list) => ({ ...list, [sectionId]: !currentlyExpanded }));
   };
 
   const navigate = useNavigate();
@@ -60,11 +58,12 @@ export const Sidebar = () => {
         ) || [];
     const hasChildSections = childSections.length > 0;
 
-    const isExpanded =
-      toggleList[page.id] ||
-      flattenPageIds(report, pageMap, page.childPageIds ?? []).includes(
-        currentPageId!
-      );
+    const autoExpand = flattenPageIds(
+      report,
+      pageMap,
+      page.childPageIds ?? []
+    ).includes(currentPageId!);
+    const isExpanded = toggleList[page.id] ?? autoExpand;
 
     const rowContent = (
       <Flex as="span" justifyContent="space-between" alignItems="flex-start">
@@ -81,7 +80,7 @@ export const Sidebar = () => {
             marginLeft="spacer2"
             paddingRight="spacer2"
             alignItems="center"
-            onClick={() => setToggle(page.id)}
+            onClick={() => setToggle(page.id, isExpanded)}
           >
             {" "}
             <Image
@@ -99,8 +98,8 @@ export const Sidebar = () => {
           <Link
             as="button"
             variant="sidebar"
-            aria-expanded={Boolean(toggleList[page.id])}
-            onClick={() => setToggle(page.id)}
+            aria-expanded={isExpanded}
+            onClick={() => setToggle(page.id, isExpanded)}
           >
             {rowContent}
           </Link>

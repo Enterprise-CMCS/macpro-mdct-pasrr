@@ -8,7 +8,7 @@ export const specializedServicesOnly: FormPageTemplate = {
   elements: [
     {
       type: ElementType.Header,
-      id: "idrc-specialized-services-only-header",
+      id: "idrc_specializedServices_header",
       text: "Specialized services only",
     },
   ],

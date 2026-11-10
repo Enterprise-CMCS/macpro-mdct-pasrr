@@ -8,7 +8,7 @@ export const noNursingFacilityCare: FormPageTemplate = {
   elements: [
     {
       type: ElementType.Header,
-      id: "idrc-no-nursing-facility-care-header",
+      id: "idrc_noNursingFacilityCare_header",
       text: "No Nursing Facility Care or Services",
     },
   ],
