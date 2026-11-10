@@ -94,6 +94,7 @@ const inputElementSchema = {
   onlyCmsAdminCanEdit: boolean().notRequired(),
   cmsAdminCanEditInSubmitted: boolean().notRequired(),
   skipOptionalTag: boolean().notRequired(),
+  fullWidth: boolean().notRequired(),
 };
 
 const textboxTemplateSchema = object().shape({
@@ -376,6 +377,7 @@ const statusTableTemplateSchema = object().shape({
 
 const parentPageTemplateSchema = object().shape({
   id: pageId(),
+  title: string().notRequired(),
   childPageIds: array().of(pageId()).required(),
 });
 

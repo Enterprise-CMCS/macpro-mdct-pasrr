@@ -28,6 +28,7 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
     answer,
     validation,
     disabled: elementDisabled,
+    fullWidth,
   } = element;
   // A list always has at least one field, so start with a blank one when there are no saved answers.
   const [displayValue, setDisplayValue] = useState(
@@ -96,7 +97,13 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
   };
 
   return (
-    <Box as="fieldset" ref={fieldsetRef} key="list-input-field">
+    <Box
+      as="fieldset"
+      ref={fieldsetRef}
+      key="list-input-field"
+      className={fullWidth ? "full-width" : ""}
+      width="100%"
+    >
       <Box as="legend" srOnly>
         {label}
       </Box>

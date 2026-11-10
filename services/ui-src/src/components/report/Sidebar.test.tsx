@@ -81,8 +81,10 @@ describe("Sidebar", () => {
         <Sidebar />
       </Router>
     );
-    expect(screen.getByText("Section 1")).toBeInTheDocument();
-    expect(screen.getByText("Section 2")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Section 1Expand subitems" })
+    ).toBeVisible();
+    expect(screen.getByRole("link", { name: "Section 2" })).toBeVisible();
   });
 
   test("should attempt to navigate on Click", async () => {
@@ -91,10 +93,49 @@ describe("Sidebar", () => {
         <Sidebar />
       </Router>
     );
-    const link = screen.getByText("Section 1");
+    const link = screen.getByRole("link", { name: "Section 2" });
     await userEvent.click(link);
-    const reportPath = "/report/exampleReport/exampleState/123/mock-page-id";
+    const reportPath = "/report/exampleReport/exampleState/123/mock-page-id-2";
     expect(mockUseNavigate).toHaveBeenCalledWith(reportPath);
+  });
+
+  test("should toggle, not navigate, when clicking a parent section", async () => {
+    mockUseNavigate.mockClear();
+    render(
+      <Router>
+        <Sidebar />
+      </Router>
+    );
+    const parent = screen.getByRole("button", {
+      name: "Section 1Expand subitems",
+    });
+    expect(parent).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.queryByRole("link", { name: "Child 1" })
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(parent);
+
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(parent).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("link", { name: "Child 1" })).toBeVisible();
+  });
+
+  test("should expand a parent section without navigating when its arrow is clicked", async () => {
+    mockUseNavigate.mockClear();
+    render(
+      <Router>
+        <Sidebar />
+      </Router>
+    );
+    expect(
+      screen.queryByRole("link", { name: "Child 1" })
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByAltText("Expand subitems"));
+
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(screen.getByRole("link", { name: "Child 1" })).toBeVisible();
   });
 
   test("toggle button exposes its state via aria-expanded", () => {
@@ -126,10 +167,12 @@ describe("Sidebar", () => {
     );
 
     const expandButton = screen.getByAltText("Expand subitems");
-    expect(screen.queryByText("Child 1")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Child 1" })
+    ).not.toBeInTheDocument();
 
     await userEvent.click(expandButton);
 
-    expect(screen.getByText("Child 1")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Child 1" })).toBeVisible();
   });
 });

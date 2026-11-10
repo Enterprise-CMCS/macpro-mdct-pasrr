@@ -129,7 +129,7 @@ export type ReportPages = ReportPage[];
 export type ParentPageTemplate = {
   id: PageId;
   childPageIds: PageId[];
-  title?: undefined;
+  title?: string;
   type?: undefined;
   elements?: undefined;
   sidebar?: undefined;
@@ -321,6 +321,7 @@ interface InputElementTemplate {
   onlyCmsAdminCanEdit?: boolean;
   cmsAdminCanEditInSubmitted?: boolean;
   skipOptionalTag?: boolean;
+  fullWidth?: boolean;
 }
 
 export interface CheckboxTemplate extends InputElementTemplate {

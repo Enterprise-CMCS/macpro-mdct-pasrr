@@ -2,10 +2,18 @@ import { mockUseStore } from "utils/testing/setupTest";
 import {
   activeBannerSelector,
   currentPageSelector,
+  GroupRow,
   submittableMetricsSelector,
 } from "./selectors";
-import { BannerAreas, BannerShape, PageStatus } from "@pasrr/shared";
+import {
+  BannerAreas,
+  BannerShape,
+  ElementType,
+  PageStatus,
+  PageType,
+} from "@pasrr/shared";
 import { useStore } from "./useStore";
+import { ReportState } from "types";
 
 vi.mock("utils/auth/authLifecycle", () => ({
   updateTimeout: vi.fn(),
@@ -27,6 +35,77 @@ describe("Selectors", () => {
     expect(result?.sections[0]?.submittable).toEqual(true);
     expect(result?.sections[0]?.displayStatus).toEqual(PageStatus.COMPLETE);
     expect(result?.submittable).toEqual(true);
+  });
+
+  test("submittableMetricsSelector reports child pages of a parent page", async () => {
+    const stateWithParent = (secondChildAnswer: string) =>
+      ({
+        pageMap: new Map([
+          ["root", 0],
+          ["mock-parent-page-id", 1],
+          ["mock-child-page-id", 2],
+          ["mock-child-page-id-2", 3],
+        ]),
+        report: {
+          pages: [
+            {
+              id: "root",
+              childPageIds: ["mock-parent-page-id", "review-submit"],
+            },
+            {
+              id: "mock-parent-page-id",
+              childPageIds: ["mock-child-page-id", "mock-child-page-id-2"],
+            },
+            {
+              id: "mock-child-page-id",
+              type: PageType.Standard,
+              title: "child 1",
+              elements: [
+                {
+                  id: "mock_childTextboxId",
+                  label: "textbox",
+                  type: ElementType.Textbox,
+                  required: true,
+                  answer: "test",
+                },
+              ],
+            },
+            {
+              id: "mock-child-page-id-2",
+              type: PageType.Standard,
+              title: "child 2",
+              elements: [
+                {
+                  id: "mock_child2TextboxId",
+                  label: "textbox",
+                  type: ElementType.Textbox,
+                  required: true,
+                  answer: secondChildAnswer,
+                },
+              ],
+            },
+          ],
+        },
+      }) as ReportState;
+
+    const complete = submittableMetricsSelector(stateWithParent("test"));
+    expect(complete?.sections.map((s) => s?.section.id)).toEqual([
+      "mock-child-page-id",
+      "mock-child-page-id-2",
+    ]);
+    expect(complete?.rows).toHaveLength(1);
+    const groupRow = complete?.rows[0] as GroupRow;
+    expect(groupRow).toMatchObject({
+      id: "mock-parent-page-id",
+    });
+    expect(groupRow.children.map((c) => c?.section.id)).toEqual([
+      "mock-child-page-id",
+      "mock-child-page-id-2",
+    ]);
+    expect(complete?.submittable).toBe(true);
+
+    const incomplete = submittableMetricsSelector(stateWithParent(""));
+    expect(incomplete?.submittable).toBe(false);
   });
 
   describe("activeBannerSelector", () => {
