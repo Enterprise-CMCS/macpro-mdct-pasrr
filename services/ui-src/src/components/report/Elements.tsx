@@ -123,7 +123,12 @@ export const ParagraphElement = ({
 }: PageElementProps<ParagraphTemplate>) => {
   const { setModalComponent } = useStore();
   const styleObject = (type: string) => {
-    let styleDefault = { weight: "normal", size: "body_md", color: "base" };
+    let styleDefault = {
+      weight: "normal",
+      size: "body_md",
+      color: "base",
+      marginBottom: 0,
+    };
 
     switch (type) {
       case "bold":
@@ -133,7 +138,12 @@ export const ParagraphElement = ({
       case "paragraph":
         return { ...styleDefault, color: "gray_dark" };
       case "eyebrow":
-        return { ...styleDefault, weight: "bold", color: "gray" };
+        return {
+          ...styleDefault,
+          weight: "bold",
+          color: "gray",
+          marginBottom: "-spacer2",
+        };
     }
     return styleDefault;
   };
@@ -148,7 +158,7 @@ export const ParagraphElement = ({
     : "p";
 
   return (
-    <Stack marginBottom={element.style === "eyebrow" ? "-spacer2" : undefined}>
+    <Stack marginBottom={obj.marginBottom}>
       {element.title && (
         <Text fontSize="heading_md" fontWeight="heading_md">
           {element.title}
