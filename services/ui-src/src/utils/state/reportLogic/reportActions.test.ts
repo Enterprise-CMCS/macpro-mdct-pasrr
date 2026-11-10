@@ -14,6 +14,7 @@ import {
   buildState,
   mergeAnswers,
   setPage,
+  flattenPageIds,
   saveReport,
   deepEquals,
   deepMerge,
@@ -109,6 +110,53 @@ describe("reportActions", () => {
       const state = buildState(testReport, false) as ReportState;
       const result = setPage("mock-page-id", state);
       expect(result.currentPageId).toEqual("mock-page-id");
+    });
+  });
+
+  describe("nested pages", () => {
+    const nestedReport = {
+      ...testReport,
+      pages: [
+        { id: "root", childPageIds: ["a", "b", "c"] },
+        { id: "a", title: "A", type: PageType.Standard, elements: [] },
+        {
+          id: "b",
+          title: "B",
+          type: PageType.Standard,
+          elements: [],
+          childPageIds: ["b-1", "b-2"],
+        },
+        { id: "b-1", title: "B1", type: PageType.Standard, elements: [] },
+        { id: "b-2", title: "B2", type: PageType.Standard, elements: [] },
+        { id: "c", title: "C", type: PageType.Standard, elements: [] },
+      ],
+    } as Report;
+    const expectedOrder = ["a", "b", "b-1", "b-2", "c"];
+
+    test("flattenPageIds lists children right after their parent", () => {
+      const pageMap = new Map(nestedReport.pages.map((pg, i) => [pg.id, i]));
+      expect(flattenPageIds(nestedReport, pageMap, ["a", "b", "c"])).toEqual(
+        expectedOrder
+      );
+    });
+
+    test("buildState uses the flattened order for navigation", () => {
+      const state = buildState(nestedReport, false) as ReportState;
+      expect(state.parentPage?.childPageIds).toEqual(expectedOrder);
+      expect(state.currentPageId).toEqual("a");
+    });
+
+    test("setPage on a child page points Continue at the next page in order", () => {
+      const state = buildState(nestedReport, false) as ReportState;
+      const { parentPage } = setPage("b-2", state);
+      expect(parentPage?.index).toEqual(3);
+      expect(parentPage?.childPageIds[parentPage.index + 1]).toEqual("c");
+    });
+
+    test("setPage on a parent page continues into its first child", () => {
+      const state = buildState(nestedReport, false) as ReportState;
+      const { parentPage } = setPage("b", state);
+      expect(parentPage?.childPageIds[parentPage.index + 1]).toEqual("b-1");
     });
   });
 

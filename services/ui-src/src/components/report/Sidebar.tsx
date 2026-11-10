@@ -99,6 +99,8 @@ export const Sidebar = () => {
             as="button"
             variant="sidebar"
             aria-expanded={isExpanded}
+            height="auto"
+            minHeight="var(--chakra-sizes-10)"
             onClick={() => setToggle(page.id, isExpanded)}
           >
             {rowContent}

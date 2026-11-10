@@ -82,7 +82,7 @@ describe("Sidebar", () => {
       </Router>
     );
     expect(
-      screen.getByRole("button", { name: "Section 1Expand subitems" })
+      screen.getByRole("button", { name: "Section 1 Expand subitems" })
     ).toBeVisible();
     expect(screen.getByRole("link", { name: "Section 2" })).toBeVisible();
   });
@@ -107,7 +107,7 @@ describe("Sidebar", () => {
       </Router>
     );
     const parent = screen.getByRole("button", {
-      name: "Section 1Expand subitems",
+      name: "Section 1 Expand subitems",
     });
     expect(parent).toHaveAttribute("aria-expanded", "false");
     expect(
@@ -174,5 +174,43 @@ describe("Sidebar", () => {
     await userEvent.click(expandButton);
 
     expect(screen.getByRole("link", { name: "Child 1" })).toBeVisible();
+  });
+
+  describe("Subpage", () => {
+    beforeEach(() => {
+      (useStore as unknown as Mock).mockReturnValue({
+        pageMap: mockPageMap,
+        report,
+        currentPageId: "mock-child-page-id",
+        setCurrentPageId,
+      });
+    });
+
+    test("auto-expands the parent and highlights the subpage", () => {
+      render(
+        <Router>
+          <Sidebar />
+        </Router>
+      );
+      expect(screen.getByAltText("Collapse subitems")).toBeVisible();
+      expect(screen.getByRole("link", { name: "Child 1" })).toHaveClass(
+        "selected"
+      );
+    });
+
+    test("clicking the arrow collapses the parent, and again reopens it", async () => {
+      render(
+        <Router>
+          <Sidebar />
+        </Router>
+      );
+      await userEvent.click(screen.getByAltText("Collapse subitems"));
+      expect(
+        screen.queryByRole("link", { name: "Child 1" })
+      ).not.toBeInTheDocument();
+
+      await userEvent.click(screen.getByAltText("Expand subitems"));
+      expect(screen.getByRole("link", { name: "Child 1" })).toBeVisible();
+    });
   });
 });
