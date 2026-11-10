@@ -82,7 +82,7 @@ describe("Sidebar", () => {
       </Router>
     );
     expect(
-      screen.getByRole("button", { name: "Section 1 Expand subitems" })
+      screen.getByRole("button", { name: "Section 1Expand subitems" })
     ).toBeVisible();
     expect(screen.getByRole("link", { name: "Section 2" })).toBeVisible();
   });
@@ -107,7 +107,7 @@ describe("Sidebar", () => {
       </Router>
     );
     const parent = screen.getByRole("button", {
-      name: "Section 1 Expand subitems",
+      name: "Section 1Expand subitems",
     });
     expect(parent).toHaveAttribute("aria-expanded", "false");
     expect(
