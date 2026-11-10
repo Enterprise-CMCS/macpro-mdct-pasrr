@@ -11,8 +11,8 @@ const mockSetErrorMessages = vi.fn();
 const rows = [
   { id: "no", header: "#", type: ElementType.Paragraph },
   { id: "status", header: "Status", type: ElementType.Paragraph },
-  { id: "mock-textbox", header: "Mock Textbox", type: ElementType.Textbox },
-  { id: "mock-date", header: "Mock Date", type: ElementType.Date },
+  { id: "mock_textboxId", header: "Mock Textbox", type: ElementType.Textbox },
+  { id: "mock_dateId", header: "Mock Date", type: ElementType.Date },
 ];
 
 const modal = {
@@ -31,13 +31,13 @@ const modal = {
       required: true,
     },
     {
-      id: "mock-textbox",
+      id: "mock_textboxId",
       label: "Mock textbox",
       type: ElementType.Textbox,
       required: true,
     },
     {
-      id: "mock-date",
+      id: "mock_dateId",
       label: "Mock date",
       type: ElementType.Date,
       required: true,
@@ -94,8 +94,8 @@ describe("Test ActionModal component", () => {
 
     expect(mockSetErrorMessages).toHaveBeenCalledWith(
       new Map<string, string>([
-        ["mock-textbox", ErrorMessages.requiredResponse],
-        ["mock-date", ErrorMessages.requiredResponse],
+        ["mock_textboxId", ErrorMessages.requiredResponse],
+        ["mock_dateId", ErrorMessages.requiredResponse],
       ])
     );
     expect(mockSaveHandler).not.toHaveBeenCalled();

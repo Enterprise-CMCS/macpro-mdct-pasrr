@@ -36,7 +36,7 @@ describe("reportValidation", () => {
     describe("ElementType.Dropdown", () => {
       const mockedDropdownElement: DropdownTemplate = {
         type: ElementType.Dropdown,
-        id: "mock-dropdown-id",
+        id: "mock_dropdownId",
         label: "Dropdown",
         required: true,
         options: [
@@ -71,7 +71,7 @@ describe("reportValidation", () => {
 
     describe("missing ElementType", () => {
       const mockedMissingType = {
-        id: "mock-missing-type-id",
+        id: "mock_missingTypeId",
         label: "Missing",
         required: true,
       } as TextboxTemplate;
@@ -89,7 +89,7 @@ describe("reportValidation", () => {
     describe("invalid ElementType", () => {
       const mockedInvalidType = {
         type: "invalid",
-        id: "mock-invalid-type-id",
+        id: "mock_invalidTypeId",
         label: "Invalid",
         required: true,
       };
@@ -108,7 +108,7 @@ describe("reportValidation", () => {
     describe("invalid ElementType", () => {
       const mockedInvalidType = {
         type: "invalid",
-        id: "mock-invalid-type-id",
+        id: "mock_invalidTypeId",
         label: "Invalid",
         required: true,
       };
@@ -128,9 +128,9 @@ describe("reportValidation", () => {
     test("accepts valid attachment with matching extensions", async () => {
       await expect(
         uploadListPropSchema.validate({
-          name: "basic_image.png",
+          name: "mock-file-id.pdf",
           size: 4318,
-          fileId: "ABC123_basic_image.png",
+          fileId: "mockKsuId_mock-file-id.pdf",
         })
       ).resolves.toBeDefined();
     });
@@ -138,9 +138,9 @@ describe("reportValidation", () => {
     test("rejects disallowed extension in name", async () => {
       await expect(
         uploadListPropSchema.validate({
-          name: "basic_image.svg",
+          name: "mock-file-id.svg",
           size: 4318,
-          fileId: "ABC123_malicious_image.svg",
+          fileId: "mockKsuId_mock-file-id.svg",
         })
       ).rejects.toThrow("Unsupported file type");
     });
@@ -148,9 +148,9 @@ describe("reportValidation", () => {
     test("rejects mismatched extensions between name and fileId", async () => {
       await expect(
         uploadListPropSchema.validate({
-          name: "basic_image.png",
+          name: "mock-file-id.png",
           size: 4318,
-          fileId: "ABC123_basic_image.pdf",
+          fileId: "mockKsuId_mock-file-id.pdf",
         })
       ).rejects.toThrow("fileId extension must match name");
     });
@@ -158,9 +158,9 @@ describe("reportValidation", () => {
     test("rejects disallowed extension in fileId", async () => {
       await expect(
         uploadListPropSchema.validate({
-          name: "malware.exe",
+          name: "mock-file-id.exe",
           size: 100,
-          fileId: "ABC123_malware.exe",
+          fileId: "mockKsuId_mock-file-id.exe",
         })
       ).rejects.toThrow("Unsupported file type");
     });

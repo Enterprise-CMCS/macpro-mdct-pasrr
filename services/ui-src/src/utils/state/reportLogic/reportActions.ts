@@ -8,10 +8,15 @@ import { putReport } from "utils/api/requestMethods/report";
 import { getLocalHourMinuteTime } from "utils";
 
 // Flatten list of page ids in sidebar order, so Continue/Previous visit nested pages
-const flattenPageIds = (report: Report, pageIds: string[]): string[] =>
+export const flattenPageIds = (
+  report: Report,
+  pageMap: Map<string, number>,
+  pageIds: string[]
+): string[] =>
   pageIds.flatMap((id) => {
-    const page = report.pages.find((pg) => pg.id === id);
-    return [id, ...flattenPageIds(report, page?.childPageIds ?? [])];
+    const index = pageMap.get(id);
+    const page = index !== undefined ? report.pages[index] : undefined;
+    return [id, ...flattenPageIds(report, pageMap, page?.childPageIds ?? [])];
   });
 
 export const buildState = (
@@ -29,7 +34,7 @@ export const buildState = (
   const rootPage = report.pages[pageMap.get("root")!] as ParentPageTemplate; // this cast is safe, per unit tests
   const parentPage = {
     parent: rootPage.id,
-    childPageIds: flattenPageIds(report, rootPage.childPageIds),
+    childPageIds: flattenPageIds(report, pageMap, rootPage.childPageIds),
     index: 0,
   };
 
@@ -46,14 +51,25 @@ export const buildState = (
 };
 
 export const setPage = (targetPageId: string, currentState: ReportState) => {
-  const report = currentState.report;
-  const root = report?.pages.find((page) => page.id === "root");
+  const { report, pageMap, rootPage } = currentState;
+
+  // const report = currentState.report;
+  // const pageMap = new Map<string, number>(
+  //   report?.pages.map((page, index) => [page.id, index]),
+  // );
+  // const rootPage = report?.pages.find((page) => page.id === "root");
+
   let parentPage = undefined;
-  if (report && root?.childPageIds) {
-    const flatIds = flattenPageIds(report, root.childPageIds);
+  if (report && pageMap && rootPage) {
+    const flatIds = flattenPageIds(report, pageMap, rootPage.childPageIds);
     const pageIndex = flatIds.indexOf(targetPageId);
+
     if (pageIndex !== -1) {
-      parentPage = { parent: root.id, childPageIds: flatIds, index: pageIndex };
+      parentPage = {
+        parent: rootPage.id,
+        childPageIds: flatIds,
+        index: pageIndex,
+      };
     }
   }
   return { currentPageId: targetPageId, parentPage };

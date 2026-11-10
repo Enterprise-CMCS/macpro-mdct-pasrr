@@ -9,7 +9,7 @@ import {
 import { NotificationRecipientRecord } from "@pasrr/shared";
 
 const mockRecipient: NotificationRecipientRecord = {
-  id: "123",
+  id: "mock-recipient-id",
   state: "PA",
   email: "email@address.com",
   created: Date.now(),

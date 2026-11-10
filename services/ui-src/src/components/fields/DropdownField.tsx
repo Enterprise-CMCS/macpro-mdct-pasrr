@@ -44,7 +44,11 @@ export const DropdownField = (props: PageElementProps<DropdownTemplate>) => {
   const parsedHint = dropdown.helperText && parseHtml(dropdown.helperText);
 
   return (
-    <Box width="100%" sx={sx.container}>
+    <Box
+      className={dropdown.fullWidth ? "full-width" : ""}
+      width="100%"
+      sx={sx.container}
+    >
       <CmsdsDropdownField
         name={dropdown.id}
         label={optionalTag(dropdown)}

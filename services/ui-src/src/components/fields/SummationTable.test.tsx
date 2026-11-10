@@ -1,4 +1,5 @@
 import { SummationTable } from "components";
+import { useState } from "react";
 import { MockedFunction } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -23,7 +24,7 @@ mockedUseStore.mockImplementation(
   }
 );
 
-const id = "mock-summation-table-id";
+const id = "mock_summationTableId";
 
 const mockedSummationTableElement: SummationTableTemplate = {
   id,
@@ -32,31 +33,25 @@ const mockedSummationTableElement: SummationTableTemplate = {
   required: true,
   rows: [
     {
-      id: `${id}-textbox`,
+      id: `${id}_textboxId`,
       header: "Textbox",
       type: ElementType.Textbox,
     },
     {
-      id: `${id}-number-field`,
+      id: `${id}_numberFieldId`,
       header: "NumberField",
       type: ElementType.NumberField,
     },
     {
-      id: `${id}-number-field-with-mask`,
+      id: `${id}_numberFieldWithMaskId`,
       header: "NumberField Mask",
       type: ElementType.NumberField,
       mask: MaskType.CommaSeparated,
     },
   ],
   answer: {
-    rows: [[{ id: `${id}-textbox`, value: "mock text" }]],
-    total: [
-      [
-        { id: `${id}-textbox`, value: "Total", preset: true, readonly: true },
-        { id: `${id}-number-field`, value: 0, readonly: true },
-        { id: `${id}-number-field-with-mask`, value: 0, readonly: true },
-      ],
-    ],
+    rows: [[{ id: `${id}_textboxId`, value: "mock text" }]],
+    total: [],
   },
 };
 
@@ -67,7 +62,12 @@ const SummationTableWrapper = ({
 }: {
   template: SummationTableTemplate;
 }) => {
-  return <SummationTable element={template} updateElement={updateSpy} />;
+  const [element, setElement] = useState(template);
+  const onChange = (updatedElement: Partial<typeof element>) => {
+    updateSpy(updatedElement);
+    setElement({ ...element, ...updatedElement });
+  };
+  return <SummationTable element={element} updateElement={onChange} />;
 };
 
 describe("<SummationTable />", () => {
@@ -97,8 +97,8 @@ describe("<SummationTable />", () => {
     await userEvent.clear(textbox);
     expect(updateSpy).toHaveBeenCalledWith({
       answer: {
-        rows: [[{ id: `${id}-textbox`, value: "" }]],
-        total: mockedSummationTableElement.answer?.total,
+        rows: [[{ id: `${id}_textboxId`, value: "" }]],
+        total: [],
       },
     });
 
@@ -111,11 +111,11 @@ describe("<SummationTable />", () => {
       answer: {
         rows: [
           [
-            { id: `${id}-textbox`, value: "" },
-            { id: `${id}-number-field`, value: 123 },
+            { id: `${id}_textboxId`, value: "" },
+            { id: `${id}_numberFieldId`, value: 123 },
           ],
         ],
-        total: mockedSummationTableElement.answer?.total,
+        total: [[{ id: `${id}_numberFieldId`, value: 123, readonly: true }]],
       },
     });
 
@@ -131,12 +131,21 @@ describe("<SummationTable />", () => {
       answer: {
         rows: [
           [
-            { id: `${id}-textbox`, value: "" },
-            { id: `${id}-number-field`, value: 123 },
-            { id: `${id}-number-field-with-mask`, value: 12345 },
+            { id: `${id}_textboxId`, value: "" },
+            { id: `${id}_numberFieldId`, value: 123 },
+            { id: `${id}_numberFieldWithMaskId`, value: 12345 },
           ],
         ],
-        total: mockedSummationTableElement.answer?.total,
+        total: [
+          [
+            { id: `${id}_numberFieldId`, value: 123, readonly: true },
+            {
+              id: `${id}_numberFieldWithMaskId`,
+              value: 12345,
+              readonly: true,
+            },
+          ],
+        ],
       },
     });
     expect(
@@ -190,6 +199,57 @@ describe("<SummationTable />", () => {
       });
       expect(footField).toBeVisible();
     });
+  });
+
+  test("Resident Disposition SummationTable should update total", async () => {
+    const { rows, answer } = getResidentDispositionPresetRowsAndAnswer({ id });
+    const mockedResidentDispositionSummationTableElement = {
+      ...mockedSummationTableElement,
+      rows,
+      answer,
+    };
+    render(
+      <SummationTableWrapper
+        template={mockedResidentDispositionSummationTableElement}
+      />
+    );
+    const rowGroups = screen.getAllByRole("rowgroup");
+    const [_, tbody, tfoot] = rowGroups;
+
+    // Number entry should update the total
+    const numberField = within(tbody).getByRole("textbox", {
+      name: "Discharged to community # of residents",
+    });
+    await userEvent.type(numberField, "12345");
+    const total = within(tfoot).getByRole("cell", {
+      name: "12,345",
+    });
+    expect(total).toBeVisible();
+
+    // Invalid number should not update the total
+    const numberField2 = within(tbody).getByRole("textbox", {
+      name: "Discharged to Medicaid home and community-based services waiver # of residents",
+    });
+    await userEvent.type(numberField2, "-1");
+    const updatedTotal = within(tfoot).getByRole("cell", {
+      name: "12,345",
+    });
+    expect(
+      within(numberField2.closest("td") as HTMLElement).getByText(
+        "Response must be a valid number"
+      )
+    ).toBeVisible();
+    expect(updatedTotal).toBeVisible();
+
+    // Second number should update the total
+    const numberField3 = within(tbody).getByRole("textbox", {
+      name: "Discharged to an institution for mental diseases (IMD) or inpatient psychiatric facility # of residents",
+    });
+    await userEvent.type(numberField3, "55555");
+    const finalTotal = within(tfoot).getByRole("cell", {
+      name: "67,900",
+    });
+    expect(finalTotal).toBeVisible();
   });
 
   testA11y(<SummationTableWrapper template={mockedSummationTableElement} />);

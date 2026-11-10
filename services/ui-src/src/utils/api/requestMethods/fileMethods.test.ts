@@ -18,7 +18,9 @@ vi.mock("../apiLib", () => ({
   },
 }));
 
-const mockPng = new File(["0xMockPngData"], "bar.png", { type: "image/png" });
+const mockPng = new File(["0xMockPngData"], "mock-file-id.png", {
+  type: "image/png",
+});
 vi.spyOn(console, "log").mockImplementation(vi.fn()); // silence logs in test
 
 let originalFetch = window.fetch;
@@ -40,7 +42,7 @@ describe("Test fileApi functions", () => {
     const result = await recordFileInDatabaseAndGetUploadUrl(
       ReportType.PASRR,
       "PA",
-      "mock-id",
+      "mockKsuId_mock-file-id.pdf",
       mockPng
     );
     expect(result).toEqual({ presignedUploadUrl: "https://mock.url" });
@@ -52,14 +54,24 @@ describe("Test fileApi functions", () => {
   });
   test("getFileDownloadUrl", async () => {
     (apiLib.get as Mock).mockReturnValue({ psurl: "mock.s3/url" });
-    const result = await getFileDownloadUrl("PASRR", "PA", "mock-id", "2025");
+    const result = await getFileDownloadUrl(
+      "PASRR",
+      "PA",
+      "mock-report-id",
+      "2025"
+    );
     expect(result).toBe("mock.s3/url");
   });
   test("deleteUploadedFile", async () => {
     (apiLib.del as Mock).mockReturnValue(Promise.resolve());
-    await deleteUploadedFile("PASRR", "PA", "mock-id", "mock-file-id");
+    await deleteUploadedFile(
+      "PASRR",
+      "PA",
+      "mock-report-id",
+      "mockKsuId_mock-file-id.pdf"
+    );
     expect(apiLib.del as Mock).toHaveBeenCalledWith(
-      "/reports/PASRR/PA/mock-id/files/mock-file-id",
+      "/reports/PASRR/PA/mock-report-id/files/mockKsuId_mock-file-id.pdf",
       {
         headers: { "x-api-key": undefined },
       }
@@ -76,7 +88,7 @@ describe("Test fileApi functions", () => {
       report: {
         reportType: ReportType.PASRR,
         state: "PA" as StateAbbr,
-        id: "mock-id",
+        id: "mock-report-id",
       },
     };
     const result = await getZipPresignedUrl(requestBody);

@@ -208,8 +208,8 @@ export const DevReportTools = () => {
   return (
     <>
       <Text fontWeight="bold">{currentPage?.title} Tools</Text>
-      {optionalPages?.includes(currentPage?.id) ? (
-        <Text>No actions avaliable for this page.</Text>
+      {currentPage?.id && optionalPages?.includes(currentPage.id) ? (
+        <Text>No actions available for this page.</Text>
       ) : (
         renderById(currentPage?.id ?? "")
       )}

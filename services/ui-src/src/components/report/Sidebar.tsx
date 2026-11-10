@@ -1,16 +1,16 @@
 import { Box, Button, Heading, Flex, Image, Link } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router";
-import { useStore } from "utils";
+import { useStore, flattenPageIds } from "utils";
 import arrowDownIcon from "assets/icons/arrows/icon_arrow_down_gray.svg";
 import arrowUpIcon from "assets/icons/arrows/icon_arrow_up_gray.svg";
 import { ReactNode, useState } from "react";
 import { assertExhaustive } from "types";
 import { isReportType, Report, ReportType } from "@pasrr/shared";
 
-const navItem = (title: string, index: number) => {
+const navItem = (title: string = "", index: number) => {
   if (index <= 0) return title;
   return (
-    <Box paddingLeft="spacer2" key={`${title}.${index}`}>
+    <Box as="span" paddingLeft="spacer2" key={`${title}.${index}`}>
       {navItem(title, index - 1)}
     </Box>
   );
@@ -52,50 +52,76 @@ export const Sidebar = () => {
 
   const navSection = (section: number, index: number = 0): ReactNode => {
     const page = report.pages[section];
-    const childSections = page.childPageIds?.map((child) => pageMap.get(child));
-    const hasChildSections = childSections && childSections.length > 0;
+    const childSections =
+      page.childPageIds
+        ?.map((child) => pageMap.get(child))
+        .filter(
+          (childIndex): childIndex is number => childIndex !== undefined
+        ) || [];
+    const hasChildSections = childSections.length > 0;
 
     const isExpanded =
-      toggleList[page.id] || !!page.childPageIds?.includes(currentPageId!);
+      toggleList[page.id] ||
+      flattenPageIds(report, pageMap, page.childPageIds ?? []).includes(
+        currentPageId!
+      );
+
+    const rowContent = (
+      <Flex as="span" justifyContent="space-between" alignItems="flex-start">
+        {" "}
+        <Flex as="span" width="100%" paddingY="spacer1">
+          {" "}
+          {navItem(page.title!, index)}{" "}
+        </Flex>{" "}
+        {hasChildSections && (
+          <Flex
+            as="span"
+            height="var(--chakra-sizes-10)"
+            flexShrink="0"
+            marginLeft="spacer2"
+            paddingRight="spacer2"
+            alignItems="center"
+            onClick={() => setToggle(page.id)}
+          >
+            {" "}
+            <Image
+              src={isExpanded ? arrowUpIcon : arrowDownIcon}
+              alt={isExpanded ? "Collapse subitems" : "Expand subitems"}
+            />{" "}
+          </Flex>
+        )}{" "}
+      </Flex>
+    );
 
     return (
       <Box key={page.id} inert={!sidebarOpen}>
-        <Link
-          variant={"sidebar"}
-          className={page.id === currentPageId ? "selected" : ""}
-          href={`/report/${reportType}/${state}/${reportId}/${page.id}`}
-          height="auto"
-          minHeight="var(--chakra-sizes-10)"
-          onClick={(e) => {
-            e.preventDefault();
-            onNavSelect(page.id);
-          }}
-        >
-          <Flex justifyContent="space-between" alignItems="flex-start">
-            <Flex width="100%" paddingY="spacer1">
-              {navItem(page.title!, index)}
-            </Flex>
-            {hasChildSections && (
-              <Box
-                height="var(--chakra-sizes-10)"
-                flexShrink="0"
-                marginLeft="spacer2"
-                paddingRight="spacer2"
-                display="flex"
-                alignItems="center"
-                onClick={() => setToggle(page.id)}
-              >
-                <Image
-                  src={isExpanded ? arrowUpIcon : arrowDownIcon}
-                  alt={isExpanded ? "Collapse subitems" : "Expand subitems"}
-                />
-              </Box>
-            )}
-          </Flex>
-        </Link>
+        {hasChildSections ? (
+          <Link
+            as="button"
+            variant="sidebar"
+            aria-expanded={Boolean(toggleList[page.id])}
+            onClick={() => setToggle(page.id)}
+          >
+            {rowContent}
+          </Link>
+        ) : (
+          <Link
+            variant="sidebar"
+            className={page.id === currentPageId ? "selected" : ""}
+            href={`/report/${reportType}/${state}/${reportId}/${page.id}`}
+            height="auto"
+            minHeight="var(--chakra-sizes-10)"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavSelect(page.id);
+            }}
+          >
+            {rowContent}
+          </Link>
+        )}
         {hasChildSections &&
           isExpanded &&
-          childSections.map((sec) => navSection(sec!, index + 1))}
+          childSections.map((section) => navSection(section, index + 1))}
       </Box>
     );
   };

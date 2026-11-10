@@ -1,11 +1,86 @@
 import { render, screen } from "@testing-library/react";
 import { ElementType, PageElement } from "@pasrr/shared";
-import { SubHeaderElement } from "../report/Elements";
+import { ParagraphElement, SubHeaderElement } from "../report/Elements";
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "styles/theme";
 
 describe("Elements", () => {
+  describe("<ParagraphElement />", () => {
+    const mockedParagraphElement: PageElement = {
+      id: "mock_paragraphId",
+      type: ElementType.Paragraph,
+      text: "Paragraph",
+    };
+
+    const ParagraphWrapper = ({ style }: { style?: string }) => (
+      <ChakraProvider theme={theme}>
+        <ParagraphElement
+          element={{
+            ...mockedParagraphElement,
+            style,
+          }}
+        />
+      </ChakraProvider>
+    );
+
+    test("renders default style", () => {
+      render(<ParagraphWrapper style={undefined} />);
+      const paragraph = screen.getByText("Paragraph");
+      const container = paragraph.closest(".chakra-stack");
+      expect(paragraph).toHaveStyle({
+        fontSize: "var(--chakra-fontSizes-body_md)",
+      });
+      expect(paragraph).toHaveStyle({
+        fontWeight: "var(--chakra-fontWeights-normal)",
+      });
+      expect(paragraph).toHaveStyle({ color: "var(--chakra-colors-base)" });
+      expect(container).toHaveStyle({ marginBottom: 0 });
+    });
+
+    test("renders bold style", () => {
+      render(<ParagraphWrapper style="bold" />);
+      const paragraph = screen.getByText("Paragraph");
+      expect(paragraph).toHaveStyle({
+        fontWeight: "var(--chakra-fontWeights-bold)",
+      });
+    });
+
+    test("renders hint style", () => {
+      render(<ParagraphWrapper style="hint" />);
+      const paragraph = screen.getByText("Paragraph");
+      expect(paragraph).toHaveStyle({
+        fontSize: "var(--chakra-fontSizes-body_sm)",
+      });
+      expect(paragraph).toHaveStyle({
+        color: "var(--chakra-colors-gray_dark)",
+      });
+    });
+
+    test("renders paragraph style", () => {
+      render(<ParagraphWrapper style="paragraph" />);
+      const paragraph = screen.getByText("Paragraph");
+      expect(paragraph).toHaveStyle({
+        color: "var(--chakra-colors-gray_dark)",
+      });
+    });
+
+    test("renders eyebrow style", () => {
+      render(<ParagraphWrapper style="eyebrow" />);
+      const paragraph = screen.getByText("Paragraph");
+      const container = paragraph.closest(".chakra-stack");
+      expect(paragraph).toHaveStyle({
+        fontWeight: "var(--chakra-fontWeights-bold)",
+      });
+      expect(paragraph).toHaveStyle({ color: "var(--chakra-colors-gray)" });
+      expect(container).toHaveStyle({
+        marginBottom: "calc(var(--chakra-space-spacer2) * -1)",
+      });
+    });
+  });
+
   describe("<SubHeaderElement />", () => {
     const mockedSubheaderElement: PageElement = {
-      id: "mock-subheader-id",
+      id: "mock_subHeaderId",
       type: ElementType.SubHeader,
       text: "SubHeader",
       helperText: "mock text",
