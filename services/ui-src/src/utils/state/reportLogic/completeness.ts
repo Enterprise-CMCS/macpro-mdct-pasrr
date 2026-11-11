@@ -197,7 +197,7 @@ export const elementSatisfiesRequired = (
           return rows.every((header) => {
             const value = rowMap.get(header.id);
 
-            if (isEmptyValue(value)) {
+            if (!isTotal && isEmptyValue(value)) {
               return false;
             }
 

@@ -67,7 +67,7 @@ const getElements = (showAnswers?: boolean) => {
       mock_numberFieldId: 1234,
       mock_dateId: "02/02/2026",
       mock_dropdownId: "2026",
-      mock_checkboxId: "A",
+      mock_radioId: "A",
       mock_actionTableId: [
         [
           {
@@ -229,7 +229,24 @@ const getElements = (showAnswers?: boolean) => {
           checked: false,
         },
       ],
-      ...getAnswer("mock_checkboxId"),
+    },
+    {
+      id: "mock_radioId",
+      type: ElementType.Radio,
+      required: true,
+      choices: [
+        {
+          label: "Choice 1",
+          value: "A",
+          checked: false,
+        },
+        {
+          label: "Choice 2",
+          value: "B",
+          checked: false,
+        },
+      ],
+      ...getAnswer("mock_radioId"),
     },
     {
       id: "mock_fieldGroupId",
@@ -274,12 +291,7 @@ const getElements = (showAnswers?: boolean) => {
         },
       ],
       answer: {
-        rows: [
-          [
-            { id: "mock_summationTableId_textboxId", value: "" },
-            { id: "mock_summationTableId_numberFieldId", value: "" },
-          ],
-        ],
+        rows: [[{ id: "mock_summationTableId_textboxId", value: "" }]],
         total: [
           [
             {

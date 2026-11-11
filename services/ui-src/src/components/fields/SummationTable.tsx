@@ -247,15 +247,16 @@ export const SummationTable = (
 export const SummationTableExport = (element: SummationTableTemplate) => {
   const headers = element.rows.map((row) => ({ label: row.header }));
   const buildRow = (answerRow: SummationTableRowAnswerShape) => {
-    return element.rows.map((_, index) => {
-      const cell = answerRow[index];
-      if (isEmptyValue(cell?.value))
+    return element.rows.map((header) => {
+      const cell = answerRow.find((cell) => cell.id === header.id);
+      if (!cell || isEmptyValue(cell.value)) {
         return (
           <Text as="span" color="error_darker">
             {notAnsweredText}
           </Text>
         );
-      return cell.value;
+      }
+      return cell.value.toString();
     });
   };
 
