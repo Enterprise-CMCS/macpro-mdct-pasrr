@@ -2,25 +2,9 @@ import {
   FormPageTemplate,
   PageType,
   ElementType,
-  AccordionTemplate,
+  getResidentDispositionPresetRowsAndAnswer,
 } from "@pasrr/shared";
-
-const reportingCriteriaAccordion: AccordionTemplate = {
-  type: ElementType.Accordion,
-  id: "smi_specializedServices_reportingCriteriaAccordion",
-  label: "Reporting criteria and regulations",
-  value:
-    "<p><strong>Reporting criteria</strong></p>" +
-    "<p>Include all Level II resident reviews completed during the reporting period for individuals with SMI that meet the annual reporting criteria. This includes Level II resident reviews triggered by:</p>" +
-    "<ul>" +
-    "<li>A significant change in physical or mental condition.</li>" +
-    "<li>Expiration of a PASRR 30-day exempted hospital discharge exemption.</li>" +
-    "<li>Expiration of a PASRR advance group determination stay (such as respite care).</li>" +
-    "<li>Expiration of an approved Medicaid section 1135 waiver for PASRR.</li>" +
-    "</ul>" +
-    "<p><strong>Statutory and regulatory citations</strong></p>" +
-    "<p>Section 1919(e)(7)(C)(iv) of the Act requires the state to report the number and disposition (resident status) of the nursing facility residents under Section II annually. 42 CFR § 483.132(a) specifies the settings the PASRR evaluator must assess.</p>",
-};
+import { reportingCriteriaAccordion } from "./index";
 
 export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
   id: "serious-mental-illness-specialized-services",
@@ -39,11 +23,13 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
       id: "smi_specializedServices_header",
       text: "Residents who don’t require nursing facility care, but do require specialized services",
     },
-    reportingCriteriaAccordion,
+    reportingCriteriaAccordion(
+      "smi_specializedServices_reportingCriteriaAccordion"
+    ),
     {
       type: ElementType.SubHeader,
-      id: "smi_specializedServicesRequiredSubheader",
-      text: "Resident dispositions: Specialized services only:",
+      id: "smi_specializedServices_residentDispositionsSubheader",
+      text: "Resident dispositions: Specialized services only",
       helperText:
         "<p>Report Level II resident review data for individuals with a serious mental illness (SMI) by providing the number and disposition (resident status) of residents who:</p>" +
         "<ul>" +
@@ -54,7 +40,19 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
         "<p>All fields are required unless marked optional.</p>",
     },
     {
-      id: "smi_specializedServicesMultipleReviews",
+      type: ElementType.SummationTable,
+      id: "smi_specializedServices_residentDispositionsTable",
+      caption: "Resident dispositions: Specialized services only",
+      required: true,
+      rows: getResidentDispositionPresetRowsAndAnswer({
+        id: "smi_specializedServices_residentDispositionsTable",
+      }).rows,
+      answer: getResidentDispositionPresetRowsAndAnswer({
+        id: "smi_specializedServices_residentDispositionsTable",
+      }).answer,
+    },
+    {
+      id: "smi_specializedServices_multipleReviews",
       type: ElementType.TextAreaField,
       label:
         "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain.",
@@ -64,7 +62,7 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
       fullWidth: true,
     },
     {
-      id: "smi_specializedServicesReceivedServices",
+      id: "smi_specializedServices_receivedServices",
       type: ElementType.Radio,
       label:
         "During this reporting period, did all eligible residents receive specialized services or have them arranged?",
@@ -80,6 +78,18 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
         {
           label: "No",
           value: "No",
+          checkedChildren: [
+            {
+              id: "smi_specializedServices_howManyResidentsDidNotReceiveServices",
+              type: ElementType.TextAreaField,
+              label:
+                "How many residents did not receive services, and why were services not arranged or provided?",
+              helperText:
+                "Do not include protected health information (PHI) or personally identifiable information (PII).",
+              required: true,
+              skipOptionalTag: true,
+            },
+          ],
         },
       ],
     },

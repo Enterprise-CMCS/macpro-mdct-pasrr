@@ -2,6 +2,7 @@ import {
   ElementType,
   FormPageTemplate,
   getPostalAddressElements,
+  getResidentDispositionPresetRowsAndAnswer,
   PageType,
 } from "@pasrr/shared";
 import { mockDropdown, mockTextboxOptional } from "utils/testing/mockForm";
@@ -234,6 +235,75 @@ export const postalAddressFieldGroupSection: FormPageTemplate = {
       elements: getPostalAddressElements({
         id: "mock_postalAddressFieldGroupId",
       }),
+    },
+  ],
+};
+
+export const summationTableSection: FormPageTemplate = {
+  id: "mock-page-id",
+  title: "Component Inventory",
+  type: PageType.Standard,
+  elements: [
+    {
+      type: ElementType.SummationTable,
+      id: "mock_summationTableId",
+      caption: "Summation Table",
+      required: true,
+      rows: [
+        {
+          id: "mock_summationTableId_textboxId",
+          header: "Textbox",
+          type: ElementType.Textbox,
+        },
+        {
+          id: "mock_summationTableId_numberFieldId",
+          header: "NumberField",
+          type: ElementType.NumberField,
+        },
+      ],
+      answer: {
+        rows: [
+          [
+            { id: "mock_summationTableId_textboxId", value: "" },
+            { id: "mock_summationTableId_numberFieldId", value: "" },
+          ],
+        ],
+        total: [
+          [
+            {
+              id: "mock_summationTableId_textboxId",
+              value: "Total",
+              preset: true,
+              readonly: true,
+            },
+            {
+              id: "mock_summationTableId_numberFieldId",
+              value: 0,
+              readonly: true,
+            },
+          ],
+        ],
+      },
+    },
+  ],
+};
+
+export const residentDispositionSummationTableSection: FormPageTemplate = {
+  id: "mock-page-id",
+  title: "Component Inventory",
+  type: PageType.Standard,
+  elements: [
+    {
+      type: ElementType.SummationTable,
+      id: "mock_residentDispositionSummationTableId",
+      caption: "Resident Disposition Summation Table",
+      required: true,
+      rows: getResidentDispositionPresetRowsAndAnswer({
+        id: "mock_residentDispositionSummationTableId",
+      }).rows,
+      answer: getResidentDispositionPresetRowsAndAnswer({
+        id: "mock_residentDispositionSummationTableId",
+      }).answer,
     },
   ],
 };

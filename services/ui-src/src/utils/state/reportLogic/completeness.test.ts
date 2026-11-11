@@ -8,6 +8,7 @@ import {
   PageStatus,
   RadioTemplate,
   Report,
+  SummationTableTemplate,
   TextboxTemplate,
 } from "@pasrr/shared";
 import {
@@ -494,5 +495,111 @@ describe("elementSatisfiesRequired", () => {
       elementSatisfiesRequired(invalidZipCode, [invalidZipCode])
     ).toBeFalsy();
     expect(elementSatisfiesRequired(validZipCode, [validZipCode])).toBeTruthy();
+  });
+
+  describe("SummationTable completeness", () => {
+    const element = {
+      type: ElementType.SummationTable,
+      id: "mock_summationTableId",
+      caption: "Summation Table",
+      required: true,
+      rows: [
+        {
+          id: "mock_summationTableId_textboxId",
+          header: "Textbox",
+          type: ElementType.Textbox,
+        },
+        {
+          id: "mock_summationTableId_numberFieldId",
+          header: "NumberField",
+          type: ElementType.NumberField,
+        },
+      ],
+      answer: {
+        rows: [],
+        total: [],
+      },
+    } as SummationTableTemplate;
+    const missingTotal = {
+      ...element,
+      answer: {
+        rows: [
+          [
+            { id: "mock_summationTableId_textboxId", value: "mock text" },
+            { id: "mock_summationTableId_numberFieldId", value: 12345 },
+          ],
+        ],
+        total: [],
+      },
+    };
+    const incorrectTotal = {
+      ...element,
+      answer: {
+        rows: missingTotal.answer.rows,
+        total: [
+          [
+            {
+              id: "mock_summationTableId_textboxId",
+              value: "Total",
+              preset: true,
+              readonly: true,
+            },
+            {
+              id: "mock_summationTableId_numberFieldId",
+              value: 0,
+              readonly: true,
+            },
+          ],
+        ],
+      },
+    };
+    const missingValues = {
+      ...element,
+      answer: {
+        rows: [[{ id: "mock_summationTableId_textboxId", value: "mock text" }]],
+        total: incorrectTotal.answer.total,
+      },
+    };
+    const validSummationTable = {
+      ...element,
+      answer: {
+        rows: [
+          [
+            { id: "mock_summationTableId_textboxId", value: "mock text" },
+            { id: "mock_summationTableId_numberFieldId", value: 12345 },
+          ],
+          [
+            { id: "mock_summationTableId_textboxId", value: "mock text" },
+            { id: "mock_summationTableId_numberFieldId", value: 12345 },
+          ],
+        ],
+        total: [
+          [
+            {
+              id: "mock_summationTableId_textboxId",
+              value: "Total",
+              preset: true,
+              readonly: true,
+            },
+            {
+              id: "mock_summationTableId_numberFieldId",
+              value: 24690,
+              readonly: true,
+            },
+          ],
+        ],
+      },
+    };
+
+    test.each([[element, missingTotal, incorrectTotal, missingValues]])(
+      "SummationTable is incomplete",
+      (t) => {
+        expect(elementSatisfiesRequired(t, [t])).toBeFalsy();
+      }
+    );
+
+    test.each([[validSummationTable]])("SummationTable is complete", (t) => {
+      expect(elementSatisfiesRequired(t, [t])).toBeTruthy();
+    });
   });
 });

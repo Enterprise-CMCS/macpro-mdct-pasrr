@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Stack, Text } from "@chakra-ui/react";
 import { PageElementProps } from "components/report/Elements";
 import { JSX, useState } from "react";
 import {
@@ -14,10 +14,12 @@ import {
   getErrorMessage,
 } from "utils/state/reportLogic/tableBuilder";
 import {
+  isEmptyValue,
   isWholePositiveNumber,
   unmaskByType,
 } from "utils/validation/inputValidation";
 import { ResponsiveTable } from "components/tables/ResponsiveTable";
+import { notAnsweredText } from "../../constants";
 
 export const SummationTable = (
   props: PageElementProps<SummationTableTemplate>
@@ -242,7 +244,33 @@ export const SummationTable = (
   );
 };
 
-// TODO: SummationTable export view
-export const SummationTableExport = (_element: SummationTableTemplate) => {
-  return <></>;
+export const SummationTableExport = (element: SummationTableTemplate) => {
+  const headers = element.rows.map((row) => ({ label: row.header }));
+  const buildRow = (answerRow: SummationTableRowAnswerShape) => {
+    return element.rows.map((_, index) => {
+      const cell = answerRow[index];
+      if (isEmptyValue(cell?.value))
+        return (
+          <Text as="span" color="error_darker">
+            {notAnsweredText}
+          </Text>
+        );
+      return cell.value;
+    });
+  };
+
+  const footers = element.answer?.total?.map(buildRow) || [];
+  const rows = element.answer?.rows.map(buildRow) || [];
+
+  return (
+    <Stack key={element.id}>
+      {ResponsiveTable({ footers, headers, rows, variant: "pdf" })}
+    </Stack>
+  );
 };
+
+export const sumById = (rows: SummationTableRowAnswerShape[], id: string) =>
+  rows.reduce((sum, row) => {
+    const cell = row.find((t) => t.id === id);
+    return sum + (isWholePositiveNumber(cell?.value) ? Number(cell?.value) : 0);
+  }, 0);

@@ -7,19 +7,23 @@ import {
 } from "@pasrr/shared";
 
 // accordions
-const residentReviewsAccordion: AccordionTemplate = {
-  type: ElementType.Accordion,
-  id: "idrc_residentReviewsAccordion",
-  label: "Which resident reviews should I include?",
-  value:
-    "<p>Include all Level II resident reviews completed during the reporting period for individuals with ID/RC that meet the annual reporting criteria. This includes Level II resident reviews triggered by:</p>" +
-    "<ul>" +
-    "<li>A significant change in condition.</li>" +
-    "<li>Expiration of a PASRR 30-day exempted hospital discharge exemption.</li>" +
-    "<li>Expiration of an PASRR advance group determination stay (such as respite care).</li>" +
-    "<li>Expiration of an approved Medicaid section 1135 waiver for PASRR.</li>" +
-    "</ul>",
-};
+const reportingCriteriaAccordion = (id: string) =>
+  ({
+    type: ElementType.Accordion,
+    id,
+    label: "Reporting criteria and regulations",
+    value:
+      "<p><strong>Reporting criteria</strong></p>" +
+      "<p>Include all Level II resident reviews completed during the reporting period for individuals with ID/RC that meet the annual reporting criteria. This includes Level II resident reviews triggered by:</p>" +
+      "<ul>" +
+      "<li>A significant change in physical or mental condition.</li>" +
+      "<li>Expiration of a PASRR 30-day exempted hospital discharge exemption.</li>" +
+      "<li>Expiration of an PASRR advance group determination stay (such as respite care).</li>" +
+      "<li>Expiration of an approved Medicaid section 1135 waiver for PASRR.</li>" +
+      "</ul>" +
+      "<p><strong>Statutory and regulatory citations</strong></p>" +
+      "<p>Section 1919(e)(7)(C)(iv) of the Act requires the state to report the number and disposition (resident status) of the nursing facility residents under Section II annually. 42 CFR § 483.132(a) specifies the settings the PASRR evaluator must assess.</p>",
+  }) as AccordionTemplate;
 
 export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
   id: "intellectual-disability-and-related-conditions",
@@ -37,7 +41,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
       id: "idrc_information",
       text: "Section 1919(e)(7)(C)(iv) of the Act requires the state to report the number and disposition (resident status) of the nursing facility residents under Section II annually. 42 CFR § 483.132(a) specifies the settings the PASRR evaluator must assess. Report Level II resident review data for individuals with an intellectual disability or related condition (ID/RC). All data should reflect the number and disposition as of December 31 of the reporting year.",
     },
-    residentReviewsAccordion,
+    reportingCriteriaAccordion("idrc_reportingCriteriaAccordion"),
     {
       type: ElementType.SubHeader,
       id: "idrc_specializedServicesRequiredSubheader",
@@ -72,6 +76,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
         "Do not include personally identifiable information (PII) or protected health information (PHI).",
       required: true,
       skipOptionalTag: true,
+      fullWidth: true,
     },
     {
       id: "idrc_didResidentsReceiveSpecializedServices",
@@ -79,6 +84,7 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
       label:
         "During this reporting period, did all eligible residents receive specialized services or have them arranged by the state?",
       required: true,
+      fullWidth: true,
       helperText:
         "Select “No” if any individual in the table above did not have specialized services arranged or provided by the state.",
       choices: [

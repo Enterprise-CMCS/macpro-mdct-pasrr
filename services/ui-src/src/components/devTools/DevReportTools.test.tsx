@@ -64,9 +64,10 @@ const getElements = (showAnswers?: boolean) => {
     const answers: { [key: string]: any } = {
       mock_textboxId: "mock text input",
       mock_textAreaFieldId: "mock text area field",
-      mock_numberFieldId: "1234",
+      mock_numberFieldId: 1234,
       mock_dateId: "02/02/2026",
       mock_dropdownId: "2026",
+      mock_checkboxId: "A",
       mock_actionTableId: [
         [
           {
@@ -75,7 +76,7 @@ const getElements = (showAnswers?: boolean) => {
           },
           {
             id: "mock_actionTableId_numberFieldId",
-            value: "1234",
+            value: 1234,
           },
         ],
       ],
@@ -96,6 +97,35 @@ const getElements = (showAnswers?: boolean) => {
       mock_fieldGroupId_email: "mock@email.com",
       mock_fieldGroupId_phone: "555-555-5555",
       mock_fieldGroupId_zipCode: "55555",
+      mock_summationTableId: {
+        rows: [
+          [
+            {
+              id: "mock_summationTableId_textboxId",
+              value: "mock text input",
+            },
+            {
+              id: "mock_summationTableId_numberFieldId",
+              value: 1234,
+            },
+          ],
+        ],
+        total: [
+          [
+            {
+              id: "mock_summationTableId_textboxId",
+              value: "Total",
+              preset: true,
+              readonly: true,
+            },
+            {
+              id: "mock_summationTableId_numberFieldId",
+              value: 1234,
+              readonly: true,
+            },
+          ],
+        ],
+      },
     };
 
     return { answer: answers[id] };
@@ -199,6 +229,7 @@ const getElements = (showAnswers?: boolean) => {
           checked: false,
         },
       ],
+      ...getAnswer("mock_checkboxId"),
     },
     {
       id: "mock_fieldGroupId",
@@ -225,6 +256,42 @@ const getElements = (showAnswers?: boolean) => {
         },
       ],
       ...getAnswer("mock_fieldGroupId"),
+    },
+    {
+      id: "mock_summationTableId",
+      type: ElementType.SummationTable,
+      required: true,
+      rows: [
+        {
+          id: "mock_summationTableId_textboxId",
+          header: "Textbox",
+          type: ElementType.Textbox,
+        },
+        {
+          id: "mock_summationTableId_numberFieldId",
+          header: "NumberField",
+          type: ElementType.NumberField,
+        },
+      ],
+      answer: {
+        rows: [
+          [
+            { id: "mock_summationTableId_textboxId", value: "" },
+            { id: "mock_summationTableId_numberFieldId", value: "" },
+          ],
+        ],
+        total: [
+          [
+            {
+              id: "mock_summationTableId_textboxId",
+              value: "Total",
+              preset: true,
+              readonly: true,
+            },
+          ],
+        ],
+      },
+      ...getAnswer("mock_summationTableId"),
     },
   ];
 };
