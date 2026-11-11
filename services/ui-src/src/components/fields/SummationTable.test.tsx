@@ -8,7 +8,7 @@ import { useStore } from "utils";
 import { testA11y } from "utils/testing/commonTests";
 import {
   ElementType,
-  getResidentDispositionPresetRowsAndAnswer,
+  getResidentDispositionsPresetRowsAndAnswer,
   MaskType,
   SummationTableTemplate,
 } from "@pasrr/shared";
@@ -153,16 +153,16 @@ describe("<SummationTable />", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("Resident Disposition SummationTable is visible", () => {
-    const { rows, answer } = getResidentDispositionPresetRowsAndAnswer({ id });
-    const mockedResidentDispositionSummationTableElement = {
+  test("Resident Dispositions SummationTable is visible", () => {
+    const { rows, answer } = getResidentDispositionsPresetRowsAndAnswer({ id });
+    const mockedResidentDispositionsSummationTableElement = {
       ...mockedSummationTableElement,
       rows,
       answer,
     };
     render(
       <SummationTableWrapper
-        template={mockedResidentDispositionSummationTableElement}
+        template={mockedResidentDispositionsSummationTableElement}
       />
     );
 
@@ -201,16 +201,16 @@ describe("<SummationTable />", () => {
     });
   });
 
-  test("Resident Disposition SummationTable should update total", async () => {
-    const { rows, answer } = getResidentDispositionPresetRowsAndAnswer({ id });
-    const mockedResidentDispositionSummationTableElement = {
+  test("Resident Dispositions SummationTable should update total", async () => {
+    const { rows, answer } = getResidentDispositionsPresetRowsAndAnswer({ id });
+    const mockedResidentDispositionsSummationTableElement = {
       ...mockedSummationTableElement,
       rows,
       answer,
     };
     render(
       <SummationTableWrapper
-        template={mockedResidentDispositionSummationTableElement}
+        template={mockedResidentDispositionsSummationTableElement}
       />
     );
     const rowGroups = screen.getAllByRole("rowgroup");

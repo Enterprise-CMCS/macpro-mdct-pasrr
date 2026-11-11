@@ -2,7 +2,7 @@ import {
   FormPageTemplate,
   PageType,
   ElementType,
-  getResidentDispositionPresetRowsAndAnswer,
+  getResidentDispositionsPresetRowsAndAnswer,
 } from "@pasrr/shared";
 import { reportingCriteriaAccordion } from "./index";
 
@@ -44,10 +44,10 @@ export const seriousMentalIllnessNoNursingFacilityCare: FormPageTemplate = {
       id: "smi_noNursingFacilityCare_residentDispositionsTable",
       caption: "Resident dispositions: No nursing facility care or services",
       required: true,
-      rows: getResidentDispositionPresetRowsAndAnswer({
+      rows: getResidentDispositionsPresetRowsAndAnswer({
         id: "smi_noNursingFacilityCare_residentDispositionsTable",
       }).rows,
-      answer: getResidentDispositionPresetRowsAndAnswer({
+      answer: getResidentDispositionsPresetRowsAndAnswer({
         id: "smi_noNursingFacilityCare_residentDispositionsTable",
       }).answer,
     },

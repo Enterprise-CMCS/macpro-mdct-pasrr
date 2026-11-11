@@ -29,7 +29,7 @@ import {
   AlertTypes,
   ElementType,
   getPostalAddressElements,
-  getResidentDispositionPresetRowsAndAnswer,
+  getResidentDispositionsPresetRowsAndAnswer,
   HeaderIcon,
   NumberFieldTemplate,
   PageElement,
@@ -48,7 +48,7 @@ import {
   fieldGroupSection,
   postalAddressFieldGroupSection,
   summationTableSection,
-  residentDispositionSummationTableSection,
+  residentDispositionsSummationTableSection,
 } from "./pdfElementSectionHelpers";
 import { formatMonthDayYear } from "utils/other/time";
 import { SubmissionParagraph } from "components/report/SubmissionParagraph";
@@ -618,14 +618,14 @@ export const elementObject: {
       <SummationTable
         element={{
           type: ElementType.SummationTable,
-          id: "mock_residentDispositionSummationTableId",
-          caption: "Resident Disposition Summation Table",
+          id: "mock_residentDispositionsSummationTableId",
+          caption: "Resident Dispositions Summation Table",
           required: true,
-          rows: getResidentDispositionPresetRowsAndAnswer({
-            id: "mock_residentDispositionSummationTableId",
+          rows: getResidentDispositionsPresetRowsAndAnswer({
+            id: "mock_residentDispositionsSummationTableId",
           }).rows,
-          answer: getResidentDispositionPresetRowsAndAnswer({
-            id: "mock_residentDispositionSummationTableId",
+          answer: getResidentDispositionsPresetRowsAndAnswer({
+            id: "mock_residentDispositionsSummationTableId",
           }).answer,
         }}
         updateElement={logNewElement}
@@ -634,7 +634,7 @@ export const elementObject: {
     pdfVariants: [
       <ExportedReportWrapper section={summationTableSection} />,
       <ExportedReportWrapper
-        section={residentDispositionSummationTableSection}
+        section={residentDispositionsSummationTableSection}
       />,
     ],
   },

@@ -2,7 +2,7 @@ import {
   FormPageTemplate,
   PageType,
   ElementType,
-  getResidentDispositionPresetRowsAndAnswer,
+  getResidentDispositionsPresetRowsAndAnswer,
 } from "@pasrr/shared";
 import { reportingCriteriaAccordion } from "./index";
 
@@ -44,10 +44,10 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
       id: "smi_specializedServices_residentDispositionsTable",
       caption: "Resident dispositions: Specialized services only",
       required: true,
-      rows: getResidentDispositionPresetRowsAndAnswer({
+      rows: getResidentDispositionsPresetRowsAndAnswer({
         id: "smi_specializedServices_residentDispositionsTable",
       }).rows,
-      answer: getResidentDispositionPresetRowsAndAnswer({
+      answer: getResidentDispositionsPresetRowsAndAnswer({
         id: "smi_specializedServices_residentDispositionsTable",
       }).answer,
     },

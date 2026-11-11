@@ -2,7 +2,7 @@ import {
   ElementType,
   FormPageTemplate,
   getPostalAddressElements,
-  getResidentDispositionPresetRowsAndAnswer,
+  getResidentDispositionsPresetRowsAndAnswer,
   PageType,
 } from "@pasrr/shared";
 import { mockDropdown, mockTextboxOptional } from "utils/testing/mockForm";
@@ -288,21 +288,21 @@ export const summationTableSection: FormPageTemplate = {
   ],
 };
 
-export const residentDispositionSummationTableSection: FormPageTemplate = {
+export const residentDispositionsSummationTableSection: FormPageTemplate = {
   id: "mock-page-id",
   title: "Component Inventory",
   type: PageType.Standard,
   elements: [
     {
       type: ElementType.SummationTable,
-      id: "mock_residentDispositionSummationTableId",
-      caption: "Resident Disposition Summation Table",
+      id: "mock_residentDispositionsSummationTableId",
+      caption: "Resident Dispositions Summation Table",
       required: true,
-      rows: getResidentDispositionPresetRowsAndAnswer({
-        id: "mock_residentDispositionSummationTableId",
+      rows: getResidentDispositionsPresetRowsAndAnswer({
+        id: "mock_residentDispositionsSummationTableId",
       }).rows,
-      answer: getResidentDispositionPresetRowsAndAnswer({
-        id: "mock_residentDispositionSummationTableId",
+      answer: getResidentDispositionsPresetRowsAndAnswer({
+        id: "mock_residentDispositionsSummationTableId",
       }).answer,
     },
   ],

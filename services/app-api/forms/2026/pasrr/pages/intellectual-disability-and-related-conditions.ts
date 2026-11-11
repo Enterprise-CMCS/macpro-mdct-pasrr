@@ -3,7 +3,7 @@ import {
   PageType,
   ElementType,
   AccordionTemplate,
-  getResidentDispositionPresetRowsAndAnswer,
+  getResidentDispositionsPresetRowsAndAnswer,
 } from "@pasrr/shared";
 
 // accordions
@@ -60,10 +60,10 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
       id: "idrc_specializedServicesRequiredTable",
       caption: "Resident dispositions: Specialized services only",
       required: true,
-      rows: getResidentDispositionPresetRowsAndAnswer({
+      rows: getResidentDispositionsPresetRowsAndAnswer({
         id: "idrc_specializedServicesRequiredTable",
       }).rows,
-      answer: getResidentDispositionPresetRowsAndAnswer({
+      answer: getResidentDispositionsPresetRowsAndAnswer({
         id: "idrc_specializedServicesRequiredTable",
       }).answer,
     },
@@ -128,10 +128,10 @@ export const intellectualDisabilityAndRelatedConditions: FormPageTemplate = {
       id: "idrc_specializedServicesNotRequiredTable",
       caption: "Resident dispositions: No nursing facility care or services",
       required: true,
-      rows: getResidentDispositionPresetRowsAndAnswer({
+      rows: getResidentDispositionsPresetRowsAndAnswer({
         id: "idrc_specializedServicesNotRequiredTable",
       }).rows,
-      answer: getResidentDispositionPresetRowsAndAnswer({
+      answer: getResidentDispositionsPresetRowsAndAnswer({
         id: "idrc_specializedServicesNotRequiredTable",
       }).answer,
     },
