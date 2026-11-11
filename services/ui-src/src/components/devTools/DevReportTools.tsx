@@ -1,13 +1,13 @@
 import { Button, Stack, Text } from "@chakra-ui/react";
 import {
   ActionTableTemplate,
+  CheckboxTemplate,
   DropdownTemplate,
   ElementType,
   FieldGroupTemplate,
   FormPageTemplate,
   PageElement,
   ParentPageTemplate,
-  RadioTemplate,
   SummationTableRowAnswerShape,
   SummationTableTemplate,
 } from "@pasrr/shared";
@@ -42,9 +42,8 @@ export const DevReportTools = () => {
   }) => {
     switch (type) {
       case ElementType.Checkbox:
-      case ElementType.Radio:
-        return value;
       case ElementType.Dropdown:
+      case ElementType.Radio:
         return value;
       case ElementType.NumberField:
         return 1234;
@@ -86,10 +85,10 @@ export const DevReportTools = () => {
       value = options?.[0]?.value || options?.[1]?.value || "";
     }
     if (
-      element.type === ElementType.Radio ||
-      element.type === ElementType.Checkbox
+      element.type === ElementType.Checkbox ||
+      element.type === ElementType.Radio
     ) {
-      const choices = (element as RadioTemplate).choices;
+      const choices = (element as CheckboxTemplate).choices;
       value = choices?.[0]?.value || choices?.[1]?.value || "";
     }
     return {
