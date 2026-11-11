@@ -66,6 +66,25 @@ export const DevReportTools = () => {
     }
   };
 
+  const fillOptions = (element: DropdownTemplate | RadioTemplate) => {
+    const options = "options" in element ? element.options : element.choices;
+    const chosenOption = options.find((t) => !isEmptyValue(t.value));
+    if (chosenOption?.checkedChildren) {
+      const updatedChildren = chosenOption.checkedChildren.map((child) => {
+        return {
+          ...child,
+          ...fillAnswer(child),
+        };
+      });
+      return options.map((t) =>
+        t.value === chosenOption.value
+          ? { ...t, checkedChildren: updatedChildren }
+          : t
+      );
+    }
+    return options;
+  };
+
   const fillAnswer = (element: PageElement) => {
     if (!("required" in element) || !element.required) {
       return {};
@@ -86,7 +105,8 @@ export const DevReportTools = () => {
       const options =
         (element as DropdownTemplate).options ||
         (element as RadioTemplate).choices;
-      value = options?.[0]?.value || options?.[1]?.value || "";
+      const chosenOption = options.find((t) => !isEmptyValue(t.value));
+      value = chosenOption?.value || "";
     }
     return {
       answer:
@@ -197,6 +217,20 @@ export const DevReportTools = () => {
 
         case ElementType.SummationTable:
           return { ...element, answer: fillSummationTable(element) };
+
+        case ElementType.Dropdown:
+          return {
+            ...element,
+            options: fillOptions(element),
+            ...fillAnswer(element),
+          };
+
+        case ElementType.Radio:
+          return {
+            ...element,
+            choices: fillOptions(element),
+            ...fillAnswer(element),
+          };
 
         default:
           return {

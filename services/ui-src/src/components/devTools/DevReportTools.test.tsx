@@ -67,7 +67,9 @@ const getElements = (showAnswers?: boolean) => {
       mock_numberFieldId: 1234,
       mock_dateId: "02/02/2026",
       mock_dropdownId: "2026",
+      mock_dropdownId_textboxId: "mock text input",
       mock_radioId: "A",
+      mock_radioId_textboxId: "mock text input",
       mock_actionTableId: [
         [
           {
@@ -203,7 +205,19 @@ const getElements = (showAnswers?: boolean) => {
       required: true,
       options: [
         dropdownEmptyOption,
-        { label: "2026", value: "2026" },
+        {
+          label: "2026",
+          value: "2026",
+          checkedChildren: [
+            {
+              id: "mock_dropdownId_textboxId",
+              type: ElementType.Textbox,
+              label: "Textbox",
+              required: true,
+              ...getAnswer("mock_dropdownId_textboxId"),
+            },
+          ],
+        },
         { label: "2027", value: "2027" },
       ],
       ...getAnswer("mock_dropdownId"),
@@ -239,6 +253,15 @@ const getElements = (showAnswers?: boolean) => {
           label: "Choice 1",
           value: "A",
           checked: false,
+          checkedChildren: [
+            {
+              id: "mock_radioId_textboxId",
+              type: ElementType.Textbox,
+              label: "Textbox",
+              required: true,
+              ...getAnswer("mock_radioId_textboxId"),
+            },
+          ],
         },
         {
           label: "Choice 2",

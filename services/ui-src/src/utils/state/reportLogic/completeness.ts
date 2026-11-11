@@ -17,6 +17,7 @@ import {
   isPhone,
   isWholePositiveNumber,
   isZipCode,
+  parseNumber,
 } from "utils/validation/inputValidation";
 
 /**
@@ -206,7 +207,9 @@ export const elementSatisfiesRequired = (
               if (!isValidNumber) return false;
 
               if (isTotal) {
-                return sumById(answerRows, header.id) === Number(value);
+                return (
+                  sumById(answerRows, header.id) === parseNumber(String(value))
+                );
               }
             }
 

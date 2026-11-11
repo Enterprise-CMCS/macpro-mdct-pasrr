@@ -265,7 +265,13 @@ export const SummationTableExport = (element: SummationTableTemplate) => {
 
   return (
     <Stack key={element.id}>
-      {ResponsiveTable({ footers, headers, rows, variant: "pdf" })}
+      {ResponsiveTable({
+        caption: element.id,
+        footers,
+        headers,
+        rows,
+        variant: "pdf",
+      })}
     </Stack>
   );
 };
