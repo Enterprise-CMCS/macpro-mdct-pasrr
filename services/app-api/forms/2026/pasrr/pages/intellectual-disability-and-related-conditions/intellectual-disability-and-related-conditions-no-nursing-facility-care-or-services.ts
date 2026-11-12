@@ -35,13 +35,13 @@ export const intellectualDisabilityAndRelatedConditionsNoNursingFacilityCareOrSe
     elements: [
       {
         type: ElementType.Paragraph,
-        id: "idrc_noNursingFacilityCare_eyebrow",
+        id: "idrc_noNursingFacilityCareEyebrow",
         style: "eyebrow",
         text: "Intellectual Disability and Related Conditions (ID/RC)",
       },
       {
         type: ElementType.Header,
-        id: "idrc_noNursingFacilityCare_header",
+        id: "idrc_noNursingFacilityCareHeader",
         text: "Residents who don’t require nursing facility care or specialized services",
       },
       reportingCriteriaAccordion,
@@ -60,55 +60,24 @@ export const intellectualDisabilityAndRelatedConditionsNoNursingFacilityCareOrSe
       },
       {
         type: ElementType.SummationTable,
-        id: "idrc_specializedServicesRequiredTable",
+        id: "idrc_noNursingFacilityCareTable",
         caption: "Resident dispositions: Specialized services only",
         required: true,
         rows: getResidentDispositionPresetRowsAndAnswer({
-          id: "idrc_specializedServicesRequiredTable",
+          id: "idrc_noNursingFacilityCareTable",
         }).rows,
         answer: getResidentDispositionPresetRowsAndAnswer({
-          id: "idrc_specializedServicesRequiredTable",
+          id: "idrc_noNursingFacilityCareTable",
         }).answer,
       },
       {
-        id: "idrc_specializedServicesMultipleReviews",
+        id: "idrc_noNursingFacilityCareMultipleReviews",
         type: ElementType.TextAreaField,
         label:
-          "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain.",
+          "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain. (optional)",
         helperText:
           "Do not include personally identifiable information (PII) or protected health information (PHI).",
         required: false,
-      },
-      {
-        id: "idrc_specializedServicesReceivedServices",
-        type: ElementType.Radio,
-        label:
-          "During this reporting period, did all eligible residents receive specialized services or have them arranged by the state?",
-        required: true,
-        helperText:
-          "Select “No” if any individual in the table above did not have specialized services arranged or provided by the state.",
-        choices: [
-          {
-            label: "Yes",
-            value: "Yes",
-          },
-          {
-            label: "No",
-            value: "No",
-            checkedChildren: [
-              {
-                id: "idrc_howManyResidentsDidNotReceiveSpecializedServices",
-                type: ElementType.Textbox,
-                label:
-                  "How many residents did not receive services, and why were services not arranged or provided by the state?",
-                helperText:
-                  "Do not include personally identifiable information (PII) or protected health information (PHI).",
-                required: true,
-                skipOptionalTag: true,
-              },
-            ],
-          },
-        ],
       },
     ],
   };
