@@ -4,7 +4,7 @@ import {
   ElementType,
   getResidentDispositionsPresetRowsAndAnswer,
 } from "@pasrr/shared";
-import { reportingCriteriaAccordion } from "./index";
+import { reportingCriteriaAccordion } from ".";
 
 export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
   id: "serious-mental-illness-specialized-services",
@@ -28,7 +28,7 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
     ),
     {
       type: ElementType.SubHeader,
-      id: "smi_specializedServices_residentDispositionsSubheader",
+      id: "smi_specializedServices_subheader",
       text: "Resident dispositions: Specialized services only",
       helperText:
         "<p>Report Level II resident review data for individuals with a serious mental illness (SMI) by providing the number and disposition (resident status) of residents who:</p>" +
@@ -41,14 +41,14 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
     },
     {
       type: ElementType.SummationTable,
-      id: "smi_specializedServices_residentDispositionsTable",
+      id: "smi_specializedServices_table",
       caption: "Resident dispositions: Specialized services only",
       required: true,
       rows: getResidentDispositionsPresetRowsAndAnswer({
-        id: "smi_specializedServices_residentDispositionsTable",
+        id: "smi_specializedServices_table",
       }).rows,
       answer: getResidentDispositionsPresetRowsAndAnswer({
-        id: "smi_specializedServices_residentDispositionsTable",
+        id: "smi_specializedServices_table",
       }).answer,
     },
     {

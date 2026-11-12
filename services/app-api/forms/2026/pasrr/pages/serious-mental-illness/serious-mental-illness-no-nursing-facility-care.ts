@@ -4,7 +4,7 @@ import {
   ElementType,
   getResidentDispositionsPresetRowsAndAnswer,
 } from "@pasrr/shared";
-import { reportingCriteriaAccordion } from "./index";
+import { reportingCriteriaAccordion } from ".";
 
 export const seriousMentalIllnessNoNursingFacilityCare: FormPageTemplate = {
   id: "serious-mental-illness-no-nursing-facility-care-or-services",
@@ -28,7 +28,7 @@ export const seriousMentalIllnessNoNursingFacilityCare: FormPageTemplate = {
     ),
     {
       type: ElementType.SubHeader,
-      id: "smi_noNursingFacilityCare_residentDispositionsSubheader",
+      id: "smi_noNursingFacilityCare_subheader",
       text: "Resident dispositions: No nursing facility care or services",
       helperText:
         "<p>Report Level II resident review data for individuals with a serious mental illness (SMI) by providing the number and disposition (resident status) of residents who:</p>" +
@@ -41,14 +41,14 @@ export const seriousMentalIllnessNoNursingFacilityCare: FormPageTemplate = {
     },
     {
       type: ElementType.SummationTable,
-      id: "smi_noNursingFacilityCare_residentDispositionsTable",
+      id: "smi_noNursingFacilityCare_table",
       caption: "Resident dispositions: No nursing facility care or services",
       required: true,
       rows: getResidentDispositionsPresetRowsAndAnswer({
-        id: "smi_noNursingFacilityCare_residentDispositionsTable",
+        id: "smi_noNursingFacilityCare_table",
       }).rows,
       answer: getResidentDispositionsPresetRowsAndAnswer({
-        id: "smi_noNursingFacilityCare_residentDispositionsTable",
+        id: "smi_noNursingFacilityCare_table",
       }).answer,
     },
     {

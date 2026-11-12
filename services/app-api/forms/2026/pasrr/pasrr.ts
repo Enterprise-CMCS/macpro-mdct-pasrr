@@ -3,7 +3,7 @@ import { ReportPages } from "@pasrr/shared";
 import { generalInformation } from "./pages/general-information";
 import { intellectualDisabilityAndRelatedConditions } from "./pages/intellectual-disability-and-related-conditions";
 import { seriousMentalIllness } from "./pages/serious-mental-illness";
-import { seriousMentalIllnessSpecializedServices } from "./pages/serious-mental-illness/serious-mental-illness-specialized-services";
+import { seriousMentalIllnessSpecializedServices } from "./pages/serious-mental-illness/serious-mental-illness-specialized-services-only";
 import { seriousMentalIllnessNoNursingFacilityCare } from "./pages/serious-mental-illness/serious-mental-illness-no-nursing-facility-care";
 import { reviewAndSubmit } from "./pages/review-and-submit";
 
