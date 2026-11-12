@@ -60,6 +60,7 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServices: Form
         helperText:
           "Do not include personally identifiable information (PII) or protected health information (PHI).",
         required: false,
+        fullWidth: true,
       },
       {
         id: "idrc_specializedServices_receivedServices",
@@ -67,6 +68,7 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServices: Form
         label:
           "During this reporting period, did all eligible residents receive specialized services or have them arranged by the state?",
         required: true,
+        fullWidth: true,
         helperText:
           "Select “No” if any individual in the table above did not have specialized services arranged or provided by the state.",
         choices: [

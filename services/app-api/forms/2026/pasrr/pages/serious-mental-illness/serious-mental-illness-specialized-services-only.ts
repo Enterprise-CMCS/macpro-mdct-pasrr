@@ -7,7 +7,7 @@ import {
 import { reportingCriteriaAccordion } from ".";
 
 export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
-  id: "serious-mental-illness-specialized-services",
+  id: "serious-mental-illness-specialized-services-only",
   title: "Specialized services only",
   type: PageType.Standard,
   sidebar: true,
