@@ -9,7 +9,7 @@ import {
 // accordions
 const reportingCriteriaAccordion: AccordionTemplate = {
   type: ElementType.Accordion,
-  id: "idrc_specializedServices_reportingCriteriaAccordion",
+  id: "idrc_specializedServicesRequiredReportingCriteriaAccordion",
   label: "Reporting criteria and regulations",
   value:
     "<p><strong>Reporting criteria</strong></p>" +
@@ -35,13 +35,13 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServicesOnly: 
     elements: [
       {
         type: ElementType.Paragraph,
-        id: "idrc_specializedServices_eyebrow",
+        id: "idrc_specializedServicesRequiredEyebrow",
         style: "eyebrow",
         text: "Intellectual Disability and Related Conditions (ID/RC)",
       },
       {
         type: ElementType.Header,
-        id: "idrc_specializedServices_header",
+        id: "idrc_specializedServicesRequiredHeader",
         text: "Residents who don’t require nursing facility care, but do require specialized services",
       },
       reportingCriteriaAccordion,
@@ -71,7 +71,7 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServicesOnly: 
         }).answer,
       },
       {
-        id: "idrc_specializedServicesMultipleReviews",
+        id: "idrc_specializedServicesRequiredMultipleReviews",
         type: ElementType.TextAreaField,
         label:
           "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain.",
@@ -80,7 +80,7 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServicesOnly: 
         required: false,
       },
       {
-        id: "idrc_specializedServicesReceivedServices",
+        id: "idrc_specializedServicesRequiredReceivedServices",
         type: ElementType.Radio,
         label:
           "During this reporting period, did all eligible residents receive specialized services or have them arranged by the state?",
@@ -97,7 +97,7 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServicesOnly: 
             value: "No",
             checkedChildren: [
               {
-                id: "idrc_howManyResidentsDidNotReceiveSpecializedServices",
+                id: "idrc_specializedServicesRequiredHowManyResidentsDidNotReceiveSpecializedServices",
                 type: ElementType.Textbox,
                 label:
                   "How many residents did not receive services, and why were services not arranged or provided by the state?",
