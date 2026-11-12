@@ -117,7 +117,7 @@ describe("reportActions", () => {
     const nestedReport = {
       ...testReport,
       pages: [
-        { id: "root", childPageIds: ["a", "b", "c"] },
+        { id: "root", childPageIds: ["a", "b", "c", "d"] },
         { id: "a", title: "A", type: PageType.Standard, elements: [] },
         {
           id: "b",
@@ -129,15 +129,18 @@ describe("reportActions", () => {
         { id: "b-1", title: "B1", type: PageType.Standard, elements: [] },
         { id: "b-2", title: "B2", type: PageType.Standard, elements: [] },
         { id: "c", title: "C", type: PageType.Standard, elements: [] },
+        { id: "d", title: "D", childPageIds: ["d-1"] },
+        { id: "d-1", title: "D1", type: PageType.Standard, elements: [] },
       ],
     } as Report;
-    const expectedOrder = ["a", "b", "b-1", "b-2", "c"];
+    // "d" is a parent-only page, so navigation goes straight to its child
+    const expectedOrder = ["a", "b", "b-1", "b-2", "c", "d-1"];
 
     test("flattenPageIds lists children right after their parent", () => {
       const pageMap = new Map(nestedReport.pages.map((pg, i) => [pg.id, i]));
-      expect(flattenPageIds(nestedReport, pageMap, ["a", "b", "c"])).toEqual(
-        expectedOrder
-      );
+      expect(
+        flattenPageIds(nestedReport, pageMap, ["a", "b", "c", "d"])
+      ).toEqual(expectedOrder);
     });
 
     test("buildState uses the flattened order for navigation", () => {
@@ -151,6 +154,12 @@ describe("reportActions", () => {
       const { parentPage } = setPage("b-2", state);
       expect(parentPage?.index).toEqual(3);
       expect(parentPage?.childPageIds[parentPage.index + 1]).toEqual("c");
+    });
+
+    test("Continue from the last child of one section lands on the first child of the next parent-only section", () => {
+      const state = buildState(nestedReport, false) as ReportState;
+      const { parentPage } = setPage("c", state);
+      expect(parentPage?.childPageIds[parentPage.index + 1]).toEqual("d-1");
     });
 
     test("setPage on a parent page continues into its first child", () => {

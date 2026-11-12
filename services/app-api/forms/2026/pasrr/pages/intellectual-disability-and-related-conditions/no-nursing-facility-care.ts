@@ -7,7 +7,7 @@ import {
 
 export const noNursingFacilityCare: FormPageTemplate = {
   id: "idrc-no-nursing-facility-care",
-  title: "No Nursing Facility Care or Services",
+  title: "No nursing facility care or services",
   type: PageType.Standard,
   sidebar: true,
   elements: [
@@ -20,7 +20,7 @@ export const noNursingFacilityCare: FormPageTemplate = {
     {
       type: ElementType.Header,
       id: "idrc_noNursingFacilityCare_header",
-      text: "No Nursing Facility Care or Services",
+      text: "No nursing facility care or services",
     },
     {
       type: ElementType.SubHeader,

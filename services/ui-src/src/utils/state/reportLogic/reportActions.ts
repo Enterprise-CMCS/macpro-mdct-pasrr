@@ -16,7 +16,9 @@ export const flattenPageIds = (
   pageIds.flatMap((id) => {
     const index = pageMap.get(id);
     const page = index !== undefined ? report.pages[index] : undefined;
-    return [id, ...flattenPageIds(report, pageMap, page?.childPageIds ?? [])];
+    const children = flattenPageIds(report, pageMap, page?.childPageIds ?? []);
+    const isParentOnly = page && !page.type && children.length > 0;
+    return isParentOnly ? children : [id, ...children];
   });
 
 export const buildState = (
