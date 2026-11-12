@@ -69,7 +69,8 @@ const getElements = (showAnswers?: boolean) => {
       mock_dropdownId: "2026",
       mock_dropdownId_textboxId: "mock text input",
       mock_radioId: "A",
-      mock_radioId_textboxId: "mock text input",
+      mock_radioId_withChildren: "A",
+      mock_radioId_withChildren_textboxId: "mock text input",
       mock_actionTableId: [
         [
           {
@@ -253,13 +254,31 @@ const getElements = (showAnswers?: boolean) => {
           label: "Choice 1",
           value: "A",
           checked: false,
+        },
+        {
+          label: "Choice 2",
+          value: "B",
+          checked: false,
+        },
+      ],
+      ...getAnswer("mock_radioId"),
+    },
+    {
+      id: "mock_radioId_withChildren",
+      type: ElementType.Radio,
+      required: true,
+      choices: [
+        {
+          label: "Choice 1",
+          value: "A",
+          checked: false,
           checkedChildren: [
             {
-              id: "mock_radioId_textboxId",
+              id: "mock_radioId_withChildren_textboxId",
               type: ElementType.Textbox,
               label: "Textbox",
               required: true,
-              ...getAnswer("mock_radioId_textboxId"),
+              ...getAnswer("mock_radioId_withChildren_textboxId"),
             },
           ],
         },
@@ -269,7 +288,7 @@ const getElements = (showAnswers?: boolean) => {
           checked: false,
         },
       ],
-      ...getAnswer("mock_radioId"),
+      ...getAnswer("mock_radioId_withChildren"),
     },
     {
       id: "mock_fieldGroupId",
