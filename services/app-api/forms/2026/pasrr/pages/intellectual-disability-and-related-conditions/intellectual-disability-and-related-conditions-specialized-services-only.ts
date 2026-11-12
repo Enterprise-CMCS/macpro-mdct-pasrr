@@ -81,8 +81,8 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServices: Form
             value: "No",
             checkedChildren: [
               {
-                id: "idrc_specializedServices_howManyResidentsDidNotReceiveSpecializedServices",
-                type: ElementType.Textbox,
+                id: "idrc_specializedServices_howManyResidentsDidNotReceiveServices",
+                type: ElementType.TextAreaField,
                 label:
                   "How many residents did not receive services, and why were services not arranged or provided by the state?",
                 helperText:
