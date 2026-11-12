@@ -61,7 +61,7 @@ export const intellectualDisabilityAndRelatedConditionsNoNursingFacilityCareOrSe
       {
         type: ElementType.SummationTable,
         id: "idrc_noNursingFacilityCareTable",
-        caption: "Resident dispositions: Specialized services only",
+        caption: "Resident dispositions: No nursing facility care or services",
         required: true,
         rows: getResidentDispositionPresetRowsAndAnswer({
           id: "idrc_noNursingFacilityCareTable",
