@@ -1,32 +1,12 @@
 import {
-  AccordionTemplate,
   ElementType,
   FormPageTemplate,
   getResidentDispositionPresetRowsAndAnswer,
   PageType,
 } from "@pasrr/shared";
+import { reportingCriteriaAccordion } from ".";
 
-// accordions
-const reportingCriteriaAccordion: AccordionTemplate = {
-  type: ElementType.Accordion,
-  id: "idrc_specializedServicesRequiredReportingCriteriaAccordion",
-  label: "Reporting criteria and regulations",
-  value:
-    "<p><strong>Reporting criteria</strong></p>" +
-    "<p>Include all Level II resident reviews completed during the reporting period for individuals with ID/RC that meet the annual reporting criteria. This includes Level II resident reviews triggered by:</p>" +
-    "<ul>" +
-    "<li>A significant change in physical or mental condition.</li>" +
-    "<li>Expiration of a PASRR 30-day exempted hospital discharge exemption.</li>" +
-    "<li>Expiration of an PASRR advance group determination stay (such as respite care).</li>" +
-    "<li>Expiration of an approved Medicaid section 1135 waiver for PASRR.</li>" +
-    "</ul>" +
-    "<p><strong>Statuatory and regulatory citations</b></strong>" +
-    "<ul>" +
-    "<li>Section 1919(e)(7)(C)(iv) of the Act requires the state to report the number and disposition (resident status) of the nursing facility residents under Section II annually. 42 CFR § 483.132(a) specifies the settings the PASRR evaluator must assess.</li>" +
-    "</ul>",
-};
-
-export const intellectualDisabilityAndRelatedConditionsSpecializedServicesOnly: FormPageTemplate =
+export const intellectualDisabilityAndRelatedConditionsSpecializedServices: FormPageTemplate =
   {
     id: "intellectual-disability-and-related-conditions-specialized-services-only",
     title: "Specialized services only",
@@ -35,19 +15,21 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServicesOnly: 
     elements: [
       {
         type: ElementType.Paragraph,
-        id: "idrc_specializedServicesRequiredEyebrow",
+        id: "idrc_specializedServices_eyebrow",
         style: "eyebrow",
         text: "Intellectual Disability and Related Conditions (ID/RC)",
       },
       {
         type: ElementType.Header,
-        id: "idrc_specializedServicesRequiredHeader",
+        id: "idrc_specializedServices_header",
         text: "Residents who don’t require nursing facility care, but do require specialized services",
       },
-      reportingCriteriaAccordion,
+      reportingCriteriaAccordion(
+        "idrc_specializedServices_reportingCriteriaAccordion"
+      ),
       {
         type: ElementType.SubHeader,
-        id: "idrc_specializedServicesRequiredSubheader",
+        id: "idrc_specializedServices_subheader",
         text: "Resident dispositions: Specialized services only",
         helperText:
           "<p>Report Level II resident review data for individuals with an intellectual disability or related condition (ID/RC) by providing the number and disposition (resident status) of residents who:</p>" +
@@ -60,18 +42,18 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServicesOnly: 
       },
       {
         type: ElementType.SummationTable,
-        id: "idrc_specializedServicesRequiredTable",
+        id: "idrc_specializedServices_table",
         caption: "Resident dispositions: Specialized services only",
         required: true,
         rows: getResidentDispositionPresetRowsAndAnswer({
-          id: "idrc_specializedServicesRequiredTable",
+          id: "idrc_specializedServices_table",
         }).rows,
         answer: getResidentDispositionPresetRowsAndAnswer({
-          id: "idrc_specializedServicesRequiredTable",
+          id: "idrc_specializedServices_table",
         }).answer,
       },
       {
-        id: "idrc_specializedServicesRequiredMultipleReviews",
+        id: "idrc_specializedServices_multipleReviews",
         type: ElementType.TextAreaField,
         label:
           "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain.",
@@ -80,7 +62,7 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServicesOnly: 
         required: false,
       },
       {
-        id: "idrc_specializedServicesRequiredReceivedServices",
+        id: "idrc_specializedServices_receivedServices",
         type: ElementType.Radio,
         label:
           "During this reporting period, did all eligible residents receive specialized services or have them arranged by the state?",
@@ -97,7 +79,7 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServicesOnly: 
             value: "No",
             checkedChildren: [
               {
-                id: "idrc_specializedServicesRequiredHowManyResidentsDidNotReceiveSpecializedServices",
+                id: "idrc_specializedServices_howManyResidentsDidNotReceiveSpecializedServices",
                 type: ElementType.Textbox,
                 label:
                   "How many residents did not receive services, and why were services not arranged or provided by the state?",
