@@ -171,7 +171,6 @@ export type AccordionGroupItem = {
 };
 
 export enum ElementType {
-  FormEyebrow = "formEyebrow",
   Header = "header",
   SubHeader = "subHeader",
   Textbox = "textbox",
@@ -198,7 +197,6 @@ export enum ElementType {
 }
 
 export type PageElement =
-  | FormEyebrowTemplate
   | HeaderTemplate
   | SubHeaderTemplate
   | TextboxTemplate
@@ -280,10 +278,6 @@ interface HelperTextLink {
   link: string;
   label: string;
   text: string;
-}
-
-export interface FormEyebrowTemplate extends DisplayElementTemplate {
-  type: ElementType.FormEyebrow;
 }
 
 export interface HeaderTemplate extends DisplayElementTemplate {
