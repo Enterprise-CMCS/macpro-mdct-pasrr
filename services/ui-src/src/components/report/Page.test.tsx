@@ -43,47 +43,47 @@ const mockNavigate = vi.fn();
 const elements: PageElement[] = [
   {
     type: ElementType.Header,
-    id: "",
+    id: "mock_headerId",
     text: "My header",
   },
   {
     type: ElementType.SubHeader,
-    id: "",
+    id: "mock_subHeaderId",
     text: "My subheader",
   },
   {
     type: ElementType.Paragraph,
-    id: "",
+    id: "mock_paragraphId",
     text: "Paragraph",
   },
   {
     type: ElementType.Textbox,
-    id: "",
+    id: "mock_textboxId",
     label: "Textbox label",
     required: true,
   },
   {
     type: ElementType.TextAreaField,
-    id: "",
+    id: "mock_textAreaFieldId",
     label: "Text area label",
     required: true,
   },
   {
     type: ElementType.NumberField,
-    id: "",
+    id: "mock_numberFieldId",
     label: "Number label",
     required: true,
   },
   {
     type: ElementType.Date,
-    id: "",
+    id: "mock_dateId",
     label: "Date label",
     required: true,
     helperText: "This is a date field",
   },
   {
     type: ElementType.Dropdown,
-    id: "",
+    id: "mock_dropdownId",
     label: "Dropdown label",
     helperText: "This is a dropdown field",
     required: true,
@@ -91,13 +91,13 @@ const elements: PageElement[] = [
   },
   {
     type: ElementType.Accordion,
-    id: "",
+    id: "mock_accordionId",
     label: "Accordion text",
     value: "Other",
   },
   {
     type: ElementType.Radio,
-    id: "",
+    id: "mock_radioId",
     label: "Radio label",
     required: true,
     choices: [
@@ -107,7 +107,7 @@ const elements: PageElement[] = [
   },
   {
     type: ElementType.Checkbox,
-    id: "",
+    id: "mock_checkboxId",
     label: "Checkbox label",
     required: true,
     choices: [
@@ -117,39 +117,39 @@ const elements: PageElement[] = [
   },
   {
     type: ElementType.ButtonLink,
-    to: "report-page-id",
+    to: "mock-page-id",
     label: "Button link",
-    id: "",
+    id: "mock_buttonLinkId",
   },
   {
     type: ElementType.StatusTable,
-    id: "",
-    to: "mock-id",
+    id: "mock_statusTableId",
+    to: "mock-page-id",
   },
   {
     type: ElementType.Divider,
-    id: "",
+    id: "mock_dividerId",
   },
   {
     type: ElementType.StatusAlert,
-    id: "",
+    id: "mock_statusAlertId",
     title: "mock alert title",
     text: "mock alert text",
     status: AlertTypes.ERROR,
   },
   {
     type: ElementType.SubmissionParagraph,
-    id: "",
+    id: "mock_submissionParagraphId",
   },
   {
     type: ElementType.AccordionGroup,
-    id: "",
+    id: "mock_accordionGroupId",
     accordions: [],
     required: false,
   },
   {
     type: ElementType.AttachmentArea,
-    id: "",
+    id: "mock_attachmentAreaId",
     label: "Attachment area label",
     required: true,
   },
@@ -157,17 +157,17 @@ const elements: PageElement[] = [
     type: ElementType.ListInput,
     fieldLabel: "",
     buttonText: "button",
-    id: "id",
+    id: "mock_listInputId",
     label: "mock label",
     required: false,
   },
   {
     type: ElementType.RequestFeedbackButton,
-    id: "mock-request-feedback-button-id",
+    id: "mock_requestFeedbackButtonId",
   },
   {
     type: ElementType.ActionTable,
-    id: "mock-action-table-id",
+    id: "mock_actionTableId",
     label: "ActionTable label",
     heading: "ActionTable heading",
     modal: {
@@ -179,14 +179,14 @@ const elements: PageElement[] = [
   },
   {
     type: ElementType.FieldGroup,
-    id: "mock-field-group-id",
+    id: "mock_fieldGroupId",
     label: "FieldGroup label",
     required: true,
     elements: [],
   },
   {
     type: ElementType.SummationTable,
-    id: "mock-summation-table-id",
+    id: "mock_summationTableId",
     caption: "SummationTable caption",
     required: true,
     rows: [],
@@ -196,13 +196,13 @@ const elements: PageElement[] = [
 const textFieldElement: PageElement[] = [
   {
     type: ElementType.Textbox,
-    id: "",
+    id: "mock_textboxId",
     label: "Textbox label",
     required: true,
   },
   {
     type: ElementType.Radio,
-    id: "",
+    id: "mock_radioId",
     label: "Radio label",
     required: true,
     choices: [
@@ -215,7 +215,7 @@ const textFieldElement: PageElement[] = [
 const dateFieldElement: PageElement[] = [
   {
     type: ElementType.Date,
-    id: "",
+    id: "mock_dateId",
     label: "Date label",
     helperText: "This is a date field",
     required: true,
@@ -225,7 +225,7 @@ const dateFieldElement: PageElement[] = [
 describe("Page Component with state user", () => {
   test.each(elements)("Renders all element types: $type", (element) => {
     const { container } = render(
-      <Page id="mock-page" elements={[element]} setElements={vi.fn()} />
+      <Page id="mock-page-id" elements={[element]} setElements={vi.fn()} />
     );
     expect(container).not.toBeEmptyDOMElement();
   });
@@ -233,12 +233,12 @@ describe("Page Component with state user", () => {
   test("should render and navigate correctly for ButtonLink element", async () => {
     render(
       <Page
-        id="mock-page"
+        id="mock-page-id"
         elements={[
           {
             type: ElementType.ButtonLink,
-            id: "",
-            to: "report-page-id",
+            id: "mock_buttonLinkId",
+            to: "mock-page-id",
             label: "Button link",
           },
         ]}
@@ -253,7 +253,7 @@ describe("Page Component with state user", () => {
     // Navigation
     await userEvent.click(button);
     expect(mockNavigate).toHaveBeenCalledWith(
-      "/report/exampleReport/exampleState/123/report-page-id"
+      "/report/exampleReport/exampleState/123/mock-page-id"
     );
   });
 
@@ -262,7 +262,7 @@ describe("Page Component with state user", () => {
 
     render(
       <Page
-        id="mock-page"
+        id="mock-page-id"
         elements={dateFieldElement}
         setElements={updateSpy}
       />
@@ -279,7 +279,7 @@ describe("Page Component with state user", () => {
 
     const { container } = render(
       <Page
-        id="mock-page"
+        id="mock-page-id"
         elements={[badObject as unknown as PageElement]}
         setElements={vi.fn()}
       />
@@ -296,7 +296,7 @@ describe("Page Component with state user", () => {
     ];
     render(
       <Page
-        id="mock-page"
+        id="mock-page-id"
         elements={roleLimitedElements}
         setElements={vi.fn()}
       />
@@ -312,7 +312,11 @@ describe("Page Component with read only user", () => {
   });
   test("text field and radio button should be disabled", () => {
     render(
-      <Page id="mock-page" elements={textFieldElement} setElements={vi.fn()} />
+      <Page
+        id="mock-page-id"
+        elements={textFieldElement}
+        setElements={vi.fn()}
+      />
     );
     const textField = screen.getByRole("textbox");
     const radioButton = screen.getByLabelText("radio choice 1");
@@ -321,7 +325,11 @@ describe("Page Component with read only user", () => {
   });
   test("date field should be disabled", () => {
     render(
-      <Page id="mock-page" elements={dateFieldElement} setElements={vi.fn()} />
+      <Page
+        id="mock-page-id"
+        elements={dateFieldElement}
+        setElements={vi.fn()}
+      />
     );
     const dateField = screen.getByRole("textbox");
     expect(dateField).toBeDisabled();

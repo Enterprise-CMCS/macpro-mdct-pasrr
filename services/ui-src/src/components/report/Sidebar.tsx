@@ -7,10 +7,10 @@ import { ReactNode, useState } from "react";
 import { assertExhaustive } from "types";
 import { isReportType, Report, ReportType } from "@pasrr/shared";
 
-const navItem = (title: string, index: number) => {
+const navItem = (title: string = "", index: number) => {
   if (index <= 0) return title;
   return (
-    <Box paddingLeft="spacer2" key={`${title}.${index}`}>
+    <Box as="span" paddingLeft="spacer2" key={`${title}.${index}`}>
       {navItem(title, index - 1)}
     </Box>
   );
@@ -52,41 +52,61 @@ export const Sidebar = () => {
 
   const navSection = (section: number, index: number = 0): ReactNode => {
     const page = report.pages[section];
-    const childSections = page.childPageIds?.map((child) => pageMap.get(child));
-    const hasChildSections = childSections && childSections.length > 0;
+    const childSections =
+      page.childPageIds
+        ?.map((child) => pageMap.get(child))
+        .filter(
+          (childIndex): childIndex is number => childIndex !== undefined
+        ) || [];
+    const hasChildSections = childSections.length > 0;
+
+    const rowContent = (
+      <Flex
+        as="span"
+        width="100%"
+        paddingRight="1rem"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Box as="span" width="100%" height="100%">
+          {navItem(page.title, index)}
+        </Box>
+        {hasChildSections && (
+          <Image
+            src={toggleList[page.id] ? arrowUpIcon : arrowDownIcon}
+            alt={toggleList[page.id] ? "Collapse subitems" : "Expand subitems"}
+          />
+        )}
+      </Flex>
+    );
 
     return (
       <Box key={page.id} inert={!sidebarOpen}>
-        <Link
-          variant={"sidebar"}
-          className={page.id === currentPageId ? "selected" : ""}
-          href={`/report/${reportType}/${state}/${reportId}/${page.id}`}
-          onClick={(e) => {
-            e.preventDefault();
-            onNavSelect(page.id);
-          }}
-        >
-          <Flex justifyContent="space-between" alignItems="center">
-            <Box width="100%" height="100%">
-              {navItem(page.title!, index)}
-            </Box>
-            {hasChildSections && (
-              <Box onClick={() => setToggle(page.id)}>
-                <Image
-                  src={toggleList[page.id] ? arrowUpIcon : arrowDownIcon}
-                  alt={
-                    toggleList[page.id]
-                      ? "Collapse subitems"
-                      : "Expand subitems"
-                  }
-                />
-              </Box>
-            )}
-          </Flex>
-        </Link>
+        {hasChildSections ? (
+          <Link
+            as="button"
+            variant="sidebar"
+            aria-expanded={Boolean(toggleList[page.id])}
+            onClick={() => setToggle(page.id)}
+          >
+            {rowContent}
+          </Link>
+        ) : (
+          <Link
+            variant="sidebar"
+            className={page.id === currentPageId ? "selected" : ""}
+            href={`/report/${reportType}/${state}/${reportId}/${page.id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              onNavSelect(page.id);
+            }}
+          >
+            {rowContent}
+          </Link>
+        )}
         {hasChildSections &&
           toggleList[page.id] &&
-          childSections.map((sec) => navSection(sec!, index + 1))}
+          childSections.map((section) => navSection(section, index + 1))}
       </Box>
     );
   };

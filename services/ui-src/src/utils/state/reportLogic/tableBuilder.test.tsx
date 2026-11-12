@@ -3,32 +3,33 @@ import { buildElement, getErrorMessage } from "./tableBuilder";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
+import { isWholePositiveNumber } from "utils/validation/inputValidation";
 
 const mockOnChange = vi.fn();
 vi.spyOn(console, "error").mockImplementation(vi.fn());
 
 const elements = [
   {
-    id: "mock-dropdown",
+    id: "mock_dropdownId",
     type: ElementType.Dropdown,
     disabled: false,
     children: [{ label: "option 1", value: "opt1" }],
     label: "Mock Dropdown",
   },
   {
-    id: "mock-textarea",
+    id: "mock_textAreaFieldId",
     type: ElementType.TextAreaField,
     disabled: false,
     label: "Mock TextAreaField",
   },
   {
-    id: "mock-textbox",
+    id: "mock_textboxId",
     type: ElementType.Textbox,
     disabled: false,
     label: "Mock Textbox",
   },
   {
-    id: "mock-date",
+    id: "mock_dateId",
     type: ElementType.Date,
     disabled: false,
     label: "Mock Date",
@@ -79,7 +80,7 @@ describe("Test tableBuilder functions", () => {
             mask: MaskType.CommaSeparated,
           },
           defaultValue: value,
-          id: "mock-masked-textbox",
+          id: "mock_maskedTextbox",
           key: "element-mock-masked-textbox",
           onChange: ([nextValue]) => setValue(nextValue),
           label: "Masked textbox",
@@ -117,9 +118,9 @@ describe("Test tableBuilder functions", () => {
 
   test("Test buildElement throws error no type is found", () => {
     const component = buildElement({
-      element: { id: "mock-accordion", type: ElementType.AccordionGroup },
+      element: { id: "mock_accordionId", type: ElementType.AccordionGroup },
       defaultValue: "",
-      id: "mock-accordion",
+      id: "mock_accordionId",
       key: "element-mock-accordion",
       onChange: mockOnChange,
       label: "Mock Accordion",
@@ -130,30 +131,58 @@ describe("Test tableBuilder functions", () => {
 
   describe("Test getErrorMessage function", () => {
     test("Test valid input", () => {
-      expect(getErrorMessage(ElementType.Textbox, true, ["mock value"])).toBe(
-        ""
-      );
+      expect(
+        getErrorMessage({ type: ElementType.Textbox, value: ["mock value"] })
+      ).toBe("");
     });
+
     test("Test Date error message", () => {
-      expect(getErrorMessage(ElementType.Date, true, ["not validate"])).toBe(
-        "Response must be a date in MMDDYYYY format"
-      );
+      expect(
+        getErrorMessage({ type: ElementType.Date, value: ["not validate"] })
+      ).toBe("Response must be a date in MMDDYYYY format");
     });
+
     test("Test Textbox & TextAreaField error message", () => {
-      expect(getErrorMessage(ElementType.Textbox, true, [""])).toBe(
+      expect(getErrorMessage({ type: ElementType.Textbox, value: [""] })).toBe(
         "A response is required"
       );
-      expect(getErrorMessage(ElementType.TextAreaField, true, [""])).toBe(
-        "A response is required"
-      );
+      expect(
+        getErrorMessage({ type: ElementType.TextAreaField, value: [""] })
+      ).toBe("A response is required");
     });
-    test("Test NumberField error message", () => {
-      expect(getErrorMessage(ElementType.NumberField, true, ["abc"])).toBe(
-        "Response must be a valid number"
-      );
-      expect(getErrorMessage(ElementType.NumberField, true, [""])).toBe(
-        "A response is required"
-      );
+
+    test.each([
+      { input: "mock text", message: "Response must be a valid number" },
+      { input: "0" },
+      { input: "1" },
+      { input: ".5" },
+      { input: "-1" },
+    ])("Test NumberField error message '$input'", ({ input, message = "" }) => {
+      expect(
+        getErrorMessage({
+          type: ElementType.NumberField,
+          value: [input],
+        })
+      ).toBe(message);
     });
+
+    test.each([
+      { input: "mock text", message: "Response must be a valid number" },
+      { input: "0" },
+      { input: "1" },
+      { input: ".5", message: "Response must be a valid number" },
+      { input: "-1", message: "Response must be a valid number" },
+    ])(
+      "Test NumberField whole positive number error message '$input'",
+      ({ input, message = "" }) => {
+        expect(
+          getErrorMessage({
+            type: ElementType.NumberField,
+            validators: { [ElementType.NumberField]: isWholePositiveNumber },
+            value: [input],
+          })
+        ).toBe(message);
+      }
+    );
   });
 });

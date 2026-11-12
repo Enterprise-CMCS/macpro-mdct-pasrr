@@ -9,8 +9,8 @@ import {
 // accordions
 const specializedServicesOnlyAccordion: AccordionTemplate = {
   type: ElementType.Accordion,
-  id: "sso_accordion",
-  label: "Reporting criteria and regulations",
+  id: "idrc_residentReviewsAccordion",
+  label: "Which resident reviews should I include?",
   value:
     "<p><b>Reporting criteria</b></p>" +
     "<p>Include all Level II resident reviews completed during the reporting period for individuals with ID/RC that meet the annual reporting criteria. This includes Level II resident reviews triggered by:</p>" +

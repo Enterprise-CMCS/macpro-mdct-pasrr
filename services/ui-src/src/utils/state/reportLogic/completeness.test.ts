@@ -22,12 +22,12 @@ describe("inferredReportStatus", () => {
     const report = {
       pages: [
         {
-          id: "general-id",
+          id: "mock-page-id",
           required: true,
           title: "a title",
           elements: [
             {
-              id: "good-question",
+              id: "mock_textboxId",
               type: ElementType.Textbox,
               answer: "Good",
               required: true,
@@ -35,12 +35,12 @@ describe("inferredReportStatus", () => {
           ],
         },
         {
-          id: "other-id",
+          id: "mock-page-id-2",
           required: true,
           title: "a title",
           elements: [
             {
-              id: "no-question",
+              id: "mock_textboxNoAnswerId",
               type: ElementType.Textbox,
               answer: undefined,
               required: true,
@@ -49,10 +49,10 @@ describe("inferredReportStatus", () => {
         },
       ],
     } as any;
-    expect(inferredReportStatus(report, "general-id")).toEqual(
+    expect(inferredReportStatus(report, "mock-page-id")).toEqual(
       PageStatus.COMPLETE
     );
-    expect(inferredReportStatus(report, "other-id")).toEqual(
+    expect(inferredReportStatus(report, "mock-page-id-2")).toEqual(
       PageStatus.NOT_STARTED
     );
   });
@@ -119,17 +119,17 @@ describe("pageIsCompletable", () => {
     const report = {
       pages: [
         {
-          id: "my-id",
+          id: "mock-page-id",
           status: PageStatus.IN_PROGRESS,
           elements: [
             {
-              id: "bad-question",
+              id: "mock_badQuestionId",
               type: ElementType.TextAreaField,
               answer: undefined,
               required: true,
             },
             {
-              id: "bad-radio-question",
+              id: "mock_badRadioQuestionId",
               type: ElementType.Radio,
               answer: undefined,
               required: true,
@@ -152,7 +152,7 @@ describe("pageIsCompletable", () => {
               ],
             },
             {
-              id: "bad-dropdown-question",
+              id: "mock_badDropdownQuestionId",
               type: ElementType.Dropdown,
               answer: "",
               required: true,
@@ -166,24 +166,24 @@ describe("pageIsCompletable", () => {
         },
       ],
     } as Report;
-    expect(pageIsCompletable(report, "my-id")).toBeFalsy();
+    expect(pageIsCompletable(report, "mock-page-id")).toBeFalsy();
   });
 
   test("succeeds when complete element", () => {
     const report = {
       pages: [
         {
-          id: "my-id",
+          id: "mock-page-id",
           status: PageStatus.IN_PROGRESS,
           elements: [
             {
-              id: "good-question",
+              id: "mock_textboxId",
               type: ElementType.TextAreaField,
               answer: "mock text",
               required: true,
             },
             {
-              id: "good-radio-question",
+              id: "mock_radioId",
               type: ElementType.Radio,
               answer: "A",
               required: true,
@@ -206,17 +206,17 @@ describe("pageIsCompletable", () => {
               ],
             },
             {
-              id: "good-hidden-element",
+              id: "mock_hiddenElementId",
               type: ElementType.TextAreaField,
               answer: undefined,
               required: true,
               hideCondition: {
-                controllerElementId: "good-radio-question",
+                controllerElementId: "mock_radioId",
                 answer: "A",
               },
             },
             {
-              id: "good-dropdown-question",
+              id: "mock_dropdownId",
               type: ElementType.Dropdown,
               answer: "2026",
               required: true,
@@ -230,25 +230,25 @@ describe("pageIsCompletable", () => {
         },
       ],
     } as Report;
-    expect(pageIsCompletable(report, "my-id")).toBeTruthy();
+    expect(pageIsCompletable(report, "mock-page-id")).toBeTruthy();
   });
 
   test("is completable when element type is an AccordionGroup", () => {
     const report = {
       pages: [
         {
-          id: "my-id",
+          id: "mock-page-id",
           status: PageStatus.IN_PROGRESS,
           elements: [
             {
               type: ElementType.AccordionGroup,
-              id: "accordion",
+              id: "mock_accordionGroupId",
               accordions: [
                 {
                   label: "",
                   elements: [
                     {
-                      id: "good-question",
+                      id: "mock_accordionId_textboxId",
                       type: ElementType.Textbox,
                       answer: "WOW",
                       required: true,
@@ -262,58 +262,56 @@ describe("pageIsCompletable", () => {
         },
       ],
     } as Report;
-    expect(pageIsCompletable(report, "my-id")).toBeTruthy();
+    expect(pageIsCompletable(report, "mock-page-id")).toBeTruthy();
   });
 
   test("is completable when element type is fieldGroup", () => {
     const report = {
       pages: [
         {
-          id: "mock-page",
+          id: "mock-page-id",
           status: PageStatus.IN_PROGRESS,
           elements: [
             {
               type: ElementType.FieldGroup,
-              id: "mock-field-group-id",
+              id: "mock_fieldGroupId",
               elements: [
                 {
                   type: ElementType.Textbox,
-                  id: "mock-field-group-id-textbox",
+                  id: "mock_textboxId",
                   required: true,
                   answer: "mock text",
                 },
               ],
-              answer: [
-                { id: "mock-field-group-id-textbox", value: "mock text" },
-              ],
+              answer: [{ id: "mock_textboxId", value: "mock text" }],
               required: true,
             },
           ],
         },
       ],
     } as Report;
-    expect(pageIsCompletable(report, "mock-page")).toBeTruthy();
+    expect(pageIsCompletable(report, "mock-page-id")).toBeTruthy();
   });
 });
 
 describe("elementSatisfiesRequired", () => {
   test("returns true when hidden or not required", () => {
     const hiddenElement: TextboxTemplate = {
-      id: "other-element",
+      id: "mock_hiddenElementId",
       label: "hidden textbox",
       answer: "foo",
       type: ElementType.Textbox,
       required: true,
     };
     const notRequired: TextboxTemplate = {
-      id: "not-element",
+      id: "mock_notRequiredElementId",
       label: "optional textbox",
       answer: "foo",
       type: ElementType.Textbox,
       required: false,
     };
     const otherElement: TextboxTemplate = {
-      id: "other-element",
+      id: "mock_otherElementId",
       label: "irrelevant other textbox",
       answer: "foo",
       type: ElementType.Textbox,
@@ -326,7 +324,7 @@ describe("elementSatisfiesRequired", () => {
 
   test("handles radios", () => {
     const radio = {
-      id: "other-element",
+      id: "mock_radioId",
       answer: "foo",
       type: ElementType.Radio,
       choices: [
@@ -338,7 +336,7 @@ describe("elementSatisfiesRequired", () => {
       required: true,
     } as RadioTemplate;
     const incompleteChildren = {
-      id: "bad-element",
+      id: "mock_incompleteChildrenId",
       answer: "me",
       type: ElementType.Radio,
       choices: [
@@ -370,15 +368,32 @@ describe("elementSatisfiesRequired", () => {
     expect(elementSatisfiesRequired(element, [element])).toBeFalsy();
   });
 
+  test("required ListInput is incomplete until a value is entered", () => {
+    const element = {
+      type: ElementType.ListInput,
+      required: true,
+    } as ListInputTemplate;
+    expect(elementSatisfiesRequired(element, [element])).toBeFalsy();
+
+    const answered = { ...element, answer: ["data source"] };
+    expect(elementSatisfiesRequired(answered, [answered])).toBeTruthy();
+  });
+
   test("handles Metrics Table", () => {
     const element = {
       type: ElementType.ActionTable,
-      id: "metrics-table",
+      id: "mock_metricsTable",
       label: "action table",
       heading: "Heading",
       modal: { title: "", elements: [] },
-      rows: [{ id: "row", type: ElementType.Paragraph, header: "" }],
-      answer: [[{ id: "row", value: "2" as string }]],
+      rows: [
+        {
+          id: "mock_metricsTable_textboxId",
+          type: ElementType.Paragraph,
+          header: "",
+        },
+      ],
+      answer: [[{ id: "mock_metricsTable_textboxId", value: "2" as string }]],
       required: true,
     } as ActionTableTemplate;
     expect(elementSatisfiesRequired(element, [element])).toBeTruthy();
@@ -387,30 +402,36 @@ describe("elementSatisfiesRequired", () => {
   test("ignores optional Metrics Table columns", () => {
     const element = {
       type: ElementType.ActionTable,
-      id: "metrics-table",
+      id: "mock_metricsTable",
       label: "action table",
       heading: "Heading",
       modal: {
         title: "",
         elements: [
           {
-            id: "required-column",
+            id: "mock_metricsTable_textboxId",
             type: ElementType.Textbox,
             required: true,
           },
           {
-            id: "optional-column",
+            id: "mock_metricsTable_textboxOptionalId",
             type: ElementType.Textbox,
             required: false,
           },
         ],
       },
-      rows: [{ id: "row", type: ElementType.Paragraph, header: "" }],
+      rows: [
+        {
+          id: "mock_metricsTable_textboxId",
+          type: ElementType.Paragraph,
+          header: "",
+        },
+      ],
       answer: [
         [
           { id: "status", value: "Active" },
-          { id: "required-column", value: "complete" },
-          { id: "optional-column", value: "" },
+          { id: "mock_metricsTable_textboxId", value: "complete" },
+          { id: "mock_metricsTable_textboxOptionalId", value: "" },
         ],
       ],
       required: true,
@@ -422,7 +443,7 @@ describe("elementSatisfiesRequired", () => {
   test("handles invalid email field", () => {
     const element = {
       type: ElementType.Textbox,
-      id: "test-email-field",
+      id: "mock_textboxId_email",
       required: true,
     } as TextboxTemplate;
     const invalidEmail = {
@@ -440,7 +461,7 @@ describe("elementSatisfiesRequired", () => {
   test("handles invalid phone field", () => {
     const element = {
       type: ElementType.Textbox,
-      id: "test-phone-field",
+      id: "mock_textboxId_phone",
       required: true,
     } as TextboxTemplate;
     const invalidPhone = {
@@ -458,12 +479,12 @@ describe("elementSatisfiesRequired", () => {
   test("handles invalid zip code field", () => {
     const element = {
       type: ElementType.Textbox,
-      id: "test-zipcode-field",
+      id: "mock_textboxId_zipCode",
       required: true,
     } as TextboxTemplate;
     const invalidZipCode = {
       ...element,
-      answer: "not-a-valid-zipcode",
+      answer: "not-a-valid-zipCode",
     };
     const validZipCode = {
       ...element,

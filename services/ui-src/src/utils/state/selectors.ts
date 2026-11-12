@@ -3,7 +3,6 @@ import {
   FormPageTemplate,
   isCompleteStatus,
   PageStatus,
-  ParentPageTemplate,
 } from "@pasrr/shared";
 import { BannerState, ReportState } from "types";
 import { inferredReportStatus } from "./reportLogic/completeness";
@@ -30,38 +29,88 @@ export const checkIfStatusIsRequired = (section: FormPageTemplate) => {
   );
 };
 
-export const submittableMetricsSelector = (state: ReportState) => {
+export type SectionDetails = {
+  section: FormPageTemplate;
+  displayStatus: PageStatus | undefined;
+  submittable: boolean;
+};
+
+/**
+ * A parent page is shown as a group row with its child pages nested beneath it.
+ * Any other page is shown as a single section row.
+ */
+export type SectionRow = {
+  id: string;
+  section: SectionDetails;
+};
+
+export type GroupRow = {
+  id: string;
+  title: string;
+  children: SectionDetails[];
+};
+
+export type ReviewRow = SectionRow | GroupRow;
+export type SubmittableMetrics = {
+  rows: ReviewRow[];
+  sections: SectionDetails[];
+  submittable: boolean;
+} | null;
+
+export const submittableMetricsSelector = (
+  state: ReportState
+): SubmittableMetrics => {
   const { report, pageMap } = state;
   if (!report || !pageMap) {
     return null;
   }
 
-  const childPages = (report.pages[pageMap.get("root")!] as ParentPageTemplate)
-    .childPageIds;
-  const sections = childPages.slice(0, -1).map((id) => {
-    const pageIdx = pageMap.get(id);
-    if (!pageIdx) return null;
+  const getPage = (id: string) => {
+    const pageIndex = pageMap.get(id);
+    return report.pages[pageIndex ?? -1];
+  };
 
-    const section = report.pages[pageIdx] as FormPageTemplate;
+  const toSectionDetails = (id: string): SectionDetails | null => {
+    const section = getPage(id) as FormPageTemplate;
+    if (!section) return null;
 
     const displayStatus = inferredReportStatus(report, section.id);
-    let submittable = displayStatus === PageStatus.COMPLETE;
 
     return {
-      section: section,
+      section,
       displayStatus: !checkIfStatusIsRequired(section)
         ? PageStatus.OPTIONAL
         : displayStatus,
-      submittable: submittable,
+      submittable: displayStatus === PageStatus.COMPLETE,
     };
+  };
+
+  const childPages = getPage("root")?.childPageIds || [];
+  // The last root page is the review page, which is not reported.
+  const rows: ReviewRow[] = childPages.slice(0, -1).map((id) => {
+    const page = getPage(id);
+    if (page?.childPageIds) {
+      return {
+        id,
+        title: page.title ?? "",
+        children: page.childPageIds
+          .map(toSectionDetails)
+          .filter((item): item is SectionDetails => item !== null),
+      };
+    }
+    return { id, section: toSectionDetails(id) } as SectionRow;
   });
 
-  const allPagesSubmittable = sections.every(
-    (sectionInfo) => !!sectionInfo?.submittable
+  const sections = rows.flatMap((row) =>
+    "children" in row ? row.children : [row.section]
+  );
+
+  const allPagesSubmittable = sections.every((sectionInfo) =>
+    Boolean(sectionInfo?.submittable)
   );
   const submittable = !isCompleteStatus(report.status) && allPagesSubmittable;
 
-  return { sections: sections, submittable: submittable };
+  return { rows, sections, submittable };
 };
 
 export const activeBannerSelector = (area: BannerArea) => {

@@ -40,32 +40,32 @@ const mockAdminUser = {
 
 const mockReport: Report = {
   ...validReport,
-  id: "mock-old-report",
+  id: "mock-old-report-id",
   pages: [
     {
       id: "root",
-      childPageIds: ["mock-page-1"],
+      childPageIds: ["mock-page-id"],
     },
     {
-      id: "mock-page-1",
+      id: "mock-page-id",
       title: "Mock Page 1",
       type: PageType.Standard,
       sidebar: true,
       elements: [
         {
           type: ElementType.Header,
-          id: "mock-non-input-element",
+          id: "mock_headerId",
           text: "Non-input element",
         },
         {
-          id: "mock-input-element",
+          id: "mock_textboxId",
           type: ElementType.Textbox,
           label: "Input element",
           required: true,
           answer: "mock answer",
         },
         {
-          id: "mock-dropdown-element",
+          id: "mock_dropdownId",
           type: ElementType.Dropdown,
           options: [
             {
@@ -73,7 +73,7 @@ const mockReport: Report = {
               value: "single",
               checkedChildren: [
                 {
-                  id: "nested-dropdown-input-element",
+                  id: "mock_dropdownId_childId",
                   type: ElementType.Textbox,
                   label: "Input element",
                   required: true,
@@ -87,7 +87,7 @@ const mockReport: Report = {
           answer: "mock answer",
         },
         {
-          id: "mock-radio-element",
+          id: "mock_radioId",
           type: ElementType.Radio,
           choices: [
             {
@@ -95,7 +95,7 @@ const mockReport: Report = {
               value: "single",
               checkedChildren: [
                 {
-                  id: "nested-radio-input-element",
+                  id: "mock_radioId_childId",
                   type: ElementType.Textbox,
                   label: "Input element",
                   required: true,
@@ -109,7 +109,7 @@ const mockReport: Report = {
           answer: "mock answer",
         },
         {
-          id: "mock-cms-only-element",
+          id: "mock_cmsOnlyTextboxId",
           type: ElementType.Textbox,
           label: "CMS-only input element",
           required: true,
@@ -117,7 +117,7 @@ const mockReport: Report = {
           onlyCmsAdminCanEdit: true,
         },
         {
-          id: "mock-cms-submitted-element",
+          id: "mock_cmsSubmittedTextboxId",
           type: ElementType.Textbox,
           label: "CMS submitted-editable element",
           required: true,
@@ -132,8 +132,8 @@ const mockReport: Report = {
 
 // any type so it doesn't complain about accessing .answer on generic PageElement
 const mockReportRequest: any = structuredClone(mockReport);
-mockReportRequest.id = "mock-new-report";
-mockReportRequest.copyFromReportId = "mock-old-report";
+mockReportRequest.id = "mock-new-report-id";
+mockReportRequest.copyFromReportId = "mock-old-report-id";
 mockReportRequest.pages[1].elements[1].answer = "New answer";
 mockReportRequest.pages[1].elements[2].options[0].checkedChildren[0].answer =
   "New answer"; // dropdown child

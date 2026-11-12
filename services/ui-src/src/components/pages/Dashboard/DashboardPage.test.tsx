@@ -27,7 +27,7 @@ vi.mock("react-router", async (importOriginal) => ({
 
 const mockReportsInDatabase = [
   {
-    id: "PASRRCO123",
+    id: "mock-report-id",
     type: "PASRR",
     state: "CO",
     lastEdited: new Date("2026-10-24T08:31:54").valueOf(),
@@ -39,7 +39,7 @@ const mockReportsInDatabase = [
     subTypeKey: "A1",
   } as Report,
   {
-    id: "PASRRCO1234",
+    id: "mock-report-id-2",
     type: "PASRR",
     state: "CO",
     lastEdited: new Date("2027-10-24T08:31:54").valueOf(),

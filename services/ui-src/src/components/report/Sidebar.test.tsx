@@ -27,17 +27,21 @@ const mockUseNavigate = vi.fn();
 
 const mockPageMap = new Map([
   ["root", 0],
-  ["id-1", 1],
-  ["id-2", 2],
-  ["child-1", 3],
+  ["mock-page-id", 1],
+  ["mock-page-id-2", 2],
+  ["mock-child-page-id", 3],
 ]);
 
 const report = {
   pages: [
-    { childPageIds: ["id-1", "id-2"], id: "root" },
-    { title: "Section 1", id: "id-1", childPageIds: ["child-1"] },
-    { title: "Section 2", id: "id-2" },
-    { title: "Child 1", id: "child-1" },
+    { childPageIds: ["mock-page-id", "mock-page-id-2"], id: "root" },
+    {
+      title: "Section 1",
+      id: "mock-page-id",
+      childPageIds: ["mock-child-page-id"],
+    },
+    { title: "Section 2", id: "mock-page-id-2" },
+    { title: "Child 1", id: "mock-child-page-id" },
   ],
 };
 
@@ -46,7 +50,7 @@ describe("Sidebar", () => {
     (useStore as unknown as Mock).mockReturnValue({
       pageMap: mockPageMap,
       report,
-      currentPageId: "id-1",
+      currentPageId: "mock-page-id",
       setCurrentPageId,
     });
     (useParams as Mock).mockReturnValue({
@@ -77,8 +81,10 @@ describe("Sidebar", () => {
         <Sidebar />
       </Router>
     );
-    expect(screen.getByText("Section 1")).toBeInTheDocument();
-    expect(screen.getByText("Section 2")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Section 1Expand subitems" })
+    ).toBeVisible();
+    expect(screen.getByRole("link", { name: "Section 2" })).toBeVisible();
   });
 
   test("should attempt to navigate on Click", async () => {
@@ -87,10 +93,49 @@ describe("Sidebar", () => {
         <Sidebar />
       </Router>
     );
-    const link = screen.getByText("Section 1");
+    const link = screen.getByRole("link", { name: "Section 2" });
     await userEvent.click(link);
-    const reportPath = "/report/exampleReport/exampleState/123/id-1";
+    const reportPath = "/report/exampleReport/exampleState/123/mock-page-id-2";
     expect(mockUseNavigate).toHaveBeenCalledWith(reportPath);
+  });
+
+  test("should toggle, not navigate, when clicking a parent section", async () => {
+    mockUseNavigate.mockClear();
+    render(
+      <Router>
+        <Sidebar />
+      </Router>
+    );
+    const parent = screen.getByRole("button", {
+      name: "Section 1Expand subitems",
+    });
+    expect(parent).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.queryByRole("link", { name: "Child 1" })
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(parent);
+
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(parent).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("link", { name: "Child 1" })).toBeVisible();
+  });
+
+  test("should expand a parent section without navigating when its arrow is clicked", async () => {
+    mockUseNavigate.mockClear();
+    render(
+      <Router>
+        <Sidebar />
+      </Router>
+    );
+    expect(
+      screen.queryByRole("link", { name: "Child 1" })
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByAltText("Expand subitems"));
+
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(screen.getByRole("link", { name: "Child 1" })).toBeVisible();
   });
 
   test("toggle button exposes its state via aria-expanded", () => {
@@ -98,7 +143,7 @@ describe("Sidebar", () => {
       (useStore as unknown as Mock).mockReturnValue({
         pageMap: mockPageMap,
         report,
-        currentPageId: "id-1",
+        currentPageId: "mock-page-id",
         setCurrentPageId,
         setSidebar: vi.fn(),
         sidebarOpen,
@@ -122,10 +167,12 @@ describe("Sidebar", () => {
     );
 
     const expandButton = screen.getByAltText("Expand subitems");
-    expect(screen.queryByText("Child 1")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Child 1" })
+    ).not.toBeInTheDocument();
 
     await userEvent.click(expandButton);
 
-    expect(screen.getByText("Child 1")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Child 1" })).toBeVisible();
   });
 });

@@ -13,19 +13,19 @@ mockedUseStore.mockReturnValue(mockUseStore);
 
 const reports = [
   {
-    id: "abc",
+    id: "mock-report-id",
     name: "report 1",
     submissionCount: 0,
     status: ReportStatus.IN_PROGRESS,
   },
   {
-    id: "xyz",
+    id: "mock-report-id-2",
     name: "report 2",
     submissionCount: 0,
     status: ReportStatus.SUBMITTED,
   },
   {
-    id: "123",
+    id: "mock-report-id-3",
     name: "report 3",
     submissionCount: 1,
     status: ReportStatus.IN_PROGRESS,

@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ListInputTemplate } from "@pasrr/shared";
 import { PageElementProps } from "components/report/Elements";
-import { Button, HStack, Image } from "@chakra-ui/react";
-import { Hint, Label, TextField } from "@cmsgov/design-system";
+import { Box, Button, HStack, Image, VStack } from "@chakra-ui/react";
+import { Hint, TextField } from "@cmsgov/design-system";
 import cancelPrimary from "assets/icons/cancel/icon_cancel_primary.svg";
 import addPrimary from "assets/icons/add/icon_add_blue.svg";
 import addGray from "assets/icons/add/icon_add_gray.svg";
 import { ErrorMessages } from "../../constants";
-import { optionalTag } from "utils";
 
 const validateField = (rawValue: string, validation: string | undefined) => {
   let validationError = undefined;
@@ -22,15 +21,34 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
   const { updateElement, disabled, element } = props;
   const {
     id,
+    label,
     fieldLabel,
     helperText,
     buttonText,
     answer,
     validation,
     disabled: elementDisabled,
+    fullWidth,
   } = element;
-  const [displayValue, setDisplayValue] = useState(answer ?? []);
+  // A list always has at least one field, so start with a blank one when there are no saved answers.
+  const [displayValue, setDisplayValue] = useState(
+    answer?.length ? answer : [""]
+  );
   const [errorMessages, setErrorMessages] = useState([""]);
+  const fieldsetRef = useRef<HTMLFieldSetElement>(null);
+  const [pendingFocusIndex, setPendingFocusIndex] = useState<number | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (pendingFocusIndex === null) return;
+    fieldsetRef.current
+      ?.querySelector<HTMLInputElement>(
+        `input[name="list-item-${pendingFocusIndex}"]`
+      )
+      ?.focus();
+    setPendingFocusIndex(null);
+  }, [pendingFocusIndex]);
 
   const onChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -60,6 +78,7 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
     setDisplayValue(newDisplay);
     const newErrorMessages = [...errorMessages, ""];
     setErrorMessages(newErrorMessages);
+    setPendingFocusIndex(newDisplay.length - 1);
     updateElement({ answer: newDisplay });
   };
 
@@ -78,37 +97,52 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
   };
 
   return (
-    <fieldset key="list-input-field">
-      <Label component={"legend"}>{optionalTag(element)}</Label>
-      <Hint id={id}>{helperText}</Hint>
-      {displayValue.map((field, index) => (
-        <HStack
-          alignItems="flex-end"
-          my="1rem"
-          key={`list-item-stack-${index}`}
-        >
-          <TextField
-            autoFocus
-            key={`list-item-${index}`}
-            name={`list-item-${index}`}
-            label={`${fieldLabel} ${index + 1}`}
-            value={field}
-            onChange={(evt) => onChangeHandler(evt, index)}
-            onBlur={(evt) => onChangeHandler(evt, index)}
-            errorMessage={errorMessages?.[index]}
-            disabled={isDisabled()}
-          />
-          <Button
-            variant="unstyled"
-            onClick={() => onRemoveHandler(index)}
-            disabled={isDisabled()}
-            aria-label={`Remove ${fieldLabel} ${index + 1}`}
-            leftIcon={<Image src={cancelPrimary} alt="Remove" />}
-          />
-        </HStack>
-      ))}
+    <Box
+      as="fieldset"
+      ref={fieldsetRef}
+      key="list-input-field"
+      className={fullWidth ? "full-width" : ""}
+      width="100%"
+    >
+      <Box as="legend" srOnly>
+        {label}
+      </Box>
+      {helperText && <Hint id={id}>{helperText}</Hint>}
+      <VStack alignItems="flex-start" gap="spacer3">
+        {displayValue.map((field, index) => (
+          <HStack
+            alignItems="flex-end"
+            key={`list-item-stack-${index}`}
+            gap="spacer2"
+          >
+            <Box width="25rem">
+              <TextField
+                key={`list-item-${index}`}
+                name={`list-item-${index}`}
+                label={fieldLabel}
+                value={field}
+                onChange={(evt) => onChangeHandler(evt, index)}
+                onBlur={(evt) => onChangeHandler(evt, index)}
+                errorMessage={errorMessages?.[index]}
+                disabled={isDisabled()}
+              />
+            </Box>
+
+            {displayValue.length > 1 && (
+              <Button
+                variant="unstyled"
+                onClick={() => onRemoveHandler(index)}
+                onMouseDown={(evt) => evt.preventDefault()}
+                disabled={isDisabled()}
+                aria-label={`Remove ${fieldLabel} ${index + 1}`}
+                leftIcon={<Image src={cancelPrimary} alt="Remove" />}
+              />
+            )}
+          </HStack>
+        ))}
+      </VStack>
       <Button
-        mt="spacer2"
+        mt="spacer3"
         variant="outline"
         leftIcon={<Image src={isDisabled() ? addGray : addPrimary} alt="Add" />}
         onClick={onAddHandler}
@@ -116,6 +150,6 @@ export const ListInput = (props: PageElementProps<ListInputTemplate>) => {
       >
         {buttonText}
       </Button>
-    </fieldset>
+    </Box>
   );
 };

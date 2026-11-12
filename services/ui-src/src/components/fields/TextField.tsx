@@ -183,7 +183,11 @@ export const TextField = (
   };
 
   return (
-    <Box width="100%" sx={sxOverride.container}>
+    <Box
+      className={textbox.fullWidth ? "full-width" : ""}
+      width="100%"
+      sx={sxOverride.container}
+    >
       <CmsdsTextField
         name={textbox.id}
         label={optionalTag(textbox)}

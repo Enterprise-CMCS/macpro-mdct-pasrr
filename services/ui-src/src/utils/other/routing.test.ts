@@ -7,11 +7,11 @@ describe("routing util tests", () => {
       const mockReport = {
         type: ReportType.PASRR,
         state: "AK",
-        id: "123-report-id",
+        id: "mock-report-id",
       } as Report;
 
       const result = reportBasePath(mockReport);
-      expect(result).toEqual("/report/PASRR/AK/123-report-id");
+      expect(result).toEqual("/report/PASRR/AK/mock-report-id");
     });
   });
 

@@ -7,16 +7,16 @@ import { testA11y } from "utils/testing/commonTests";
 const updateSpy = vi.fn();
 
 const mockAccordionGroupElement: AccordionGroupTemplate = {
-  id: "mock-accordiongroup-id",
+  id: "mock_accordion_groupId",
   type: ElementType.AccordionGroup,
   required: true,
   answer: [],
   accordions: [
     {
-      label: "mock-textbox-label",
+      label: "Accordion",
       elements: [
         {
-          id: "mock-textbox-id",
+          id: "mock_accordionId_textboxId",
           type: ElementType.Textbox,
           label: "mock textbox",
           helperText: "helper text",
@@ -43,7 +43,7 @@ describe("<AccordionGroup />", () => {
 
     expect(screen.getByRole("button", { name: "Expand all" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Collapse all" })).toBeVisible();
-    expect(screen.getByText("mock-textbox-label")).toBeVisible();
+    expect(screen.getByText("Accordion")).toBeVisible();
   });
   test("AccordionGroup expands and collapse all", async () => {
     render(AccordionGroupComponent);
@@ -66,7 +66,7 @@ describe("<AccordionGroup />", () => {
   test("accordions toggle open and close", async () => {
     render(AccordionGroupComponent);
     const accordionBtn = screen.getByRole("button", {
-      name: "mock-textbox-label",
+      name: "Accordion",
     });
     await userEvent.click(accordionBtn);
     waitFor(() => {

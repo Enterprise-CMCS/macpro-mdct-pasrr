@@ -12,7 +12,7 @@ const mockSaveReport = vi.fn();
 
 vi.mock("utils/state/useStore", () => ({
   useStore: () => ({
-    report: { id: "test-report" },
+    report: { id: "mock-report-id" },
     saveReport: mockSaveReport,
   }),
 }));

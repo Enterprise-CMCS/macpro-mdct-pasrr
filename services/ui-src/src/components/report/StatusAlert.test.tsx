@@ -20,14 +20,14 @@ vi.mock("utils/state/useStore", () => ({
             submittable: false,
             elements: [
               {
-                id: "mock-accordion-group",
+                id: "mock_accordionGroupId",
                 type: ElementType.AccordionGroup,
-                accordions: [{ id: "mock id" }],
+                accordions: [{ id: "mock_accordionId" }],
               },
             ],
           };
         }
-        return { ...mockUseStore, currentPageId: "mock-id" };
+        return { ...mockUseStore, currentPageId: "mock-page-id" };
       }
     ),
 }));
@@ -40,12 +40,12 @@ vi.mock("react-router", async (importOriginal) => ({
   useParams: vi.fn(() => ({
     reportType: "PASRR",
     state: "CO",
-    reportId: "mock-id",
+    reportId: "mock-report-id",
   })),
 }));
 
 const mockStatusAlert: StatusAlertTemplate = {
-  id: "mock-alert-id",
+  id: "mock_statusAlertId",
   type: ElementType.StatusAlert,
   title: "mock alert",
   text: "mock text",
@@ -53,12 +53,12 @@ const mockStatusAlert: StatusAlertTemplate = {
 };
 
 const mockStatusForAlert: StatusAlertTemplate = {
-  id: "mock-conditional-alert-id",
+  id: "mock_statusForAlertId",
   type: ElementType.StatusAlert,
   title: "mock alert",
   text: "mock text",
   status: AlertTypes.INFO,
-  for: "mock-accordion-group",
+  for: "mock_accordionGroupId",
 };
 
 const statusAlertComponent = (

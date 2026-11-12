@@ -188,6 +188,15 @@ button {
   }
 }
 
+// CMSDS caps the question label and hint at 460px; let them fill the container.
+.full-width {
+  .ds-c-field,
+  .ds-c-label,
+  .ds-c-hint {
+    max-width: 100%;
+  }
+}
+
 .ds-c-inline-error {
   font-size: 14px;
 }
@@ -266,21 +275,16 @@ button {
 // PAGE ELEMENT OVERRIDES
 
 // SubHeaderElement heading
-.chakra-stack {
+.chakra-stack:has(> .chakra-heading:not(h1)) {
   > .chakra-heading {
     margin-top: 1rem;
   }
 }
 
-// SubHeaderElement heading that follows ParagraphElement
-.chakra-stack + .chakra-stack {
-  > .chakra-heading {
-    margin-top: 0;
-  }
-}
-
-// SubHeaderElement heading that follows HeaderElement
-.chakra-heading + .chakra-stack {
+// SubHeaderElement heading that follows ParagraphElement, HeaderElement, or Accordion
+.chakra-stack + .chakra-stack:has(> .chakra-heading:not(h1)),
+.chakra-heading + .chakra-stack:has(> .chakra-heading:not(h1)),
+.chakra-accordion + .chakra-stack:has(> .chakra-heading:not(h1)) {
   > .chakra-heading {
     margin-top: 0;
   }

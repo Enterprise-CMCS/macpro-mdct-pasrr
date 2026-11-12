@@ -246,3 +246,7 @@ export const getResidentDispositionPresetRowsAndAnswer = ({
     },
   };
 };
+
+export const kebabCaseRegex = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+export const snakeCaseOrCamelCaseRegex =
+  /^[a-z]+(_[a-z0-9]+([A-Z][a-z0-9]*)*)*$/;
