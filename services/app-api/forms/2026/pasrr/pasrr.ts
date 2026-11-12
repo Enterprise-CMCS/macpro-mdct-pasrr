@@ -6,7 +6,7 @@ import { intellectualDisabilityAndRelatedConditionsSpecializedServices } from ".
 import { intellectualDisabilityAndRelatedConditionsNoNursingFacilityCareOrServices } from "./pages/intellectual-disability-and-related-conditions/intellectual-disability-and-related-conditions-no-nursing-facility-care-or-services";
 import { seriousMentalIllness } from "./pages/serious-mental-illness";
 import { seriousMentalIllnessSpecializedServices } from "./pages/serious-mental-illness/serious-mental-illness-specialized-services-only";
-import { seriousMentalIllnessNoNursingFacilityCare } from "./pages/serious-mental-illness/serious-mental-illness-no-nursing-facility-care";
+import { seriousMentalIllnessNoNursingFacilityCareOrServices } from "./pages/serious-mental-illness/serious-mental-illness-no-nursing-facility-care-or-services";
 import { reviewAndSubmit } from "./pages/review-and-submit";
 
 export const pasrrReportTemplate = (_state: string): ReportPages => [
@@ -25,6 +25,6 @@ export const pasrrReportTemplate = (_state: string): ReportPages => [
   intellectualDisabilityAndRelatedConditionsNoNursingFacilityCareOrServices,
   seriousMentalIllness,
   seriousMentalIllnessSpecializedServices,
-  seriousMentalIllnessNoNursingFacilityCare,
+  seriousMentalIllnessNoNursingFacilityCareOrServices,
   reviewAndSubmit,
 ];
