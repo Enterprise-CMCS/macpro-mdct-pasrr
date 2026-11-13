@@ -199,4 +199,54 @@ describe("pasrr template", () => {
       expect(id).not.toMatch(snakeCaseOrCamelCaseRegex);
     });
   });
+
+  describe("nested pages", () => {
+    const pageById = new Map(reportTemplate.map((page) => [page.id, page]));
+
+    test("every childPageIds entry refers to a declared page", () => {
+      for (const page of reportTemplate) {
+        for (const childId of page.childPageIds ?? []) {
+          expect(pageById.has(childId), `${page.id} -> ${childId}`).toBe(true);
+        }
+      }
+    });
+
+    test("every page is listed as a child exactly once", () => {
+      const childIds = reportTemplate.flatMap(
+        (page) => page.childPageIds ?? []
+      );
+      const nonRootIds = reportTemplate
+        .map((page) => page.id)
+        .filter((id) => id !== "root");
+      expect(childIds.toSorted()).toEqual(nonRootIds.toSorted());
+    });
+
+    test("top-level pages are in sidebar order", () => {
+      expect(pageById.get("root")?.childPageIds).toEqual([
+        "general-information",
+        "intellectual-disability-and-related-conditions",
+        "serious-mental-illness",
+        "review-submit",
+      ]);
+    });
+
+    test.each([
+      [
+        "intellectual-disability-and-related-conditions",
+        ["idrc-specialized-services-only", "idrc-no-nursing-facility-care"],
+      ],
+      [
+        "serious-mental-illness",
+        [
+          "serious-mental-illness-specialized-services",
+          "serious-mental-illness-no-nursing-facility-care-or-services",
+        ],
+      ],
+    ])("'%s' nests its two subsections in order", (parentId, childIds) => {
+      expect(pageById.get(parentId)?.childPageIds).toEqual(childIds);
+      for (const childId of childIds) {
+        expect(pageById.get(childId)?.title).toBeTruthy();
+      }
+    });
+  });
 });
