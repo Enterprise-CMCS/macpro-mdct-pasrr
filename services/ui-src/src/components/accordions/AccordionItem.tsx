@@ -31,7 +31,7 @@ export const AccordionItem = ({
               alt={isExpanded ? "Collapse" : "Expand"}
             />
           </AccordionButton>
-          <AccordionPanel paddingInlineStart="spacer3">
+          <AccordionPanel paddingInline="spacer3" paddingY="spacer2">
             {children}
           </AccordionPanel>
         </>

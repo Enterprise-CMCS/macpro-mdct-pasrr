@@ -187,7 +187,7 @@ export const getPostalAddressElements = ({
 };
 
 // Used with SummationTable component
-export const getResidentDispositionPresetRowsAndAnswer = ({
+export const getResidentDispositionsPresetRowsAndAnswer = ({
   id,
 }: {
   id: string;
@@ -217,7 +217,7 @@ export const getResidentDispositionPresetRowsAndAnswer = ({
     "Pending appeal",
     "Pending home or community placement",
     "Pending institutional (IMD, inpatient psychiatric facility, ICF/IID) placement",
-    "Deceased",
+    "Died prior to discharge",
     "Unknown",
   ];
 

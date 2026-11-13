@@ -2,7 +2,7 @@ import {
   FormPageTemplate,
   PageType,
   ElementType,
-  getResidentDispositionPresetRowsAndAnswer,
+  getResidentDispositionsPresetRowsAndAnswer,
 } from "@pasrr/shared";
 
 export const noNursingFacilityCare: FormPageTemplate = {
@@ -40,10 +40,10 @@ export const noNursingFacilityCare: FormPageTemplate = {
       id: "idrc_specializedServicesNotRequiredTable",
       caption: "Resident dispositions: No nursing facility care or services",
       required: true,
-      rows: getResidentDispositionPresetRowsAndAnswer({
+      rows: getResidentDispositionsPresetRowsAndAnswer({
         id: "idrc_specializedServicesNotRequiredTable",
       }).rows,
-      answer: getResidentDispositionPresetRowsAndAnswer({
+      answer: getResidentDispositionsPresetRowsAndAnswer({
         id: "idrc_specializedServicesNotRequiredTable",
       }).answer,
     },

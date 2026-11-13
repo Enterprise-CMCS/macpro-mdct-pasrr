@@ -68,7 +68,7 @@ export const FieldGroupExport = (element: FieldGroupTemplate) => {
     headingLevel: element.headingLevel ?? 3,
   };
   return (
-    <Stack width="720px" key={element.id}>
+    <Stack key={element.id}>
       <SubHeaderElement element={subHeaderElement} />
       {renderReportTable(tableResponses)}
     </Stack>

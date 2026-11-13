@@ -2,11 +2,11 @@ import { ReportPages } from "@pasrr/shared";
 // routes
 import { generalInformation } from "./pages/general-information";
 import { intellectualDisabilityAndRelatedConditions } from "./pages/intellectual-disability-and-related-conditions";
-import { specializedServicesOnly } from "./pages/intellectual-disability-and-related-conditions/specialized-services-only";
-import { noNursingFacilityCare } from "./pages/intellectual-disability-and-related-conditions/no-nursing-facility-care";
+import { intellectualDisabilityAndRelatedConditionsSpecializedServices } from "./pages/intellectual-disability-and-related-conditions/intellectual-disability-and-related-conditions-specialized-services-only";
+import { intellectualDisabilityAndRelatedConditionsNoNursingFacilityCareOrServices } from "./pages/intellectual-disability-and-related-conditions/intellectual-disability-and-related-conditions-no-nursing-facility-care-or-services";
 import { seriousMentalIllness } from "./pages/serious-mental-illness";
-import { seriousMentalIllnessSpecializedServices } from "./pages/serious-mental-illness/serious-mental-illness-specialized-services";
-import { seriousMentalIllnessNoNursingFacilityCare } from "./pages/serious-mental-illness/serious-mental-illness-no-nursing-facility-care";
+import { seriousMentalIllnessSpecializedServices } from "./pages/serious-mental-illness/serious-mental-illness-specialized-services-only";
+import { seriousMentalIllnessNoNursingFacilityCareOrServices } from "./pages/serious-mental-illness/serious-mental-illness-no-nursing-facility-care-or-services";
 import { reviewAndSubmit } from "./pages/review-and-submit";
 
 export const pasrrReportTemplate = (_state: string): ReportPages => [
@@ -21,10 +21,10 @@ export const pasrrReportTemplate = (_state: string): ReportPages => [
   },
   generalInformation,
   intellectualDisabilityAndRelatedConditions,
-  specializedServicesOnly,
-  noNursingFacilityCare,
+  intellectualDisabilityAndRelatedConditionsSpecializedServices,
+  intellectualDisabilityAndRelatedConditionsNoNursingFacilityCareOrServices,
   seriousMentalIllness,
   seriousMentalIllnessSpecializedServices,
-  seriousMentalIllnessNoNursingFacilityCare,
+  seriousMentalIllnessNoNursingFacilityCareOrServices,
   reviewAndSubmit,
 ];
