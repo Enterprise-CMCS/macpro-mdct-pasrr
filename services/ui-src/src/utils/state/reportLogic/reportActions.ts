@@ -55,12 +55,6 @@ export const buildState = (
 export const setPage = (targetPageId: string, currentState: ReportState) => {
   const { report, pageMap, rootPage } = currentState;
 
-  // const report = currentState.report;
-  // const pageMap = new Map<string, number>(
-  //   report?.pages.map((page, index) => [page.id, index]),
-  // );
-  // const rootPage = report?.pages.find((page) => page.id === "root");
-
   let parentPage = undefined;
   if (report && pageMap && rootPage) {
     const flatIds = flattenPageIds(report, pageMap, rootPage.childPageIds);

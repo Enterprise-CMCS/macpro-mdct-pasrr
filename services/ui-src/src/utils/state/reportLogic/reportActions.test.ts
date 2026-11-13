@@ -92,11 +92,11 @@ describe("reportActions", () => {
   describe("state/management/reportState: buildState", () => {
     test("initializes relevant parts of the state", () => {
       const result = buildState(testReport, false);
-      expect(result.pageMap!.size).toEqual(3);
+      expect(result.pageMap!.size).toBe(3);
       expect(result.report).not.toBeUndefined();
       expect(result.rootPage).not.toBeUndefined();
-      expect(result.parentPage?.parent).toEqual("root");
-      expect(result.currentPageId).toEqual("general-information");
+      expect(result.parentPage?.parent).toBe("root");
+      expect(result.currentPageId).toBe("general-information");
     });
 
     test("returns early when no report provided", () => {
@@ -109,7 +109,7 @@ describe("reportActions", () => {
     test("updates the page info", () => {
       const state = buildState(testReport, false) as ReportState;
       const result = setPage("mock-page-id", state);
-      expect(result.currentPageId).toEqual("mock-page-id");
+      expect(result.currentPageId).toBe("mock-page-id");
     });
   });
 
@@ -117,55 +117,110 @@ describe("reportActions", () => {
     const nestedReport = {
       ...testReport,
       pages: [
-        { id: "root", childPageIds: ["a", "b", "c", "d"] },
-        { id: "a", title: "A", type: PageType.Standard, elements: [] },
         {
-          id: "b",
+          id: "root",
+          childPageIds: [
+            "mock-page-id-a",
+            "mock-parent-page-id-b",
+            "mock-page-id-c",
+            "mock-parent-page-id-d",
+          ],
+        },
+        {
+          id: "mock-page-id-a",
+          title: "A",
+          type: PageType.Standard,
+          elements: [],
+        },
+        {
+          id: "mock-parent-page-id-b",
           title: "B",
           type: PageType.Standard,
           elements: [],
-          childPageIds: ["b-1", "b-2"],
+          childPageIds: ["mock-child-page-id-b-1", "mock-child-page-id-b-2"],
         },
-        { id: "b-1", title: "B1", type: PageType.Standard, elements: [] },
-        { id: "b-2", title: "B2", type: PageType.Standard, elements: [] },
-        { id: "c", title: "C", type: PageType.Standard, elements: [] },
-        { id: "d", title: "D", childPageIds: ["d-1"] },
-        { id: "d-1", title: "D1", type: PageType.Standard, elements: [] },
+        {
+          id: "mock-child-page-id-b-1",
+          title: "B1",
+          type: PageType.Standard,
+          elements: [],
+        },
+        {
+          id: "mock-child-page-id-b-2",
+          title: "B2",
+          type: PageType.Standard,
+          elements: [],
+        },
+        {
+          id: "mock-page-id-c",
+          title: "C",
+          type: PageType.Standard,
+          elements: [],
+        },
+        {
+          id: "mock-parent-page-id-d",
+          title: "D",
+          childPageIds: ["mock-child-page-id-d-1"],
+        },
+        {
+          id: "mock-child-page-id-d-1",
+          title: "D1",
+          type: PageType.Standard,
+          elements: [],
+        },
       ],
     } as Report;
-    // "d" is a parent-only page, so navigation goes straight to its child
-    const expectedOrder = ["a", "b", "b-1", "b-2", "c", "d-1"];
+    // "mock-parent-page-id-d" is a parent-only page, so navigation goes straight to its child
+    const expectedOrder = [
+      "mock-page-id-a",
+      "mock-parent-page-id-b",
+      "mock-child-page-id-b-1",
+      "mock-child-page-id-b-2",
+      "mock-page-id-c",
+      "mock-child-page-id-d-1",
+    ];
 
     test("flattenPageIds lists children right after their parent", () => {
       const pageMap = new Map(nestedReport.pages.map((pg, i) => [pg.id, i]));
       expect(
-        flattenPageIds(nestedReport, pageMap, ["a", "b", "c", "d"])
+        flattenPageIds(nestedReport, pageMap, [
+          "mock-page-id-a",
+          "mock-parent-page-id-b",
+          "mock-page-id-c",
+          "mock-parent-page-id-d",
+        ])
       ).toEqual(expectedOrder);
     });
 
     test("buildState uses the flattened order for navigation", () => {
       const state = buildState(nestedReport, false) as ReportState;
       expect(state.parentPage?.childPageIds).toEqual(expectedOrder);
-      expect(state.currentPageId).toEqual("a");
+      expect(state.currentPageId).toBe("mock-page-id-a");
     });
 
     test("setPage on a child page points Continue at the next page in order", () => {
       const state = buildState(nestedReport, false) as ReportState;
-      const { parentPage } = setPage("b-2", state);
-      expect(parentPage?.index).toEqual(3);
-      expect(parentPage?.childPageIds[parentPage.index + 1]).toEqual("c");
+      const { parentPage } = setPage("mock-child-page-id-b-2", state);
+      expect(parentPage?.index).toBe(3);
+      expect(parentPage?.childPageIds[parentPage.index + 1]).toBe(
+        "mock-page-id-c"
+      );
     });
 
     test("Continue from the last child of one section lands on the first child of the next parent-only section", () => {
       const state = buildState(nestedReport, false) as ReportState;
-      const { parentPage } = setPage("c", state);
-      expect(parentPage?.childPageIds[parentPage.index + 1]).toEqual("d-1");
+      const { parentPage } = setPage("mock-page-id-c", state);
+      expect(parentPage?.childPageIds[parentPage.index + 1]).toBe(
+        "mock-child-page-id-d-1"
+      );
     });
 
     test("setPage on a parent page continues into its first child", () => {
       const state = buildState(nestedReport, false) as ReportState;
-      const { parentPage } = setPage("b", state);
-      expect(parentPage?.childPageIds[parentPage.index + 1]).toEqual("b-1");
+      const { parentPage } = setPage("mock-parent-page-id-b", state);
+      expect(parentPage?.childPageIds[parentPage.index + 1]).toBe(
+        "mock-child-page-id-b-1"
+      );
     });
   });
 
@@ -274,8 +329,8 @@ describe("reportActions", () => {
       const page = result?.report?.pages[1] as FormPageTemplate;
       const elements = page?.elements;
       const question = elements[1] as TextboxTemplate;
-      expect(page.status).toEqual(PageStatus.IN_PROGRESS);
-      expect(question.answer).toEqual("ANSWERED");
+      expect(page.status).toBe(PageStatus.IN_PROGRESS);
+      expect(question.answer).toBe("ANSWERED");
     });
   });
 
