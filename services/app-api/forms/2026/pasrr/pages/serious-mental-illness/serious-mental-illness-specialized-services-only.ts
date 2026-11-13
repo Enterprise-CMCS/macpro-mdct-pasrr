@@ -44,12 +44,9 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
       id: "smi_specializedServices_table",
       caption: "Resident dispositions: Specialized services only",
       required: true,
-      rows: getResidentDispositionsPresetRowsAndAnswer({
+      ...getResidentDispositionsPresetRowsAndAnswer({
         id: "smi_specializedServices_table",
-      }).rows,
-      answer: getResidentDispositionsPresetRowsAndAnswer({
-        id: "smi_specializedServices_table",
-      }).answer,
+      }),
     },
     {
       id: "smi_specializedServices_multipleReviews",

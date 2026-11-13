@@ -45,12 +45,9 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServices: Form
         id: "idrc_specializedServices_table",
         caption: "Resident dispositions: Specialized services only",
         required: true,
-        rows: getResidentDispositionsPresetRowsAndAnswer({
+        ...getResidentDispositionsPresetRowsAndAnswer({
           id: "idrc_specializedServices_table",
-        }).rows,
-        answer: getResidentDispositionsPresetRowsAndAnswer({
-          id: "idrc_specializedServices_table",
-        }).answer,
+        }),
       },
       {
         id: "idrc_specializedServices_multipleReviews",

@@ -45,12 +45,9 @@ export const seriousMentalIllnessNoNursingFacilityCareOrServices: FormPageTempla
         id: "smi_noNursingFacilityCare_table",
         caption: "Resident dispositions: No nursing facility care or services",
         required: true,
-        rows: getResidentDispositionsPresetRowsAndAnswer({
+        ...getResidentDispositionsPresetRowsAndAnswer({
           id: "smi_noNursingFacilityCare_table",
-        }).rows,
-        answer: getResidentDispositionsPresetRowsAndAnswer({
-          id: "smi_noNursingFacilityCare_table",
-        }).answer,
+        }),
       },
       {
         id: "smi_noNursingFacilityCare_multipleReviews",

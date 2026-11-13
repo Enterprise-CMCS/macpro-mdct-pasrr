@@ -11,10 +11,10 @@ import {
   SummationTableRowAnswerShape,
   SummationTableTemplate,
 } from "@pasrr/shared";
-import { sumById } from "components/fields/SummationTable";
 import { ReportAutosaveContext } from "components/report/ReportAutosaveProvider";
 import { useContext } from "react";
 import { useStore } from "utils";
+import { sumById } from "utils/state/reportLogic/tableBuilder";
 import {
   currentPageSelector,
   submittableMetricsSelector,

@@ -12,6 +12,7 @@ import {
 import {
   buildElement,
   getErrorMessage,
+  sumById,
 } from "utils/state/reportLogic/tableBuilder";
 import {
   isEmptyValue,
@@ -150,20 +151,14 @@ export const SummationTable = (
       return total;
     }
 
-    const sumById = rows.reduce((sum, row) => {
-      const cell = row.find((t) => t.id === id);
-      return (
-        sum + (isWholePositiveNumber(cell?.value) ? Number(cell?.value) : 0)
-      );
-    }, 0);
-
-    const newSumRow = { id, value: sumById, readonly: true };
+    const currentSum = sumById(rows, id);
+    const newSumRow = { id, value: currentSum, readonly: true };
     const updatedTotalRows = total.length > 0 ? [...total] : [[newSumRow]];
 
     for (const row of updatedTotalRows) {
       const cellToUpdate = row.find((t) => t.id === id);
       if (cellToUpdate) {
-        cellToUpdate.value = sumById;
+        cellToUpdate.value = currentSum;
       } else {
         row.push(newSumRow);
       }
@@ -275,9 +270,3 @@ export const SummationTableExport = (element: SummationTableTemplate) => {
     </Stack>
   );
 };
-
-export const sumById = (rows: SummationTableRowAnswerShape[], id: string) =>
-  rows.reduce((sum, row) => {
-    const cell = row.find((t) => t.id === id);
-    return sum + (isWholePositiveNumber(cell?.value) ? Number(cell?.value) : 0);
-  }, 0);

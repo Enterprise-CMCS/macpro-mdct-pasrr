@@ -9,7 +9,6 @@ import {
   Report,
   SummationTableRowAnswerShape,
 } from "@pasrr/shared";
-import { sumById } from "components/fields/SummationTable";
 import { isFormPageTemplate, assertExhaustive } from "types";
 import {
   isEmail,
@@ -19,6 +18,7 @@ import {
   isZipCode,
   parseNumber,
 } from "utils/validation/inputValidation";
+import { sumById } from "./tableBuilder";
 
 /**
  * Calculate the status of any page, including calculated values.
