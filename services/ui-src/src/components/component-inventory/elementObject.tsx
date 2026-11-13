@@ -16,6 +16,7 @@ import {
   AttachmentArea,
   AccordionGroup,
   ActionTable,
+  SummationTable,
 } from "components";
 import {
   ButtonLinkElement,
@@ -28,6 +29,7 @@ import {
   AlertTypes,
   ElementType,
   getPostalAddressElements,
+  getResidentDispositionsPresetRowsAndAnswer,
   HeaderIcon,
   NumberFieldTemplate,
   PageElement,
@@ -45,8 +47,10 @@ import {
   actionTableSection,
   fieldGroupSection,
   postalAddressFieldGroupSection,
+  summationTableSection,
+  residentDispositionsSummationTableSection,
 } from "./pdfElementSectionHelpers";
-import { formatMonthDayYear } from "utils";
+import { formatMonthDayYear } from "utils/other/time";
 import { SubmissionParagraph } from "components/report/SubmissionParagraph";
 import { RequestFeedbackButton } from "components/report/RequestFeedbackButton";
 import { mockDropdown, mockTextboxOptional } from "utils/testing/mockForm";
@@ -561,6 +565,77 @@ export const elementObject: {
     pdfVariants: [
       <ExportedReportWrapper section={fieldGroupSection} />,
       <ExportedReportWrapper section={postalAddressFieldGroupSection} />,
+    ],
+  },
+  [ElementType.SummationTable]: {
+    description: "A table that sums up numeric fields",
+    id: "componentInventory_summationTableId",
+    variants: [
+      <SummationTable
+        element={{
+          type: ElementType.SummationTable,
+          id: "mock_summationTableId",
+          caption: "Summation Table",
+          required: true,
+          rows: [
+            {
+              id: "mock_summationTableId_textboxId",
+              header: "Textbox",
+              type: ElementType.Textbox,
+            },
+            {
+              id: "mock_summationTableId_numberFieldId",
+              header: "NumberField",
+              type: ElementType.NumberField,
+            },
+          ],
+          answer: {
+            rows: [
+              [
+                { id: "mock_summationTableId_textboxId", value: "" },
+                { id: "mock_summationTableId_numberFieldId", value: "" },
+              ],
+            ],
+            total: [
+              [
+                {
+                  id: "mock_summationTableId_textboxId",
+                  value: "Total",
+                  preset: true,
+                  readonly: true,
+                },
+                {
+                  id: "mock_summationTableId_numberFieldId",
+                  value: 0,
+                  readonly: true,
+                },
+              ],
+            ],
+          },
+        }}
+        updateElement={logNewElement}
+      />,
+      <SummationTable
+        element={{
+          type: ElementType.SummationTable,
+          id: "mock_residentDispositionsSummationTableId",
+          caption: "Resident Dispositions Summation Table",
+          required: true,
+          rows: getResidentDispositionsPresetRowsAndAnswer({
+            id: "mock_residentDispositionsSummationTableId",
+          }).rows,
+          answer: getResidentDispositionsPresetRowsAndAnswer({
+            id: "mock_residentDispositionsSummationTableId",
+          }).answer,
+        }}
+        updateElement={logNewElement}
+      />,
+    ],
+    pdfVariants: [
+      <ExportedReportWrapper section={summationTableSection} />,
+      <ExportedReportWrapper
+        section={residentDispositionsSummationTableSection}
+      />,
     ],
   },
 };

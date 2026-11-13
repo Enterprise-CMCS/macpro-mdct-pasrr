@@ -1,7 +1,7 @@
 import {
   ElementType,
   FormPageTemplate,
-  getResidentDispositionPresetRowsAndAnswer,
+  getResidentDispositionsPresetRowsAndAnswer,
   PageType,
 } from "@pasrr/shared";
 import { reportingCriteriaAccordion } from ".";
@@ -45,12 +45,9 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServices: Form
         id: "idrc_specializedServices_table",
         caption: "Resident dispositions: Specialized services only",
         required: true,
-        rows: getResidentDispositionPresetRowsAndAnswer({
+        ...getResidentDispositionsPresetRowsAndAnswer({
           id: "idrc_specializedServices_table",
-        }).rows,
-        answer: getResidentDispositionPresetRowsAndAnswer({
-          id: "idrc_specializedServices_table",
-        }).answer,
+        }),
       },
       {
         id: "idrc_specializedServices_multipleReviews",
@@ -60,6 +57,7 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServices: Form
         helperText:
           "Do not include personally identifiable information (PII) or protected health information (PHI).",
         required: false,
+        fullWidth: true,
       },
       {
         id: "idrc_specializedServices_receivedServices",
@@ -67,6 +65,7 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServices: Form
         label:
           "During this reporting period, did all eligible residents receive specialized services or have them arranged by the state?",
         required: true,
+        fullWidth: true,
         helperText:
           "Select “No” if any individual in the table above did not have specialized services arranged or provided by the state.",
         choices: [
@@ -79,8 +78,8 @@ export const intellectualDisabilityAndRelatedConditionsSpecializedServices: Form
             value: "No",
             checkedChildren: [
               {
-                id: "idrc_specializedServices_howManyResidentsDidNotReceiveSpecializedServices",
-                type: ElementType.Textbox,
+                id: "idrc_specializedServices_howManyResidentsDidNotReceiveServices",
+                type: ElementType.TextAreaField,
                 label:
                   "How many residents did not receive services, and why were services not arranged or provided by the state?",
                 helperText:

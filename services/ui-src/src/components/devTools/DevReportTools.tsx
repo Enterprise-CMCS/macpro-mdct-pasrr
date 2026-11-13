@@ -7,14 +7,19 @@ import {
   FormPageTemplate,
   PageElement,
   ParentPageTemplate,
+  RadioTemplate,
+  SummationTableRowAnswerShape,
+  SummationTableTemplate,
 } from "@pasrr/shared";
 import { ReportAutosaveContext } from "components/report/ReportAutosaveProvider";
 import { useContext } from "react";
 import { useStore } from "utils";
+import { sumById } from "utils/state/reportLogic/tableBuilder";
 import {
   currentPageSelector,
   submittableMetricsSelector,
 } from "utils/state/selectors";
+import { isEmptyValue } from "utils/validation/inputValidation";
 
 export const DevReportTools = () => {
   const { setAnswers, report, lastSavedTime } = useStore();
@@ -37,9 +42,10 @@ export const DevReportTools = () => {
   }) => {
     switch (type) {
       case ElementType.Dropdown:
+      case ElementType.Radio:
         return value;
       case ElementType.NumberField:
-        return "1234";
+        return 1234;
       case ElementType.Date:
         return "02/02/2026";
       case ElementType.Textbox:
@@ -54,8 +60,29 @@ export const DevReportTools = () => {
         return field ? textMap[field] : "mock text input";
       case ElementType.TextAreaField:
         return "mock text area field";
+      default:
+        console.error("Type ignored: " + type + ". Element id: " + id);
+        return;
     }
-    return console.error("Type ignored: " + type + ". Element id: " + id);
+  };
+
+  const fillOptions = (element: DropdownTemplate | RadioTemplate) => {
+    const options = "options" in element ? element.options : element.choices;
+    const chosenOption = options.find((t) => !isEmptyValue(t.value));
+    if (chosenOption?.checkedChildren) {
+      const updatedChildren = chosenOption.checkedChildren.map((child) => {
+        return {
+          ...child,
+          ...fillAnswer(child),
+        };
+      });
+      return options.map((t) =>
+        t.value === chosenOption.value
+          ? { ...t, checkedChildren: updatedChildren }
+          : t
+      );
+    }
+    return options;
   };
 
   const fillAnswer = (element: PageElement) => {
@@ -69,9 +96,18 @@ export const DevReportTools = () => {
       element.answer !== undefined
         ? element.answer
         : undefined;
-    const options = (element as DropdownTemplate).options;
-    const value = options?.[0]?.value || options?.[1]?.value || "";
+    let value = "";
 
+    if (
+      element.type === ElementType.Dropdown ||
+      element.type === ElementType.Radio
+    ) {
+      const options =
+        (element as DropdownTemplate).options ||
+        (element as RadioTemplate).choices;
+      const chosenOption = options.find((t) => !isEmptyValue(t.value));
+      value = chosenOption?.value || "";
+    }
     return {
       answer:
         answer ??
@@ -116,6 +152,55 @@ export const DevReportTools = () => {
     return { elements, answer };
   };
 
+  const fillSummationTable = (element: SummationTableTemplate) => {
+    const { answer, rows: headers = [] } = element;
+    const rows = answer?.rows || [];
+    const answerTotal = answer?.total || [];
+
+    const getMockAnswer = (
+      row: SummationTableRowAnswerShape,
+      isTotal: boolean,
+      sourceRows: SummationTableRowAnswerShape[]
+    ) => {
+      return headers.map((header) => {
+        const answer = row.find((col) => col.id === header.id);
+        const isNumberField = header.type === ElementType.NumberField;
+
+        if (isTotal && isNumberField) {
+          return {
+            ...(answer || { id: header.id }),
+            value: sumById(sourceRows, header.id),
+            readonly: true,
+          };
+        }
+
+        if (!answer) {
+          return {
+            id: header.id,
+            value: getAnswerByType({ type: header.type, id: header.id }) || "",
+            ...(isTotal ? { readonly: true } : {}),
+          };
+        }
+
+        if (!isTotal && isEmptyValue(answer.value)) {
+          return {
+            ...answer,
+            value: getAnswerByType({ type: header.type, id: header.id }) || "",
+          };
+        }
+
+        return answer;
+      });
+    };
+
+    const filledRows = rows.map((row) => getMockAnswer(row, false, rows));
+    const filledTotal = answerTotal.map((row) =>
+      getMockAnswer(row, true, filledRows)
+    );
+
+    return { rows: filledRows, total: filledTotal };
+  };
+
   const fillPageElements = (elements: PageElement[]) => {
     return elements.map((element) => {
       switch (element.type) {
@@ -128,6 +213,23 @@ export const DevReportTools = () => {
             ...element,
             elements: fieldGroupFills.elements,
             answer: fieldGroupFills.answer,
+          };
+
+        case ElementType.SummationTable:
+          return { ...element, answer: fillSummationTable(element) };
+
+        case ElementType.Dropdown:
+          return {
+            ...element,
+            options: fillOptions(element),
+            ...fillAnswer(element),
+          };
+
+        case ElementType.Radio:
+          return {
+            ...element,
+            choices: fillOptions(element),
+            ...fillAnswer(element),
           };
 
         default:
