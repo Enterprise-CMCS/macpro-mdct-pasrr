@@ -233,12 +233,15 @@ describe("pasrr template", () => {
     test.each([
       [
         "intellectual-disability-and-related-conditions",
-        ["idrc-specialized-services-only", "idrc-no-nursing-facility-care"],
+        [
+          "intellectual-disability-and-related-conditions-specialized-services-only",
+          "intellectual-disability-and-related-conditions-no-nursing-facility-care-or-services",
+        ],
       ],
       [
         "serious-mental-illness",
         [
-          "serious-mental-illness-specialized-services",
+          "serious-mental-illness-specialized-services-only",
           "serious-mental-illness-no-nursing-facility-care-or-services",
         ],
       ],
