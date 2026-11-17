@@ -469,14 +469,22 @@ export type SummationTableAnswerShape = {
   total: SummationTableRowAnswerShape[];
 };
 
+export interface SummationTableRowElement extends ActionElement {
+  header: string;
+  addRowLabel?: string;
+}
+
 export interface SummationTableTemplate extends Omit<
   InputElementTemplate,
   "label" | "helperText" | "helperTextLink" | "skipOptionalTag"
 > {
   type: ElementType.SummationTable;
   caption: string;
-  rows: ActionRowElement[];
+  rows: SummationTableRowElement[];
   answer?: SummationTableAnswerShape;
+  addRowButtonText?: string;
+  addRowHelperText?: string;
+  addRowMax?: number;
 }
 
 export interface PasrrSubTypeData {

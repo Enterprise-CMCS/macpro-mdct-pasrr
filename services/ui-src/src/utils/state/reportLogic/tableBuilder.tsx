@@ -1,22 +1,21 @@
 import {
-  TextField as CmsdsTextField,
+  TextField,
   SingleInputDateField,
   Dropdown,
   DropdownOption,
 } from "@cmsgov/design-system";
-import { TextField as PasrrTextField } from "components";
 import { ErrorMessages } from "../../../constants";
 import {
   ActionElement,
   ElementType,
   SummationTableRowAnswerShape,
-  TextboxTemplate,
 } from "@pasrr/shared";
 import {
-  parseNumber,
-  validateDate,
-  maskByType,
+  isEmptyValue,
   isWholePositiveNumber,
+  parseNumber,
+  maskByType,
+  validateDate,
 } from "utils/validation/inputValidation";
 
 export const buildElement = ({
@@ -43,7 +42,7 @@ export const buildElement = ({
 
   if (
     [ElementType.NumberField, ElementType.Textbox].includes(type) &&
-    readonly === true
+    readonly
   ) {
     type = ElementType.Paragraph;
   }
@@ -57,7 +56,7 @@ export const buildElement = ({
       return (
         <Dropdown
           key={`dropdown-${key}`}
-          name={id ?? "dropdown"}
+          name={id}
           label={label}
           onChange={(event) => {
             onChange([event.target.value]);
@@ -71,31 +70,27 @@ export const buildElement = ({
       );
     case ElementType.Textbox:
       return (
-        <PasrrTextField
+        <TextField
           key={`textbox-${key}`}
-          element={
-            {
-              ...element,
-              id,
-              label: label ?? "textbox",
-              answer: defaultValue,
-              skipOptionalTag: true,
-            } as TextboxTemplate
-          }
-          updateElement={(updatedElement: Partial<TextboxTemplate>) => {
-            if (updatedElement.answer !== undefined) {
-              onChange([updatedElement.answer]);
-            }
+          label={label}
+          name={id}
+          onChange={(event) => {
+            onChange([event.target.value]);
           }}
+          onBlur={(event) => {
+            onChange([event.target.value]);
+          }}
+          value={defaultValue}
+          errorMessage={errorMessage}
           disabled={element.disabled}
         />
       );
     case ElementType.NumberField:
       return (
-        <CmsdsTextField
+        <TextField
           key={`textbox-${key}`}
           label={label}
-          name={id ?? "textbox"}
+          name={id}
           onChange={(event) => {
             onChange([event.target.value]);
           }}
@@ -111,10 +106,10 @@ export const buildElement = ({
       );
     case ElementType.TextAreaField:
       return (
-        <CmsdsTextField
+        <TextField
           key={`textarea-${key}`}
           label={label}
-          name={id ?? "textarea"}
+          name={id}
           onChange={(event) => {
             onChange([event.target.value]);
           }}
@@ -132,7 +127,7 @@ export const buildElement = ({
       return (
         <SingleInputDateField
           key={`date-${key}`}
-          name={id ?? "date-field"}
+          name={id}
           label={label}
           onChange={(_rawValue: string, maskedValue: string) => {
             onChange([_rawValue, maskedValue]);
@@ -144,8 +139,8 @@ export const buildElement = ({
       );
     default:
       console.error("missing: " + element);
+      return null;
   }
-  return null;
 };
 
 export const getErrorMessage = ({
@@ -161,7 +156,7 @@ export const getErrorMessage = ({
   };
   value: string[];
 }) => {
-  if (!value[0] && required) {
+  if (isEmptyValue(value[0]) && required) {
     return ErrorMessages.requiredResponse;
   }
 
@@ -187,3 +182,7 @@ export const sumById = (rows: SummationTableRowAnswerShape[], id: string) =>
     const cell = row.find((t) => t.id === id);
     return sum + (isWholePositiveNumber(cell?.value) ? Number(cell?.value) : 0);
   }, 0);
+
+export const getNonPresetRows = (
+  answerRows: SummationTableRowAnswerShape[] = []
+) => answerRows.filter((answerRow) => answerRow.every((cell) => !cell.preset));

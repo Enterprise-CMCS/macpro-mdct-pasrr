@@ -36,6 +36,7 @@ const mockedSummationTableElement: SummationTableTemplate = {
       id: `${id}_textboxId`,
       header: "Textbox",
       type: ElementType.Textbox,
+      addRowLabel: "Other:",
     },
     {
       id: `${id}_numberFieldId`,
@@ -80,20 +81,64 @@ describe("<SummationTable />", () => {
     const table = screen.getByRole("table", { name: "Summation Table" });
     expect(table).toBeVisible();
 
-    const textbox = screen.getByRole("textbox", { name: "mock text Textbox" });
+    const textbox = screen.getByRole("textbox", {
+      name: "Other: mock text Textbox",
+    });
     expect(textbox).toBeVisible();
     expect(textbox).toHaveValue("mock text");
 
     const numberField = screen.getByRole("textbox", {
-      name: "mock text NumberField",
+      name: "Other: mock text NumberField",
     });
     expect(numberField).toBeVisible();
     expect(numberField).toHaveValue("");
   });
 
+  test("SummationTable adds and deletes a new row", async () => {
+    render(
+      <SummationTableWrapper
+        template={{
+          ...mockedSummationTableElement,
+          addRowMax: 2,
+        }}
+      />
+    );
+    const rowGroups = screen.getAllByRole("rowgroup");
+    const [_, tbody] = rowGroups;
+    const addRowButton = screen.getByRole("button", {
+      name: "Add row",
+    });
+    const deleteRowButton = screen.getByRole("button", {
+      name: "Delete Other: mock text",
+    });
+    expect(deleteRowButton).toBeVisible();
+
+    expect(within(tbody).getAllByRole("row")).toHaveLength(1);
+    await userEvent.click(addRowButton);
+
+    const updatedRows = within(tbody).getAllByRole("row");
+    expect(updatedRows).toHaveLength(2);
+
+    expect(
+      within(updatedRows[1]).getByRole("textbox", {
+        name: "Other: row 2 Textbox",
+      })
+    ).toHaveFocus();
+    expect(addRowButton).toBeDisabled();
+
+    const deleteRowButton2 = screen.getByRole("button", {
+      name: "Delete Other: row 2",
+    });
+    await userEvent.click(deleteRowButton2);
+    expect(within(tbody).getAllByRole("row")).toHaveLength(1);
+    expect(addRowButton).toBeEnabled();
+  });
+
   test("SummationTable should send updates to the Form", async () => {
     render(<SummationTableWrapper template={mockedSummationTableElement} />);
-    const textbox = screen.getByRole("textbox", { name: "mock text Textbox" });
+    const textbox = screen.getByRole("textbox", {
+      name: "Other: mock text Textbox",
+    });
     await userEvent.clear(textbox);
     expect(updateSpy).toHaveBeenCalledWith({
       answer: {
@@ -103,7 +148,7 @@ describe("<SummationTable />", () => {
     });
 
     const numberField = screen.getByRole("textbox", {
-      name: "NumberField",
+      name: "Other: row 1 NumberField",
     });
     await userEvent.clear(numberField);
     await userEvent.type(numberField, "123");
@@ -120,7 +165,7 @@ describe("<SummationTable />", () => {
     });
 
     const numberFieldWithMask = screen.getByRole("textbox", {
-      name: "NumberField Mask",
+      name: "Other: row 1 NumberField Mask",
     });
     await userEvent.type(numberFieldWithMask, "mock text");
     expect(screen.getByText("Response must be a valid number")).toBeVisible();
@@ -154,11 +199,10 @@ describe("<SummationTable />", () => {
   });
 
   test("Resident Dispositions SummationTable is visible", () => {
-    const { rows, answer } = getResidentDispositionsPresetRowsAndAnswer({ id });
+    const tableElement = getResidentDispositionsPresetRowsAndAnswer({ id });
     const mockedResidentDispositionsSummationTableElement = {
       ...mockedSummationTableElement,
-      rows,
-      answer,
+      ...tableElement,
     };
     render(
       <SummationTableWrapper
@@ -173,14 +217,14 @@ describe("<SummationTable />", () => {
     expect(tbody.tagName).toBe("TBODY");
     expect(tfoot.tagName).toBe("TFOOT");
 
-    rows.forEach((row) => {
+    tableElement.rows.forEach((row) => {
       const headCell = within(thead).getByRole("columnheader", {
         name: row.header,
       });
       expect(headCell).toBeVisible();
     });
 
-    answer.rows.forEach((answerRow) => {
+    tableElement.answer.rows.forEach((answerRow) => {
       const firstValue = answerRow?.[0]?.value?.toString();
       const readonlyTextbox = within(tbody).getByRole("cell", {
         name: firstValue,
@@ -193,7 +237,7 @@ describe("<SummationTable />", () => {
       expect(numberField).toBeVisible();
     });
 
-    answer.total.flat().forEach((answerRow) => {
+    tableElement.answer.total.flat().forEach((answerRow) => {
       const footField = within(tfoot).getByRole("cell", {
         name: answerRow?.value?.toString(),
       });
@@ -202,11 +246,9 @@ describe("<SummationTable />", () => {
   });
 
   test("Resident Dispositions SummationTable should update total", async () => {
-    const { rows, answer } = getResidentDispositionsPresetRowsAndAnswer({ id });
     const mockedResidentDispositionsSummationTableElement = {
       ...mockedSummationTableElement,
-      rows,
-      answer,
+      ...getResidentDispositionsPresetRowsAndAnswer({ id }),
     };
     render(
       <SummationTableWrapper

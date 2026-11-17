@@ -234,7 +234,7 @@ const summationVariant = {
       input: {
         fieldSizing: "content",
         minWidth: "3rem",
-        maxWidth: "12rem",
+        maxWidth: "30rem",
       },
       "label, button": {
         margin: 0,
@@ -253,6 +253,9 @@ const summationVariant = {
       },
       ".ds-c-label-mask": {
         display: "none",
+      },
+      "&:last-of-type": {
+        paddingRight: "spacer2",
       },
     },
     tbody: {
@@ -302,6 +305,9 @@ const pdfVariant = {
       "&.borderless": {
         border: 0,
       },
+    },
+    td: {
+      fontSize: "body_sm",
     },
     tbody: {
       td: {

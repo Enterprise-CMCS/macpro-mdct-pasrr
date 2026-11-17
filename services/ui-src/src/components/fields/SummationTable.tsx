@@ -1,40 +1,76 @@
-import { Flex, Stack, Text } from "@chakra-ui/react";
+import { Button, Flex, Image, Stack, Text, VStack } from "@chakra-ui/react";
 import { PageElementProps } from "components/report/Elements";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useRef, useState } from "react";
 import {
-  SummationTableTemplate,
-  ActionRowElement,
   ElementType,
+  MaskType,
+  summationTableAddRowMax,
   SummationTableCellAnswerShape,
   SummationTableRowAnswerShape,
-  MaskType,
+  SummationTableRowElement,
+  SummationTableTemplate,
 } from "@pasrr/shared";
 import {
   buildElement,
   getErrorMessage,
+  getNonPresetRows,
   sumById,
 } from "utils/state/reportLogic/tableBuilder";
 import {
   isEmptyValue,
   isWholePositiveNumber,
+  maskByType,
   unmaskByType,
 } from "utils/validation/inputValidation";
 import { ResponsiveTable } from "components/tables/ResponsiveTable";
 import { notAnsweredText } from "../../constants";
+import cancelPrimary from "assets/icons/cancel/icon_cancel_primary.svg";
+import addPrimary from "assets/icons/add/icon_add_blue.svg";
+import addGray from "assets/icons/add/icon_add_gray.svg";
 
 export const SummationTable = (
   props: PageElementProps<SummationTableTemplate>
 ) => {
-  const { caption, rows, answer } = props.element;
+  const { disabled, element, updateElement } = props;
+  const {
+    caption,
+    rows,
+    answer,
+    addRowButtonText = "Add row",
+    addRowHelperText,
+    addRowMax = summationTableAddRowMax,
+  } = element;
   const buildEmptyErrorMessages = (answerRow: SummationTableRowAnswerShape) =>
     new Map<string, string>(answerRow.map((t) => [t.id, ""]));
   const [errorMessages, setErrorMessages] = useState<
     Array<Map<string, string>>
   >(answer?.rows?.map((t) => buildEmptyErrorMessages(t)) ?? []);
+  const [enableAddButton, setEnableAddButton] = useState(true);
+  const tableRef = useRef<HTMLTableElement>(null);
+  const [pendingFocusIndex, setPendingFocusIndex] = useState<number | null>(
+    null
+  );
+
+  useEffect(() => {
+    const nonPresetRows = getNonPresetRows(answer?.rows);
+    setEnableAddButton(addRowMax > nonPresetRows.length);
+  }, [answer?.rows, addRowMax]);
+
+  useEffect(() => {
+    if (pendingFocusIndex === null) return;
+    const input = tableRef.current?.querySelector<HTMLInputElement>(
+      `[data-horizontal-table-row-index="${pendingFocusIndex}"] input`
+    );
+    const mobileInput = tableRef.current?.querySelector<HTMLInputElement>(
+      `[data-vertical-table-row-index="${pendingFocusIndex}"] input`
+    );
+    (input ?? mobileInput)?.focus();
+    setPendingFocusIndex(null);
+  }, [pendingFocusIndex]);
 
   const formatAnswer = (
     answerCell: SummationTableCellAnswerShape,
-    rows: ActionRowElement[],
+    rows: SummationTableRowElement[],
     type: ElementType
   ) => {
     const element = rows.find((t) => t.id === answerCell.id);
@@ -52,15 +88,31 @@ export const SummationTable = (
     return value;
   };
 
-  const generateAriaLabel = (
-    header: string,
-    answerRow: SummationTableRowAnswerShape,
-    firstCellId: string
-  ) => {
-    const labels = [header];
-    const label = answerRow.find((row) => row.id === firstCellId)?.value ?? "";
-    if (label) labels.unshift(label.toString());
-    return labels.join(" ");
+  const generateAriaLabel = ({
+    answerRow,
+    answerRowIndex,
+    firstColumn,
+    column,
+    prefix,
+  }: {
+    answerRow: SummationTableRowAnswerShape;
+    answerRowIndex: number;
+    firstColumn: SummationTableRowElement;
+    column?: SummationTableRowElement;
+    prefix?: string;
+  }): string => {
+    const firstAnswerColumn = answerRow.find(
+      (row) => row.id === firstColumn.id
+    );
+    const firstAnswer =
+      String(firstAnswerColumn?.value ?? "") || `row ${answerRowIndex + 1}`;
+    const addRowLabel = !firstAnswerColumn?.preset
+      ? firstColumn.addRowLabel
+      : "";
+
+    return [prefix, addRowLabel, firstAnswer, column?.header]
+      .filter(Boolean)
+      .join(" ");
   };
 
   const buildRows = ({
@@ -88,15 +140,15 @@ export const SummationTable = (
       value: string[];
     }) => void;
     readonly?: boolean;
-    rows: ActionRowElement[];
+    rows: SummationTableRowElement[];
   }) => {
-    const firstCellId = rows?.[0]?.id ?? "";
+    const firstColumn = rows?.[0] ?? {};
     const formattedBodyRows: (JSX.Element | string | number)[][] = answer.map(
       (answerRow, answerRowIndex) => {
         const rowElements: (JSX.Element | string | number)[] = rows.map(
           (column) => {
             const answerCell = answerRow.find((t) => t.id === column.id);
-            const readonlyCell = Boolean(answerCell?.readonly) || readonly;
+            const isReadonly = answerCell?.readonly ?? readonly;
             const readonlyNumberMask =
               !column.mask &&
               readonly &&
@@ -112,7 +164,12 @@ export const SummationTable = (
               errorMessage: errorMessages[answerRowIndex]?.get(column.id),
               id: column.id,
               key: `element-${column.id}-${answerRowIndex}`,
-              label: generateAriaLabel(column.header, answerRow, firstCellId),
+              label: generateAriaLabel({
+                answerRow,
+                answerRowIndex,
+                column,
+                firstColumn,
+              }),
               onChange: (value) =>
                 onChange?.({
                   answer,
@@ -121,14 +178,47 @@ export const SummationTable = (
                   type: formattedCell.type,
                   value,
                 }),
-              readonly: readonlyCell,
+              readonly: isReadonly,
             });
-            return value ?? "--";
+            const showRowLabel = column.addRowLabel && !answerCell?.preset;
+            return showRowLabel ? (
+              <Flex alignItems="center">
+                {showRowLabel && (
+                  <Text aria-hidden="true" marginRight="spacer2">
+                    {column.addRowLabel}
+                  </Text>
+                )}
+                <Flex direction="column" width="100%">
+                  {value}
+                </Flex>
+              </Flex>
+            ) : (
+              value
+            );
           }
         );
-
-        // TODO: SummationTable actions
-        rowElements.push(<></>);
+        const isPresetRow = answerRow?.some((cell) => cell.preset);
+        if (isPresetRow) {
+          // Empty actions column
+          rowElements.push(<></>);
+        } else {
+          rowElements.push(
+            <Flex justifyContent="center">
+              <Button
+                aria-label={generateAriaLabel({
+                  answerRow,
+                  answerRowIndex,
+                  firstColumn,
+                  prefix: "Delete",
+                })}
+                disabled={disabled}
+                leftIcon={<Image src={cancelPrimary} alt="" />}
+                onClick={() => onRemoveHandler(answerRowIndex)}
+                variant="unstyled"
+              />
+            </Flex>
+          );
+        }
         return rowElements;
       }
     );
@@ -206,12 +296,55 @@ export const SummationTable = (
       total: updateTotalRows({ id, rows: answerRows, total: totalRows, type }),
     };
 
-    props.updateElement({ answer: updatedAnswer });
+    updateElement({ answer: updatedAnswer });
+  };
+
+  const onAddHandler = () => {
+    const newRow = rows.map((t) => ({ id: t.id, value: "" }));
+    const updatedErrorMessages = [
+      ...errorMessages,
+      buildEmptyErrorMessages(newRow),
+    ];
+    setErrorMessages(updatedErrorMessages);
+
+    const updatedAnswer = {
+      rows: [...(answer?.rows ?? []), newRow],
+      total: answer?.total ?? [],
+    };
+    setPendingFocusIndex(updatedAnswer.rows.length - 1);
+    updateElement({ answer: updatedAnswer });
+  };
+
+  const onRemoveHandler = (index: number) => {
+    const answerRows = [...(answer?.rows ?? [])];
+    const totalRows = [...(answer?.total ?? [])];
+    answerRows.splice(index, 1);
+
+    const updatedErrorMessages = [...errorMessages];
+    updatedErrorMessages.splice(index, 1);
+    setErrorMessages(updatedErrorMessages);
+
+    const updatedTotals = rows.reduce(
+      (total, column) =>
+        updateTotalRows({
+          id: column.id,
+          rows: answerRows,
+          total,
+          type: column.type,
+        }),
+      totalRows
+    );
+
+    const updatedAnswer = {
+      rows: answerRows,
+      total: updatedTotals,
+    };
+    updateElement({ answer: updatedAnswer });
   };
 
   const formattedBodyRows = buildRows({
     answer: answer?.rows,
-    disabled: props.disabled,
+    disabled,
     errorMessages,
     onChange: onChangeHandler,
     rows,
@@ -227,15 +360,32 @@ export const SummationTable = (
   headers.push({ label: "Actions" });
 
   return (
-    <Flex gap="1.25rem" flexDirection="column" width="100%">
+    <VStack alignItems="flex-start" gap="spacer2" width="100%">
       {ResponsiveTable({
         caption,
         footers: formattedFootRows,
         headers,
+        ref: tableRef,
         rows: formattedBodyRows,
         variant: "summation",
       })}
-    </Flex>
+      {addRowMax > 0 && (
+        <VStack alignItems="flex-start" gap="spacer1">
+          {addRowHelperText && (
+            <Text variant="helperText">{addRowHelperText}</Text>
+          )}
+          <Button
+            disabled={disabled || !enableAddButton}
+            leftIcon={<Image src={disabled ? addGray : addPrimary} alt="" />}
+            onClick={onAddHandler}
+            onMouseDown={(evt) => evt.preventDefault()}
+            variant="outline"
+          >
+            {addRowButtonText}
+          </Button>
+        </VStack>
+      )}
+    </VStack>
   );
 };
 
@@ -251,7 +401,9 @@ export const SummationTableExport = (element: SummationTableTemplate) => {
           </Text>
         );
       }
-      return cell.value.toString();
+      return header.type === ElementType.NumberField
+        ? maskByType(MaskType.CommaSeparated, cell.value)
+        : cell.value;
     });
   };
 
