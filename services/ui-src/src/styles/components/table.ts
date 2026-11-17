@@ -258,10 +258,10 @@ const summationVariant = {
     tbody: {
       td: {
         "&:first-of-type": {
-          width: "25rem",
+          maxWidth: "25rem",
         },
         "&:nth-of-type(2)": {
-          width: "10rem",
+          maxWidth: "10rem",
         },
       },
     },
@@ -301,6 +301,13 @@ const pdfVariant = {
     tr: {
       "&.borderless": {
         border: 0,
+      },
+    },
+    tbody: {
+      td: {
+        "&:first-of-type": {
+          maxWidth: "25rem",
+        },
       },
     },
   },

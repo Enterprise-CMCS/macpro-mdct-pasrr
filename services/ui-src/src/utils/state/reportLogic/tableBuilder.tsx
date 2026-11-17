@@ -6,11 +6,17 @@ import {
 } from "@cmsgov/design-system";
 import { TextField as PasrrTextField } from "components";
 import { ErrorMessages } from "../../../constants";
-import { ActionElement, ElementType, TextboxTemplate } from "@pasrr/shared";
+import {
+  ActionElement,
+  ElementType,
+  SummationTableRowAnswerShape,
+  TextboxTemplate,
+} from "@pasrr/shared";
 import {
   parseNumber,
   validateDate,
   maskByType,
+  isWholePositiveNumber,
 } from "utils/validation/inputValidation";
 
 export const buildElement = ({
@@ -175,3 +181,9 @@ export const getErrorMessage = ({
 
   return "";
 };
+
+export const sumById = (rows: SummationTableRowAnswerShape[], id: string) =>
+  rows.reduce((sum, row) => {
+    const cell = row.find((t) => t.id === id);
+    return sum + (isWholePositiveNumber(cell?.value) ? Number(cell?.value) : 0);
+  }, 0);

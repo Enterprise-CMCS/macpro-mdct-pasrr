@@ -7,9 +7,18 @@ import {
   PageElement,
   PageStatus,
   Report,
+  SummationTableRowAnswerShape,
 } from "@pasrr/shared";
 import { isFormPageTemplate, assertExhaustive } from "types";
-import { isEmail, isPhone, isZipCode } from "utils/validation/inputValidation";
+import {
+  isEmail,
+  isEmptyValue,
+  isPhone,
+  isWholePositiveNumber,
+  isZipCode,
+  parseNumber,
+} from "utils/validation/inputValidation";
+import { sumById } from "./tableBuilder";
 
 /**
  * Calculate the status of any page, including calculated values.
@@ -164,6 +173,52 @@ export const elementSatisfiesRequired = (
       return requiredAnswers.every(
         (column) => column.value && column.value !== ""
       );
+    }
+
+    case element.type === ElementType.SummationTable: {
+      const answerRows = element.answer?.rows || [];
+      const answerTotal = element.answer?.total || [];
+      const rows = element.rows;
+
+      if (
+        answerRows.length === 0 ||
+        answerTotal.length === 0 ||
+        rows.length === 0
+      ) {
+        return false;
+      }
+
+      const validateRows = (
+        dataRows: SummationTableRowAnswerShape[],
+        isTotal: boolean
+      ) => {
+        return dataRows.every((row) => {
+          const rowMap = new Map(row.map((t) => [t.id, t.value]));
+
+          return rows.every((header) => {
+            const value = rowMap.get(header.id);
+
+            if (!isTotal && isEmptyValue(value)) {
+              return false;
+            }
+
+            if (header.type === ElementType.NumberField) {
+              const isValidNumber = isWholePositiveNumber(value);
+              if (!isValidNumber) return false;
+
+              if (isTotal) {
+                return (
+                  sumById(answerRows, header.id) === parseNumber(String(value))
+                );
+              }
+            }
+
+            return true;
+          });
+        });
+      };
+
+      return validateRows(answerRows, false) && validateRows(answerTotal, true);
     }
 
     case element.type === ElementType.Textbox: {

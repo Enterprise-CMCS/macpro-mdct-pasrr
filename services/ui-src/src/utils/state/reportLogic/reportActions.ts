@@ -7,6 +7,20 @@ import { ReportState } from "types";
 import { putReport } from "utils/api/requestMethods/report";
 import { getLocalHourMinuteTime } from "utils";
 
+// Flatten list of page ids in sidebar order, so Continue/Previous visit nested pages
+export const flattenPageIds = (
+  report: Report,
+  pageMap: Map<string, number>,
+  pageIds: string[]
+): string[] =>
+  pageIds.flatMap((id) => {
+    const index = pageMap.get(id);
+    const page = index !== undefined ? report.pages[index] : undefined;
+    const children = flattenPageIds(report, pageMap, page?.childPageIds ?? []);
+    const isParentOnly = page && !page.type && children.length > 0;
+    return isParentOnly ? children : [id, ...children];
+  });
+
 export const buildState = (
   report: Report | undefined,
   preserveCurrentPage: boolean
@@ -22,7 +36,7 @@ export const buildState = (
   const rootPage = report.pages[pageMap.get("root")!] as ParentPageTemplate; // this cast is safe, per unit tests
   const parentPage = {
     parent: rootPage.id,
-    childPageIds: rootPage.childPageIds,
+    childPageIds: flattenPageIds(report, pageMap, rootPage.childPageIds),
     index: 0,
   };
 
@@ -39,19 +53,20 @@ export const buildState = (
 };
 
 export const setPage = (targetPageId: string, currentState: ReportState) => {
-  const parent = currentState.report?.pages.find((parentPage) =>
-    parentPage?.childPageIds?.includes(targetPageId)
-  );
+  const { report, pageMap, rootPage } = currentState;
 
   let parentPage = undefined;
-  if (parent) {
-    // @ts-ignore TODO
-    const pageIndex = parent.childPageIds?.indexOf(targetPageId) ?? -1;
-    parentPage = {
-      parent: parent.id,
-      childPageIds: parent.childPageIds!,
-      index: pageIndex,
-    };
+  if (report && pageMap && rootPage) {
+    const flatIds = flattenPageIds(report, pageMap, rootPage.childPageIds);
+    const pageIndex = flatIds.indexOf(targetPageId);
+
+    if (pageIndex !== -1) {
+      parentPage = {
+        parent: rootPage.id,
+        childPageIds: flatIds,
+        index: pageIndex,
+      };
+    }
   }
   return { currentPageId: targetPageId, parentPage };
 };

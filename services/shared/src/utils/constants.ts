@@ -187,7 +187,7 @@ export const getPostalAddressElements = ({
 };
 
 // Used with SummationTable component
-export const getResidentDispositionPresetRowsAndAnswer = ({
+export const getResidentDispositionsPresetRowsAndAnswer = ({
   id,
 }: {
   id: string;

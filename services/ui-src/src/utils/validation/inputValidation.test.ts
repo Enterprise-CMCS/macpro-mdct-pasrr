@@ -1,5 +1,6 @@
 import {
   isEmail,
+  isEmptyValue,
   isPhone,
   isUrl,
   isWholePositiveNumber,
@@ -288,6 +289,30 @@ describe("Input validation utilities", () => {
     ])("should accept the string '$input'", ({ input }) => {
       expect(isZipCode(input)).toBe(true);
     });
+  });
+
+  describe("isEmptyValue()", () => {
+    test("should accept undefined", () => {
+      expect(isEmptyValue(undefined)).toBe(true);
+    });
+
+    test("should accept the empty string", () => {
+      expect(isEmptyValue("")).toBe(true);
+    });
+
+    test.each([{ input: "mock text" }, { input: 0 }])(
+      "should reject the value '$input'",
+      ({ input }) => {
+        expect(isEmptyValue(input)).toBe(false);
+      }
+    );
+
+    test.each([{ input: null }, { input: " " }])(
+      "should accept the value '$input'",
+      ({ input }) => {
+        expect(isEmptyValue(input)).toBe(true);
+      }
+    );
   });
 
   describe("magicNumberMask()", () => {

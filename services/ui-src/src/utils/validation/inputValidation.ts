@@ -73,7 +73,7 @@ export const validateNumber = (rawValue: string, isRequired: boolean) => {
 };
 
 /** Determine whether the given value is a valid HTTP or HTTPS URL */
-export const isUrl = (value: string | undefined) => {
+export const isUrl = (value?: string) => {
   if (!value) return false;
 
   try {
@@ -85,7 +85,7 @@ export const isUrl = (value: string | undefined) => {
 };
 
 /** Determine whether the given value is a valid email address */
-export const isEmail = (value: string | undefined) => {
+export const isEmail = (value?: string) => {
   /*
    * We are using the regex recommended by the HTML specification itself.
    * https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
@@ -96,15 +96,20 @@ export const isEmail = (value: string | undefined) => {
 };
 
 /** Determine whether the given value is a valid phone */
-export const isPhone = (value: string | undefined) => {
+export const isPhone = (value?: string) => {
   const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
   return !!value && phonePattern.test(value);
 };
 
 /** Determine whether the given value is a valid zip code */
-export const isZipCode = (value: string | undefined) => {
+export const isZipCode = (value?: string) => {
   const zipCodePattern = /^\d{5}(-\d{4})?$/;
   return !!value && zipCodePattern.test(value);
+};
+
+/** Determine whether the given value is undefined, null, or an empty string */
+export const isEmptyValue = (value?: string | number | null) => {
+  return value === undefined || value === null || String(value).trim() === "";
 };
 
 /**

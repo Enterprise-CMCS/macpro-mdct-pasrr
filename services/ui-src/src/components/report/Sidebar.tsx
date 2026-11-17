@@ -1,6 +1,6 @@
 import { Box, Button, Heading, Flex, Image, Link } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router";
-import { useStore } from "utils";
+import { useStore, flattenPageIds } from "utils";
 import arrowDownIcon from "assets/icons/arrows/icon_arrow_down_gray.svg";
 import arrowUpIcon from "assets/icons/arrows/icon_arrow_up_gray.svg";
 import { ReactNode, useState } from "react";
@@ -38,10 +38,8 @@ export const Sidebar = () => {
   }
 
   const title = getTitle(report);
-  const setToggle = (sectionId: string) => {
-    const list = toggleList;
-    list[sectionId] = !toggleList[sectionId];
-    setToggleList({ ...list });
+  const setToggle = (sectionId: string, currentlyExpanded: boolean) => {
+    setToggleList((list) => ({ ...list, [sectionId]: !currentlyExpanded }));
   };
 
   const navigate = useNavigate();
@@ -60,23 +58,37 @@ export const Sidebar = () => {
         ) || [];
     const hasChildSections = childSections.length > 0;
 
+    const autoExpand = flattenPageIds(
+      report,
+      pageMap,
+      page.childPageIds ?? []
+    ).includes(currentPageId!);
+    const isExpanded = toggleList[page.id] ?? autoExpand;
+
     const rowContent = (
-      <Flex
-        as="span"
-        width="100%"
-        paddingRight="1rem"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Box as="span" width="100%" height="100%">
-          {navItem(page.title, index)}
-        </Box>
+      <Flex as="span" justifyContent="space-between" alignItems="flex-start">
+        {" "}
+        <Flex as="span" width="100%" paddingY="spacer1">
+          {" "}
+          {navItem(page.title!, index)}{" "}
+        </Flex>{" "}
         {hasChildSections && (
-          <Image
-            src={toggleList[page.id] ? arrowUpIcon : arrowDownIcon}
-            alt={toggleList[page.id] ? "Collapse subitems" : "Expand subitems"}
-          />
-        )}
+          <Flex
+            as="span"
+            height="var(--chakra-sizes-10)"
+            flexShrink="0"
+            marginLeft="spacer2"
+            paddingRight="spacer2"
+            alignItems="center"
+            onClick={() => setToggle(page.id, isExpanded)}
+          >
+            {" "}
+            <Image
+              src={isExpanded ? arrowUpIcon : arrowDownIcon}
+              alt={isExpanded ? "Collapse subitems" : "Expand subitems"}
+            />{" "}
+          </Flex>
+        )}{" "}
       </Flex>
     );
 
@@ -86,8 +98,10 @@ export const Sidebar = () => {
           <Link
             as="button"
             variant="sidebar"
-            aria-expanded={Boolean(toggleList[page.id])}
-            onClick={() => setToggle(page.id)}
+            aria-expanded={isExpanded}
+            height="auto"
+            minHeight="var(--chakra-sizes-10)"
+            onClick={() => setToggle(page.id, isExpanded)}
           >
             {rowContent}
           </Link>
@@ -96,6 +110,8 @@ export const Sidebar = () => {
             variant="sidebar"
             className={page.id === currentPageId ? "selected" : ""}
             href={`/report/${reportType}/${state}/${reportId}/${page.id}`}
+            height="auto"
+            minHeight="var(--chakra-sizes-10)"
             onClick={(e) => {
               e.preventDefault();
               onNavSelect(page.id);
@@ -105,7 +121,7 @@ export const Sidebar = () => {
           </Link>
         )}
         {hasChildSections &&
-          toggleList[page.id] &&
+          isExpanded &&
           childSections.map((section) => navSection(section, index + 1))}
       </Box>
     );
