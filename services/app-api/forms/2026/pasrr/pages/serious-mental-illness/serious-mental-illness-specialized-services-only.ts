@@ -31,7 +31,7 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
       id: "smi_specializedServices_subheader",
       text: "Resident dispositions: Specialized services only",
       helperText:
-        "<p>Report Level II resident review data for individuals with a serious mental illness (SMI) by providing the number and disposition (resident status) of residents who:</p>" +
+        "<p>Report Level II resident review data for individuals with a serious mental illness (SMI) by providing the number and disposition (resident status) of residents who meet both of the following requirements:</p>" +
         "<ul>" +
         "<li>Were determined by a PASRR Level II resident review evaluation not to require the level of services provided by a nursing facility, but to require specialized services, <strong>and</strong></li>" +
         "<li>Have not continuously resided in a nursing facility for at least 30 months before the date of the PASRR Level II resident review determination.</li>" +
@@ -56,7 +56,6 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
       helperText:
         "Do not include personally identifiable information (PII) or protected health information (PHI).",
       required: false,
-      fullWidth: true,
     },
     {
       id: "smi_specializedServices_receivedServices",
@@ -64,7 +63,6 @@ export const seriousMentalIllnessSpecializedServices: FormPageTemplate = {
       label:
         "During this reporting period, did all eligible residents receive specialized services or have them arranged?",
       required: true,
-      fullWidth: true,
       helperText:
         "Select “No” if any individual in the table above did not have specialized services arranged or provided by the state.",
       choices: [

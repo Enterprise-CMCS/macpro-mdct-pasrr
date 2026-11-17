@@ -32,7 +32,7 @@ export const seriousMentalIllnessNoNursingFacilityCareOrServices: FormPageTempla
         id: "smi_noNursingFacilityCare_subheader",
         text: "Resident dispositions: No nursing facility care or services",
         helperText:
-          "<p>Report Level II resident review data for individuals with a serious mental illness (SMI) by providing the number and disposition (resident status) of residents who:</p>" +
+          "<p>Report Level II resident review data for individuals with a serious mental illness (SMI) by providing the number and disposition (resident status) of residents who meet both of the following requirements:</p>" +
           "<ul>" +
           "<li>Were determined by a PASRR Level II resident review evaluation not to require the level of services provided by a nursing facility or do not require specialized services, <strong>and</strong></li>" +
           "<li>Have not continuously resided in a nursing facility for at least 30 months before the date of the PASRR Level II resident review determination.</li>" +
@@ -57,7 +57,6 @@ export const seriousMentalIllnessNoNursingFacilityCareOrServices: FormPageTempla
         helperText:
           "Do not include personally identifiable information (PII) or protected health information (PHI).",
         required: false,
-        fullWidth: true,
       },
     ],
   };
