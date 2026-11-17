@@ -358,6 +358,7 @@ export const SummationTable = (
 
   const headers = rows.map((t) => ({ label: t.header }));
   headers.push({ label: "Actions" });
+  const isDisabled = disabled || !enableAddButton;
 
   return (
     <VStack alignItems="flex-start" gap="spacer2" width="100%">
@@ -375,8 +376,8 @@ export const SummationTable = (
             <Text variant="helperText">{addRowHelperText}</Text>
           )}
           <Button
-            disabled={disabled || !enableAddButton}
-            leftIcon={<Image src={disabled ? addGray : addPrimary} alt="" />}
+            disabled={isDisabled}
+            leftIcon={<Image src={isDisabled ? addGray : addPrimary} alt="" />}
             onClick={onAddHandler}
             onMouseDown={(evt) => evt.preventDefault()}
             variant="outline"
