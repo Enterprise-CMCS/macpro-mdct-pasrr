@@ -198,7 +198,7 @@ export const SummationTable = (
           }
         );
         const isPresetRow = answerRow?.some((cell) => cell.preset);
-        if (isPresetRow) {
+        if (readonly || isPresetRow) {
           // Empty actions column
           rowElements.push(<></>);
         } else {
@@ -401,9 +401,10 @@ export const SummationTableExport = (element: SummationTableTemplate) => {
           </Text>
         );
       }
-      return header.type === ElementType.NumberField
+      return header.type === ElementType.NumberField &&
+        isWholePositiveNumber(cell.value)
         ? maskByType(MaskType.CommaSeparated, cell.value)
-        : cell.value;
+        : cell.value.toString();
     });
   };
 

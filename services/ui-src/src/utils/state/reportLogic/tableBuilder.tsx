@@ -69,22 +69,6 @@ export const buildElement = ({
         />
       );
     case ElementType.Textbox:
-      return (
-        <TextField
-          key={`textbox-${key}`}
-          label={label}
-          name={id}
-          onChange={(event) => {
-            onChange([event.target.value]);
-          }}
-          onBlur={(event) => {
-            onChange([event.target.value]);
-          }}
-          value={defaultValue}
-          errorMessage={errorMessage}
-          disabled={element.disabled}
-        />
-      );
     case ElementType.NumberField:
       return (
         <TextField
