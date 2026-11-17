@@ -53,7 +53,7 @@ export const intellectualDisabilityAndRelatedConditionsNoNursingFacilityCareOrSe
         id: "idrc_noNursingFacilityCare_multipleReviews",
         type: ElementType.TextAreaField,
         label:
-          "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain. (optional)",
+          "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain.",
         helperText:
           "Do not include personally identifiable information (PII) or protected health information (PHI).",
         required: false,
