@@ -1,7 +1,7 @@
 import {
   ElementType,
   FormPageTemplate,
-  getResidentDispositionPresetRowsAndAnswer,
+  getResidentDispositionsPresetRowsAndAnswer,
   PageType,
 } from "@pasrr/shared";
 import { reportingCriteriaAccordion } from ".";
@@ -15,13 +15,13 @@ export const intellectualDisabilityAndRelatedConditionsNoNursingFacilityCareOrSe
     elements: [
       {
         type: ElementType.Paragraph,
-        id: "idrc_noNursingFacilityCareEyebrow",
+        id: "idrc_noNursingFacilityCare_eyebrow",
         style: "eyebrow",
         text: "Intellectual Disability and Related Conditions (ID/RC)",
       },
       {
         type: ElementType.Header,
-        id: "idrc_noNursingFacilityCareHeader",
+        id: "idrc_noNursingFacilityCare_header",
         text: "Residents who don’t require nursing facility care or specialized services",
       },
       reportingCriteriaAccordion(
@@ -29,7 +29,7 @@ export const intellectualDisabilityAndRelatedConditionsNoNursingFacilityCareOrSe
       ),
       {
         type: ElementType.SubHeader,
-        id: "idrc_noNursingFacilityCareSubheader",
+        id: "idrc_noNursingFacilityCare_subheader",
         text: "Resident dispositions: No nursing facility care or services",
         helperText:
           "<p>Report Level II resident review data for individuals with an intellectual disability or related condition (ID/RC) by providing the number and disposition (resident status) of residents who:</p>" +
@@ -42,24 +42,22 @@ export const intellectualDisabilityAndRelatedConditionsNoNursingFacilityCareOrSe
       },
       {
         type: ElementType.SummationTable,
-        id: "idrc_noNursingFacilityCareTable",
+        id: "idrc_noNursingFacilityCare_table",
         caption: "Resident dispositions: No nursing facility care or services",
         required: true,
-        rows: getResidentDispositionPresetRowsAndAnswer({
-          id: "idrc_noNursingFacilityCareTable",
-        }).rows,
-        answer: getResidentDispositionPresetRowsAndAnswer({
-          id: "idrc_noNursingFacilityCareTable",
-        }).answer,
+        ...getResidentDispositionsPresetRowsAndAnswer({
+          id: "idrc_noNursingFacilityCare_table",
+        }),
       },
       {
-        id: "idrc_noNursingFacilityCareMultipleReviews",
+        id: "idrc_noNursingFacilityCare_multipleReviews",
         type: ElementType.TextAreaField,
         label:
           "Did any residents receive multiple reviews during a single stay, or have unique circumstances not covered above? If so, please explain. (optional)",
         helperText:
           "Do not include personally identifiable information (PII) or protected health information (PHI).",
         required: false,
+        fullWidth: true,
       },
     ],
   };
