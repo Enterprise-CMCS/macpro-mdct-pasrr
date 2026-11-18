@@ -11,7 +11,7 @@ import { RouterWrappedComponent } from "utils/testing/mockRouter";
 import { mockReport, mockReport2 } from "utils/testing/mockForm";
 import userEvent from "@testing-library/user-event";
 import { testA11yAct } from "utils/testing/commonTests";
-import { createReport, useStore } from "utils";
+import { useStore } from "utils";
 import { mockAdminUserStore } from "utils/testing/setupTest";
 
 vi.mock("utils/state/useStore");
@@ -27,7 +27,6 @@ vi.mock("launchdarkly-react-client-sdk", () => ({
 const mockGetReport = vi.fn().mockResolvedValue([mockReport, mockReport2]);
 vi.mock("../../utils/api/requestMethods/report", () => ({
   getReportByType: () => mockGetReport(),
-  createReport: vi.fn(),
 }));
 
 vi.mock("../../utils/api/requestMethods/commentMethods", () => ({
@@ -54,28 +53,28 @@ describe("<AdminDashboard />", () => {
       render(
         <RouterWrappedComponent>
           <AdminDashboard />
-        </RouterWrappedComponent>
+        </RouterWrappedComponent>,
       );
     });
   });
   it("AdminDashboard renders", async () => {
     expect(
-      screen.getByRole("heading", { name: "PASRR Admin Dashboard" })
+      screen.getByRole("heading", { name: "PASRR Admin Dashboard" }),
     ).toBeVisible();
     expect(
-      screen.getByRole("button", { name: "Admin Instructions" })
+      screen.getByRole("button", { name: "Admin Instructions" }),
     ).toBeVisible();
     expect(screen.getByRole("button", { name: "States select" })).toBeVisible();
     expect(
-      screen.getByRole("button", { name: "All Filter by Budget Period" })
+      screen.getByRole("button", { name: "All Filter by Budget Period" }),
     ).toBeVisible();
     expect(
-      screen.getByRole("button", { name: "Clear All Filters" })
+      screen.getByRole("button", { name: "Clear All Filters" }),
     ).toBeVisible();
 
     await waitFor(() => {
       expect(
-        screen.queryByRole("columnheader", { name: "State/Territory" })
+        screen.queryByRole("columnheader", { name: "State/Territory" }),
       ).toBeVisible();
     });
 
@@ -101,18 +100,18 @@ describe("<AdminDashboard />", () => {
     expect(localStorage.getItem("states")).toEqual("AL,NJ");
 
     expect(
-      screen.getByRole("button", { name: "Remove New Jersey tag" })
+      screen.getByRole("button", { name: "Remove New Jersey tag" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "Remove Alabama tag" })
+      screen.getByRole("button", { name: "Remove Alabama tag" }),
     ).toBeInTheDocument();
 
     await userEvent.click(
-      screen.getByRole("button", { name: "Remove Alabama tag" })
+      screen.getByRole("button", { name: "Remove Alabama tag" }),
     );
 
     expect(
-      screen.queryByRole("button", { name: "Remove Alabama tag" })
+      screen.queryByRole("button", { name: "Remove Alabama tag" }),
     ).not.toBeInTheDocument();
 
     const clearFilterBtn = screen.getByRole("button", {
@@ -120,7 +119,7 @@ describe("<AdminDashboard />", () => {
     });
     await userEvent.click(clearFilterBtn);
     expect(
-      screen.queryByRole("button", { name: "Remove New Jersey tag" })
+      screen.queryByRole("button", { name: "Remove New Jersey tag" }),
     ).not.toBeInTheDocument();
   });
 
@@ -132,7 +131,7 @@ describe("<AdminDashboard />", () => {
     const sortResult = async (
       sort: string,
       columns: number[],
-      results: string[]
+      results: string[],
     ) => {
       const content = screen.getAllByRole("cell");
       const sortBtn = screen.getByRole("button", { name: sort });
@@ -170,62 +169,18 @@ describe("<AdminDashboard />", () => {
     })[0];
     await userEvent.click(commentStatusButton);
     expect(
-      screen.getByRole("heading", { name: /Add comment to/ })
+      screen.getByRole("heading", { name: /Add comment to/ }),
     ).toBeInTheDocument();
     await userEvent.click(screen.getAllByRole("button", { name: "Close" })[0]);
     expect(
-      screen.queryByRole("heading", { name: /Add comment to/ })
+      screen.queryByRole("heading", { name: /Add comment to/ }),
     ).not.toBeInTheDocument();
-  });
-
-  it("Can open and close admin create report modal", async () => {
-    const createReportButton = screen.getByRole("button", {
-      name: "Start First Annual Report",
-    });
-    await userEvent.click(createReportButton);
-    expect(
-      screen.getByRole("heading", { name: "Start First Annual Report" })
-    ).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Close" }));
-    expect(
-      screen.queryByRole("heading", { name: "Start First Annual Report" })
-    ).not.toBeInTheDocument();
-  });
-
-  it("Cannot create report for state with existing report", async () => {
-    const createReportButton = screen.getByRole("button", {
-      name: "Start First Annual Report",
-    });
-    await userEvent.click(createReportButton);
-
-    const stateDropdown = screen.getAllByLabelText("State")[1];
-    await userEvent.click(stateDropdown);
-    // mock reports for NJ and MN so should not see those options
-    expect(
-      screen.queryByRole("option", { name: "New Jersey" })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("option", { name: "Minnesota" })
-    ).not.toBeInTheDocument();
-  });
-
-  it("Can create report for state with no existing report", async () => {
-    const createReportButton = screen.getByRole("button", {
-      name: "Start First Annual Report",
-    });
-    await userEvent.click(createReportButton);
-
-    const stateDropdown = screen.getAllByLabelText("State")[1];
-    await userEvent.click(stateDropdown);
-    await userEvent.click(screen.getByRole("option", { name: "Alaska" }));
-    await userEvent.click(screen.getByRole("button", { name: "Start" }));
-    expect(createReport).toHaveBeenCalled();
   });
 });
 describe("Test A11y", () => {
   testA11yAct(
     <RouterWrappedComponent>
       <AdminDashboard />
-    </RouterWrappedComponent>
+    </RouterWrappedComponent>,
   );
 });
