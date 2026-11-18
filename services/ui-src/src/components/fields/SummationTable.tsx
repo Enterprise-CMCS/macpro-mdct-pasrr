@@ -357,9 +357,6 @@ export const SummationTable = (
   headers.push({ label: "Actions" });
 
   const styleOverride: string[] = formattedBodyRows.map((row) => {
-    if (typeof row !== "object") {
-      return "";
-    }
     const hasError =
       Array.isArray(row) &&
       row.some((cell) => typeof cell === "object" && cell?.props?.errorMessage);

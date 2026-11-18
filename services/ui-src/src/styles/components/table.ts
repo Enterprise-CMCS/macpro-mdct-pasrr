@@ -224,6 +224,11 @@ const summationVariant = {
       "&.grey": {
         background: "gray_lightest_highlight",
       },
+      "&.has-error": {
+        td: {
+          verticalAlign: "bottom",
+        },
+      },
     },
     td: {
       border: 0,
@@ -256,9 +261,6 @@ const summationVariant = {
       },
       "&:last-of-type": {
         paddingRight: "spacer2",
-      },
-      ".has-error &": {
-        verticalAlign: "bottom",
       },
     },
     tbody: {
