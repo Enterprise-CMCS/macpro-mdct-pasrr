@@ -147,6 +147,10 @@ describe("<SummationTable />", () => {
       },
     });
 
+    const textboxErrorMessage = screen.getByText("A response is required");
+    const row = textboxErrorMessage.closest("tr");
+    expect(row).toHaveClass("has-error");
+
     const numberField = screen.getByRole("textbox", {
       name: "Other: row 1 NumberField",
     });
@@ -168,9 +172,12 @@ describe("<SummationTable />", () => {
       name: "Other: row 1 NumberField Mask",
     });
     await userEvent.type(numberFieldWithMask, "mock text");
-    const errorMessage = screen.getByText("Response must be a valid number");
-    const row = errorMessage.closest("tr");
-    expect(row).toHaveClass("has-error");
+    const numberFieldErrorMessage = screen.getByText(
+      "Response must be a valid number"
+    );
+    const updatedRow = numberFieldErrorMessage.closest("tr");
+    expect(numberFieldErrorMessage).toBeVisible();
+    expect(updatedRow).toHaveClass("has-error");
 
     await userEvent.clear(numberFieldWithMask);
     await userEvent.type(numberFieldWithMask, "12,345");
@@ -198,7 +205,36 @@ describe("<SummationTable />", () => {
     expect(
       screen.queryByText("Response must be a valid number")
     ).not.toBeInTheDocument();
-    expect(row).not.toHaveClass("has-error");
+    // Row still has an error, so should retain class
+    expect(updatedRow).toHaveClass("has-error");
+
+    await userEvent.type(textbox, "mock text");
+    expect(updateSpy).toHaveBeenCalledWith({
+      answer: {
+        rows: [
+          [
+            { id: `${id}_textboxId`, value: "mock text" },
+            { id: `${id}_numberFieldId`, value: 123 },
+            { id: `${id}_numberFieldWithMaskId`, value: 12345 },
+          ],
+        ],
+        total: [
+          [
+            { id: `${id}_numberFieldId`, value: 123, readonly: true },
+            {
+              id: `${id}_numberFieldWithMaskId`,
+              value: 12345,
+              readonly: true,
+            },
+          ],
+        ],
+      },
+    });
+    expect(
+      screen.queryByText("A response is required")
+    ).not.toBeInTheDocument();
+    // Class is removed when all errors are resolved
+    expect(updatedRow).not.toHaveClass("has-error");
   });
 
   test("Resident Dispositions SummationTable is visible", () => {

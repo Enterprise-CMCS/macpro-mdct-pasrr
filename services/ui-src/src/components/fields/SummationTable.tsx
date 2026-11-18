@@ -179,9 +179,13 @@ export const SummationTable = (
             });
             const showRowLabel = column.addRowLabel && !answerCell?.preset;
             return showRowLabel ? (
-              <Flex alignItems="center">
+              <Flex alignItems="end">
                 {showRowLabel && (
-                  <Text aria-hidden="true" marginRight="spacer2">
+                  <Text
+                    aria-hidden="true"
+                    marginBottom="spacer1"
+                    marginRight="spacer2"
+                  >
                     {column.addRowLabel}
                   </Text>
                 )}
@@ -356,10 +360,22 @@ export const SummationTable = (
   const headers = rows.map((t) => ({ label: t.header }));
   headers.push({ label: "Actions" });
 
+  const hasErrorMessage = (node: string | number | JSX.Element): boolean => {
+    if (!node || typeof node !== "object") return false;
+    if (node?.props?.errorMessage) return true;
+    const children = node?.props?.children;
+    if (children) {
+      if (Array.isArray(children)) {
+        return children.some((child) => hasErrorMessage(child));
+      }
+      return hasErrorMessage(children);
+    }
+    return false;
+  };
+
   const styleOverride: string[] = formattedBodyRows.map((row) => {
     const hasError =
-      Array.isArray(row) &&
-      row.some((cell) => typeof cell === "object" && cell?.props?.errorMessage);
+      Array.isArray(row) && row.some((cell) => hasErrorMessage(cell));
     return hasError ? "has-error" : "";
   });
   const isDisabled = disabled || !enableAddButton;
