@@ -445,6 +445,7 @@ const summationTableTemplateSchema = object().shape({
       object().shape({
         ...ActionElementsSchema,
         header: string().required(),
+        addRowLabel: string().notRequired(),
       })
     )
     .required(),
@@ -454,6 +455,9 @@ const summationTableTemplateSchema = object().shape({
       total: array().of(mixed()).notRequired(),
     })
     .notRequired(),
+  addRowButtonText: string().notRequired(),
+  addRowHelperText: string().notRequired(),
+  addRowMax: number().integer().min(0).notRequired(),
 });
 
 /**
