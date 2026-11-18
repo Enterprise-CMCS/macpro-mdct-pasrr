@@ -67,7 +67,7 @@ describe("<AdminDashboard />", () => {
     ).toBeVisible();
     expect(screen.getByRole("button", { name: "States select" })).toBeVisible();
     expect(
-      screen.getByRole("button", { name: "All Filter by Budget Period" })
+      screen.getByRole("button", { name: "All Filter by reporting year" })
     ).toBeVisible();
     expect(
       screen.getByRole("button", { name: "Clear All Filters" })
