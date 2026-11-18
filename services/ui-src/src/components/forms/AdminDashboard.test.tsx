@@ -5,6 +5,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import { AdminDashboard } from "./AdminDashboard";
 import { RouterWrappedComponent } from "utils/testing/mockRouter";
@@ -58,7 +59,7 @@ describe("<AdminDashboard />", () => {
       );
     });
   });
-  it("AdminDashboard renders", async () => {
+  test("AdminDashboard renders", async () => {
     expect(
       screen.getByRole("heading", { name: "PASRR Admin Dashboard" })
     ).toBeVisible();
@@ -82,7 +83,7 @@ describe("<AdminDashboard />", () => {
     expect(screen.getByText("plan id")).toBeVisible();
   });
 
-  it("renders the instructions accordion closed by default", () => {
+  test("renders the instructions accordion closed by default", () => {
     expect(
       screen.getByRole("button", { name: "Admin Instructions" })
     ).toHaveAttribute("aria-expanded", "false");
@@ -94,7 +95,7 @@ describe("<AdminDashboard />", () => {
     expect(panel).not.toBeVisible();
   });
 
-  it("shows the admin instructions when the accordion is opened", async () => {
+  test("shows the admin instructions when the accordion is opened", async () => {
     const accordionButton = screen.getByRole("button", {
       name: "Admin Instructions",
     });
@@ -109,25 +110,34 @@ describe("<AdminDashboard />", () => {
       expect(panel).toBeVisible();
     });
 
-    // section headings
+    const paragraphs = within(panel).getAllByRole("paragraph");
+
+    // section headings and the filtering intro
     [
       "Reviewing submissions",
       "Filtering state submissions",
-      "Reopening submissions for revision",
-    ].forEach((text) => expect(panel).toHaveTextContent(text));
-
-    // one distinctive phrase from each paragraph and bullet
-    [
-      "After you finish your review",
       "The table below lists PASRR reports for all states.",
+      "Reopening submissions for revision",
+    ].forEach((text, index) =>
+      expect(paragraphs[index]).toHaveTextContent(text)
+    );
+
+    const listItems = within(panel).getAllByRole("listitem");
+
+    // one distinctive phrase from each bullet
+    [
+      "To view a state or territory’s submission, select “View”.",
+      "After you finish your review",
       "Select an option from the",
       "Search and select multiple states",
       "To allow a state or territory to make corrections or edits",
       "Submission count is shown in the # column",
-    ].forEach((text) => expect(panel).toHaveTextContent(text));
+    ].forEach((text, index) =>
+      expect(listItems[index]).toHaveTextContent(text)
+    );
   });
 
-  it("State filters are selectable", async () => {
+  test("State filters are selectable", async () => {
     await waitFor(() => {
       expect(screen.getByText("plan id")).toBeVisible();
     });
@@ -169,7 +179,7 @@ describe("<AdminDashboard />", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("Table sort are clickable", async () => {
+  test("Table sort are clickable", async () => {
     await waitFor(() => {
       expect(screen.queryByText("plan id")).toBeVisible();
     });
@@ -200,7 +210,7 @@ describe("<AdminDashboard />", () => {
     await sortResult("Status", [4, 11], ["In progress", "Not started"]);
   });
 
-  it("View report", async () => {
+  test("View report", async () => {
     await waitFor(() => {
       expect(screen.getByText("plan id")).toBeVisible();
     });
@@ -209,7 +219,7 @@ describe("<AdminDashboard />", () => {
     expect(mockUseNavigate).toHaveBeenCalled();
   });
 
-  it("Can open and close comment drawer", async () => {
+  test("Can open and close comment drawer", async () => {
     const commentStatusButton = screen.getAllByRole("button", {
       name: "Comment/Status",
     })[0];
@@ -223,7 +233,7 @@ describe("<AdminDashboard />", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("Can open and close admin create report modal", async () => {
+  test("Can open and close admin create report modal", async () => {
     const createReportButton = screen.getByRole("button", {
       name: "Start First Annual Report",
     });
@@ -237,7 +247,7 @@ describe("<AdminDashboard />", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("Cannot create report for state with existing report", async () => {
+  test("Cannot create report for state with existing report", async () => {
     const createReportButton = screen.getByRole("button", {
       name: "Start First Annual Report",
     });
@@ -254,7 +264,7 @@ describe("<AdminDashboard />", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("Can create report for state with no existing report", async () => {
+  test("Can create report for state with no existing report", async () => {
     const createReportButton = screen.getByRole("button", {
       name: "Start First Annual Report",
     });

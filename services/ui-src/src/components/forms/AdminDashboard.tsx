@@ -331,7 +331,7 @@ export const AdminDashboard = () => {
               <Text fontWeight="bold" marginBottom="spacer1">
                 Reviewing submissions
               </Text>
-              <UnorderedList spacing="spacer1" marginStart="2rem">
+              <UnorderedList spacing="spacer1" marginStart="spacer4">
                 <ListItem>
                   To view a state or territory’s submission, select “View”.
                 </ListItem>
@@ -346,7 +346,7 @@ export const AdminDashboard = () => {
               <Text marginBottom="spacer1">
                 The table below lists PASRR reports for all states.
               </Text>
-              <UnorderedList spacing="spacer1" marginStart="2rem">
+              <UnorderedList spacing="spacer1" marginStart="spacer4">
                 <ListItem>
                   Select an option from the “State” or “Reporting year” dropdown
                   to update the table immediately.
@@ -359,7 +359,7 @@ export const AdminDashboard = () => {
               <Text fontWeight="bold" marginBottom="spacer1">
                 Reopening submissions for revision
               </Text>
-              <UnorderedList spacing="spacer1" marginStart="2rem">
+              <UnorderedList spacing="spacer1" marginStart="spacer4">
                 <ListItem>
                   To allow a state or territory to make corrections or edits to
                   a submission, select “Update status” to unlock and release the
