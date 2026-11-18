@@ -82,6 +82,51 @@ describe("<AdminDashboard />", () => {
     expect(screen.getByText("plan id")).toBeVisible();
   });
 
+  it("renders the instructions accordion closed by default", () => {
+    expect(
+      screen.getByRole("button", { name: "Admin Instructions" })
+    ).toHaveAttribute("aria-expanded", "false");
+
+    const panel = screen.getByRole("region", {
+      name: "Admin Instructions",
+      hidden: true,
+    });
+    expect(panel).not.toBeVisible();
+  });
+
+  it("shows the admin instructions when the accordion is opened", async () => {
+    const accordionButton = screen.getByRole("button", {
+      name: "Admin Instructions",
+    });
+    const panel = screen.getByRole("region", {
+      name: "Admin Instructions",
+      hidden: true,
+    });
+    await userEvent.click(accordionButton);
+    expect(accordionButton).toHaveAttribute("aria-expanded", "true");
+
+    await waitFor(() => {
+      expect(panel).toBeVisible();
+    });
+
+    // section headings
+    [
+      "Reviewing submissions",
+      "Filtering state submissions",
+      "Reopening submissions for revision",
+    ].forEach((text) => expect(panel).toHaveTextContent(text));
+
+    // one distinctive phrase from each paragraph and bullet
+    [
+      "After you finish your review",
+      "The table below lists PASRR reports for all states.",
+      "Select an option from the",
+      "Search and select multiple states",
+      "To allow a state or territory to make corrections or edits",
+      "Submission count is shown in the # column",
+    ].forEach((text) => expect(panel).toHaveTextContent(text));
+  });
+
   it("State filters are selectable", async () => {
     await waitFor(() => {
       expect(screen.getByText("plan id")).toBeVisible();
