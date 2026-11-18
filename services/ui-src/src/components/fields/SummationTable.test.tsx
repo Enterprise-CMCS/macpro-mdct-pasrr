@@ -168,7 +168,9 @@ describe("<SummationTable />", () => {
       name: "Other: row 1 NumberField Mask",
     });
     await userEvent.type(numberFieldWithMask, "mock text");
-    expect(screen.getByText("Response must be a valid number")).toBeVisible();
+    const errorMessage = screen.getByText("Response must be a valid number");
+    const row = errorMessage.closest("tr");
+    expect(row).toHaveClass("has-error");
 
     await userEvent.clear(numberFieldWithMask);
     await userEvent.type(numberFieldWithMask, "12,345");
@@ -196,6 +198,7 @@ describe("<SummationTable />", () => {
     expect(
       screen.queryByText("Response must be a valid number")
     ).not.toBeInTheDocument();
+    expect(row).not.toHaveClass("has-error");
   });
 
   test("Resident Dispositions SummationTable is visible", () => {

@@ -257,6 +257,9 @@ const summationVariant = {
       "&:last-of-type": {
         paddingRight: "spacer2",
       },
+      ".has-error &": {
+        verticalAlign: "bottom",
+      },
     },
     tbody: {
       td: {

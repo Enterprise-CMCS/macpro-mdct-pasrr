@@ -59,12 +59,9 @@ export const SummationTable = (
   useEffect(() => {
     if (pendingFocusIndex === null) return;
     const input = tableRef.current?.querySelector<HTMLInputElement>(
-      `[data-horizontal-table-row-index="${pendingFocusIndex}"] input`
+      `[data-table-row-index="${pendingFocusIndex}"] input`
     );
-    const mobileInput = tableRef.current?.querySelector<HTMLInputElement>(
-      `[data-vertical-table-row-index="${pendingFocusIndex}"] input`
-    );
-    (input ?? mobileInput)?.focus();
+    input?.focus();
     setPendingFocusIndex(null);
   }, [pendingFocusIndex]);
 
@@ -143,7 +140,7 @@ export const SummationTable = (
     rows: SummationTableRowElement[];
   }) => {
     const firstColumn = rows?.[0] ?? {};
-    const formattedBodyRows: (JSX.Element | string | number)[][] = answer.map(
+    const formattedRows: (JSX.Element | string | number)[][] = answer.map(
       (answerRow, answerRowIndex) => {
         const rowElements: (JSX.Element | string | number)[] = rows.map(
           (column) => {
@@ -223,7 +220,7 @@ export const SummationTable = (
       }
     );
 
-    return formattedBodyRows;
+    return formattedRows;
   };
 
   const updateTotalRows = ({
@@ -358,6 +355,16 @@ export const SummationTable = (
 
   const headers = rows.map((t) => ({ label: t.header }));
   headers.push({ label: "Actions" });
+
+  const styleOverride: string[] = formattedBodyRows.map((row) => {
+    if (typeof row !== "object") {
+      return "";
+    }
+    const hasError =
+      Array.isArray(row) &&
+      row.some((cell) => typeof cell === "object" && cell?.props?.errorMessage);
+    return hasError ? "has-error" : "";
+  });
   const isDisabled = disabled || !enableAddButton;
 
   return (
@@ -368,6 +375,7 @@ export const SummationTable = (
         headers,
         ref: tableRef,
         rows: formattedBodyRows,
+        styleOverride,
         variant: "summation",
       })}
       {addRowMax > 0 && (

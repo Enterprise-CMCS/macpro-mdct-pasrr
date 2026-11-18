@@ -137,7 +137,7 @@ const HorizontalTable = ({
           <Tr
             key={`horizontal-table-body-row-${rowIndex}`}
             className={styleOverride?.[rowIndex] ?? ""}
-            data-horizontal-table-row-index={rowIndex}
+            data-table-row-index={rowIndex}
           >
             {column.map((data, dataIndex) => (
               <Td key={`horizontal-table-body-data-${rowIndex}-${dataIndex}`}>
@@ -187,15 +187,18 @@ const VerticalTable = ({
             .map((data, dataIndex) => {
               return data ? (
                 <Grid
-                  data-vertical-table-row-index={rowIndex}
+                  data-table-row-index={rowIndex}
                   key={`vertical-table-body-data-${rowIndex}-${dataIndex}`}
                   templateColumns="minmax(0, 40vw) minmax(0, 1fr) "
                   gap="spacer3"
                 >
-                  <Text fontSize="1rem" color="#71767a" fontWeight="bold">
+                  <Text fontSize="body_md" color="gray" fontWeight="bold">
                     {headers[dataIndex]}
                   </Text>
-                  <Box fontSize={{ base: "sm", sm: "md" }} sx={sx.labelSrOnly}>
+                  <Box
+                    fontSize={{ base: "body_sm", sm: "body_md" }}
+                    sx={sx.labelSrOnly}
+                  >
                     {data}
                   </Box>
                 </Grid>
@@ -215,10 +218,12 @@ const VerticalTable = ({
                   templateColumns="minmax(0, 40vw) minmax(0, 1fr) "
                   gap="spacer3"
                 >
-                  <Text fontSize="1rem" color="#71767a" fontWeight="bold">
+                  <Text fontSize="md" color="gray" fontWeight="bold">
                     {headers[dataIndex]}
                   </Text>
-                  <Box fontSize={{ base: "sm", sm: "md" }}>{data}</Box>
+                  <Box fontSize={{ base: "body_sm", sm: "body_md" }}>
+                    {data}
+                  </Box>
                 </Grid>
               ) : undefined;
             })
