@@ -11,6 +11,8 @@ import {
   Image,
   Box,
   Text,
+  UnorderedList,
+  ListItem,
 } from "@chakra-ui/react";
 import {
   Dropdown as CmsdsDropdownField,
@@ -325,26 +327,51 @@ export const AdminDashboard = () => {
           defaultIndex={[-1]} // sets the accordion to closed by default
         >
           <AccordionItem label="Admin Instructions">
-            {" "}
             <Box sx={sx.accordionPanel}>
-              <ul>
-                <li>
-                  To view a state or territory's submission, select View Report.
-                </li>
-                <li>
-                  To allow a state or territory to edit a submission, select
-                  Comment/Status and change the status to Unlock.
-                </li>
-                <li>
-                  The # column shows the submission count. This increases by 1
-                  each time a state updates and resubmits a previous report.
-                </li>
-                <li>
-                  To “Accept” a report, select Comment/Status and choose
-                  “Accept” once all the report information has been reviewed and
-                  verified.
-                </li>
-              </ul>
+              <Text fontWeight="bold" marginBottom="spacer1">
+                Reviewing submissions
+              </Text>
+              <UnorderedList spacing="spacer1" marginStart="spacer4">
+                <ListItem>
+                  To view a state or territory’s submission, select “View”.
+                </ListItem>
+                <ListItem>
+                  After you finish your review, update the status to “Completed”
+                  on the dashboard.
+                </ListItem>
+              </UnorderedList>
+              <Text fontWeight="bold" marginBottom="spacer1">
+                Filtering state submissions
+              </Text>
+              <Text marginBottom="spacer1">
+                The table below lists PASRR reports for all states.
+              </Text>
+              <UnorderedList spacing="spacer1" marginStart="spacer4">
+                <ListItem>
+                  Select an option from the “State” or “Reporting year” dropdown
+                  to update the table immediately.
+                </ListItem>
+                <ListItem>
+                  Search and select multiple states to add them to your view, or
+                  select “Clear filters” to reset the table.
+                </ListItem>
+              </UnorderedList>
+              <Text fontWeight="bold" marginBottom="spacer1">
+                Reopening submissions for revision
+              </Text>
+              <UnorderedList spacing="spacer1" marginStart="spacer4">
+                <ListItem>
+                  To allow a state or territory to make corrections or edits to
+                  a submission, select “Update status” to unlock and release the
+                  submission. The status will change to “In revision”.
+                </ListItem>
+                <ListItem>
+                  Submission count is shown in the # column. Any submissions
+                  started and submitted once have a count of 1. When a state or
+                  territory resubmits a previous submission, the count increases
+                  by 1.
+                </ListItem>
+              </UnorderedList>
             </Box>
           </AccordionItem>
         </Accordion>
@@ -363,17 +390,6 @@ export const AdminDashboard = () => {
             </Button>
           </Box>
         )}
-        <Heading as="h2" variant="h2">
-          State Submissions
-        </Heading>
-        <Box>
-          The table below lists PASRR reports for all states. By default, this
-          list is automatically filtered to show your assigned states. Selecting
-          an option from the State(s) or Budget Period dropdowns will
-          immediately update the table content below. You can search and select
-          multiple states to add them to your view, or select Clear Filters to
-          reset the table.
-        </Box>
         <Flex gap="spacer3" alignItems="flex-end" sx={sx.filters}>
           <MultiSelect
             label="State(s)"
@@ -474,6 +490,10 @@ const sx = {
     },
   },
   accordionPanel: {
+    // zero the last list's bottom margin so the page's gap is the only space
+    "& > :last-child": {
+      marginBottom: 0,
+    },
     ".mobile &": {
       paddingTop: "spacer2",
     },
