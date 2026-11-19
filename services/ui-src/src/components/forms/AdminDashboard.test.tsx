@@ -53,28 +53,28 @@ describe("<AdminDashboard />", () => {
       render(
         <RouterWrappedComponent>
           <AdminDashboard />
-        </RouterWrappedComponent>,
+        </RouterWrappedComponent>
       );
     });
   });
   it("AdminDashboard renders", async () => {
     expect(
-      screen.getByRole("heading", { name: "PASRR Admin Dashboard" }),
+      screen.getByRole("heading", { name: "PASRR Admin Dashboard" })
     ).toBeVisible();
     expect(
-      screen.getByRole("button", { name: "Admin Instructions" }),
+      screen.getByRole("button", { name: "Admin Instructions" })
     ).toBeVisible();
     expect(screen.getByRole("button", { name: "States select" })).toBeVisible();
     expect(
-      screen.getByRole("button", { name: "All Filter by Budget Period" }),
+      screen.getByRole("button", { name: "All Filter by Budget Period" })
     ).toBeVisible();
     expect(
-      screen.getByRole("button", { name: "Clear All Filters" }),
+      screen.getByRole("button", { name: "Clear All Filters" })
     ).toBeVisible();
 
     await waitFor(() => {
       expect(
-        screen.queryByRole("columnheader", { name: "State/Territory" }),
+        screen.queryByRole("columnheader", { name: "State/Territory" })
       ).toBeVisible();
     });
 
@@ -100,18 +100,18 @@ describe("<AdminDashboard />", () => {
     expect(localStorage.getItem("states")).toEqual("AL,NJ");
 
     expect(
-      screen.getByRole("button", { name: "Remove New Jersey tag" }),
+      screen.getByRole("button", { name: "Remove New Jersey tag" })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "Remove Alabama tag" }),
+      screen.getByRole("button", { name: "Remove Alabama tag" })
     ).toBeInTheDocument();
 
     await userEvent.click(
-      screen.getByRole("button", { name: "Remove Alabama tag" }),
+      screen.getByRole("button", { name: "Remove Alabama tag" })
     );
 
     expect(
-      screen.queryByRole("button", { name: "Remove Alabama tag" }),
+      screen.queryByRole("button", { name: "Remove Alabama tag" })
     ).not.toBeInTheDocument();
 
     const clearFilterBtn = screen.getByRole("button", {
@@ -119,7 +119,7 @@ describe("<AdminDashboard />", () => {
     });
     await userEvent.click(clearFilterBtn);
     expect(
-      screen.queryByRole("button", { name: "Remove New Jersey tag" }),
+      screen.queryByRole("button", { name: "Remove New Jersey tag" })
     ).not.toBeInTheDocument();
   });
 
@@ -131,7 +131,7 @@ describe("<AdminDashboard />", () => {
     const sortResult = async (
       sort: string,
       columns: number[],
-      results: string[],
+      results: string[]
     ) => {
       const content = screen.getAllByRole("cell");
       const sortBtn = screen.getByRole("button", { name: sort });
@@ -169,11 +169,11 @@ describe("<AdminDashboard />", () => {
     })[0];
     await userEvent.click(commentStatusButton);
     expect(
-      screen.getByRole("heading", { name: /Add comment to/ }),
+      screen.getByRole("heading", { name: /Add comment to/ })
     ).toBeInTheDocument();
     await userEvent.click(screen.getAllByRole("button", { name: "Close" })[0]);
     expect(
-      screen.queryByRole("heading", { name: /Add comment to/ }),
+      screen.queryByRole("heading", { name: /Add comment to/ })
     ).not.toBeInTheDocument();
   });
 });
@@ -181,6 +181,6 @@ describe("Test A11y", () => {
   testA11yAct(
     <RouterWrappedComponent>
       <AdminDashboard />
-    </RouterWrappedComponent>,
+    </RouterWrappedComponent>
   );
 });
