@@ -572,6 +572,8 @@ describe("elementSatisfiesRequired", () => {
         rows: [],
         total: [],
       },
+      addRowButtonText: "Add row",
+      addRowHelperText: "Helper text",
     } as SummationTableTemplate;
     const missingTotal = {
       ...element,
@@ -638,6 +640,33 @@ describe("elementSatisfiesRequired", () => {
         total: incorrectTotal.answer.total,
       },
     };
+    const tooManyRows = {
+      ...element,
+      addRowMax: 0,
+      answer: {
+        rows: [
+          [
+            { id: "mock_summationTableId_textboxId", value: "mock text" },
+            { id: "mock_summationTableId_numberFieldId", value: 12345 },
+          ],
+        ],
+        total: [
+          [
+            {
+              id: "mock_summationTableId_textboxId",
+              value: "Total",
+              preset: true,
+              readonly: true,
+            },
+            {
+              id: "mock_summationTableId_numberFieldId",
+              value: 12345,
+              readonly: true,
+            },
+          ],
+        ],
+      },
+    };
     const validSummationTable = {
       ...element,
       answer: {
@@ -675,6 +704,7 @@ describe("elementSatisfiesRequired", () => {
       { id: "incorrectTotal", element: incorrectTotal },
       { id: "missingValues", element: missingValues },
       { id: "invalidValues", element: invalidValues },
+      { id: "tooManyRows", element: tooManyRows },
     ])("$id is incomplete", (t) => {
       expect(elementSatisfiesRequired(t.element, [t.element])).toBeFalsy();
     });

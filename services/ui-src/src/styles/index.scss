@@ -110,6 +110,16 @@ button {
   }
 }
 
+button {
+  &:disabled {
+    &:hover {
+      span {
+        filter: none;
+      }
+    }
+  }
+}
+
 [tabindex="-1"]:focus {
   outline: none;
 }

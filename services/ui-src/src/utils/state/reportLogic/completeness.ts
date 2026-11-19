@@ -7,6 +7,7 @@ import {
   PageElement,
   PageStatus,
   Report,
+  summationTableAddRowMax,
   SummationTableRowAnswerShape,
 } from "@pasrr/shared";
 import { isFormPageTemplate, assertExhaustive } from "types";
@@ -18,7 +19,7 @@ import {
   isZipCode,
   parseNumber,
 } from "utils/validation/inputValidation";
-import { sumById } from "./tableBuilder";
+import { getNonPresetRows, sumById } from "./tableBuilder";
 
 /**
  * Calculate the status of any page, including calculated values.
@@ -179,11 +180,14 @@ export const elementSatisfiesRequired = (
       const answerRows = element.answer?.rows || [];
       const answerTotal = element.answer?.total || [];
       const rows = element.rows;
+      const nonPresetRows = getNonPresetRows(answerRows);
+      const addRowMax = element.addRowMax ?? summationTableAddRowMax;
 
       if (
         answerRows.length === 0 ||
         answerTotal.length === 0 ||
-        rows.length === 0
+        rows.length === 0 ||
+        nonPresetRows.length > addRowMax
       ) {
         return false;
       }

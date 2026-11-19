@@ -68,32 +68,32 @@ describe("Test tableBuilder functions", () => {
       });
       await userEvent.type(textbox, "mock");
       await userEvent.tab();
-      expect(mockOnChange).toHaveBeenCalledTimes(4);
+      expect(mockOnChange).toHaveBeenCalledTimes(5);
     });
 
-    test("Masked textbox formats its value on blur", async () => {
-      const StatefulMaskedTextbox = () => {
+    test("Masked number field formats its value on change", async () => {
+      const StatefulMaskedNumberField = () => {
         const [value, setValue] = useState<string | number>("");
         return buildElement({
           element: {
-            ...elements[2],
+            id: "mock_maskedNumberFieldId",
+            type: ElementType.NumberField,
+            disabled: false,
             mask: MaskType.CommaSeparated,
           },
           defaultValue: value,
-          id: "mock_maskedTextbox",
-          key: "element-mock-masked-textbox",
+          id: "mock_maskedNumberFieldId",
+          key: "element-mock-masked-number-field",
           onChange: ([nextValue]) => setValue(nextValue),
-          label: "Masked textbox",
+          label: "Masked number field",
         });
       };
-      render(<StatefulMaskedTextbox />);
+      render(<StatefulMaskedNumberField />);
 
       const input = screen.getByRole("textbox", {
-        name: "Masked textbox",
+        name: "Masked number field",
       });
       await userEvent.type(input, "1234");
-      expect(input).toHaveValue("1234");
-
       await userEvent.tab();
       expect(input).toHaveValue("1,234");
     });

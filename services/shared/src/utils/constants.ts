@@ -1,10 +1,10 @@
 //Shared constants between frontend and backend
 
 import {
-  ActionRowElement,
   ElementType,
   FieldGroupElement,
   SummationTableAnswerShape,
+  SummationTableRowElement,
 } from "../types/reports";
 
 // STATES
@@ -191,7 +191,13 @@ export const getResidentDispositionsPresetRowsAndAnswer = ({
   id,
 }: {
   id: string;
-}): { rows: ActionRowElement[]; answer: SummationTableAnswerShape } => {
+}): {
+  rows: SummationTableRowElement[];
+  answer: SummationTableAnswerShape;
+  addRowButtonText: string;
+  addRowHelperText: string;
+  addRowMax: number;
+} => {
   const dispositionColumnId = `${id}_disposition`;
 
   const rows = [
@@ -199,6 +205,7 @@ export const getResidentDispositionsPresetRowsAndAnswer = ({
       id: dispositionColumnId,
       header: "Disposition",
       type: ElementType.Textbox,
+      addRowLabel: "Other:",
     },
     {
       id: `${id}_numberOfResidents`,
@@ -244,9 +251,14 @@ export const getResidentDispositionsPresetRowsAndAnswer = ({
       rows: answerRows,
       total,
     },
+    addRowButtonText: "Add resident disposition",
+    addRowHelperText:
+      "To add an additional disposition category, select the “Add resident disposition” button below. You can add up to five.",
+    addRowMax: summationTableAddRowMax,
   };
 };
 
+export const summationTableAddRowMax = 5;
 export const kebabCaseRegex = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 export const snakeCaseOrCamelCaseRegex =
   /^[a-z]+(_[a-z0-9]+([A-Z][a-z0-9]*)*)*$/;
