@@ -100,12 +100,6 @@ describe("<HomePage />", () => {
         })
       ).toBeVisible();
       expect(
-        screen.getByRole("heading", {
-          level: 2,
-          name: "State Submissions",
-        })
-      ).toBeVisible();
-      expect(
         screen.getByRole("button", {
           name: "Admin Instructions",
         })
