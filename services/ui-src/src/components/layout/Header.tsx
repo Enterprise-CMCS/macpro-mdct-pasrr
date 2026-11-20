@@ -25,7 +25,12 @@ export const Header = ({ handleLogout }: Props) => {
             </Link>
             <Flex sx={sx.menuFlex}>
               {userIsAdmin ? (
-                <Link as={RouterLink} to="/admin" variant="unstyled">
+                <Link
+                  as={RouterLink}
+                  to="/admin"
+                  variant="unstyled"
+                  aria-label="Admin"
+                >
                   <MenuOption
                     icon={gearIcon}
                     altText=""

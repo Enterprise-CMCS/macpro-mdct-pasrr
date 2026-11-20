@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useLocation } from "react-router";
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router";
 import {
   AdminPage,
   AdminToolsPage,
@@ -47,14 +47,11 @@ export const AppRoutes = () => {
           <Route path="/" element={<HomePage />} />
           <Route
             path="/admin"
-            element={
-              !userIsAdmin ? <Navigate to="/profile" /> : <AdminToolsPage />
-            }
-          />
-          <Route
-            path="/admin/banner-editor"
-            element={!userIsAdmin ? <Navigate to="/profile" /> : <AdminPage />}
-          />
+            element={userIsAdmin ? <Outlet /> : <Navigate to="/profile" />}
+          >
+            <Route index element={<AdminToolsPage />} />
+            <Route path="banner-editor" element={<AdminPage />} />
+          </Route>
           <Route
             path="/notifications"
             element={

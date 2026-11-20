@@ -1,8 +1,22 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { RouterWrappedComponent } from "utils/testing/setupTest";
+import {
+  mockAdminUserStore,
+  mockStateUserStore,
+  RouterWrappedComponent,
+} from "utils/testing/setupTest";
 import { Header } from "components";
+import { useBreakpoint, useStore } from "utils";
 import { testA11y } from "utils/testing/commonTests";
+
+vi.mock("utils/state/useStore");
+const mockedUseStore = vi.mocked(useStore);
+mockedUseStore.mockReturnValue(mockStateUserStore);
+
+vi.mock("utils/other/useBreakpoint", () => ({
+  useBreakpoint: vi.fn(() => ({ isMobile: false })),
+}));
+const mockedUseBreakpoint = vi.mocked(useBreakpoint);
 
 const mockLogout = vi.fn();
 
@@ -55,6 +69,34 @@ describe("<Header />", () => {
 
       // Mock logout
       expect(mockLogout).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("Admin link", () => {
+    afterEach(() => {
+      mockedUseStore.mockReturnValue(mockStateUserStore);
+      mockedUseBreakpoint.mockReturnValue({ isMobile: false } as ReturnType<
+        typeof useBreakpoint
+      >);
+    });
+
+    test("is hidden for non-admin users", () => {
+      render(headerComponent);
+      expect(
+        screen.queryByRole("link", { name: "Admin" })
+      ).not.toBeInTheDocument();
+    });
+
+    test("keeps an accessible name on mobile when its text is hidden", () => {
+      mockedUseStore.mockReturnValue(mockAdminUserStore);
+      mockedUseBreakpoint.mockReturnValue({ isMobile: true } as ReturnType<
+        typeof useBreakpoint
+      >);
+      render(headerComponent);
+
+      const adminLink = screen.getByRole("link", { name: "Admin" });
+      expect(adminLink).toHaveAttribute("href", "/admin");
+      expect(screen.queryByText("Admin")).not.toBeInTheDocument();
     });
   });
 

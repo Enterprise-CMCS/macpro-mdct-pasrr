@@ -4,38 +4,43 @@ import { PageTemplate } from "components";
 import { useStore } from "utils";
 import { UserRoles } from "@pasrr/shared";
 
-const adminTools = [
+type AdminTool = {
+  text: string;
+  to: string;
+  description: string;
+  // Omit to show the tool to every admin user
+  roles?: UserRoles[];
+};
+
+const tools: AdminTool[] = [
   {
     text: "Banner editor",
     to: "/admin/banner-editor",
     description:
       "Create and edit announcement banners to display on state report dashboards.",
   },
-];
-
-const approverTools = [
   {
     text: "Notifications",
     to: "/notifications",
     description:
       "Assign CMS Project Officers to the states they manage and receive report notifications.",
+    roles: [UserRoles.APPROVER],
   },
 ];
 
 export const AdminToolsPage = () => {
   const { userRole } = useStore().user ?? {};
-  const tools =
-    userRole === UserRoles.APPROVER
-      ? [...adminTools, ...approverTools]
-      : adminTools;
+  const visibleTools = tools.filter(
+    ({ roles }) => !roles || roles.includes(userRole as UserRoles)
+  );
 
   return (
-    <PageTemplate data-testid="admin-tools-view">
-      <Heading as="h1" id="AdminToolsHeader" tabIndex={-1} sx={sx.headerText}>
+    <PageTemplate>
+      <Heading as="h1" variant="h1" sx={sx.headerText}>
         Admin tools
       </Heading>
       <Box as="ul" sx={sx.toolList}>
-        {tools.map(({ text, to, description }) => (
+        {visibleTools.map(({ text, to, description }) => (
           <Box as="li" key={to} sx={sx.toolItem}>
             <Link as={RouterLink} to={to} sx={sx.toolLink}>
               {text}
@@ -51,8 +56,6 @@ export const AdminToolsPage = () => {
 const sx = {
   headerText: {
     marginBottom: "spacer4",
-    fontSize: "heading_3xl",
-    fontWeight: "heading_3xl",
   },
   toolList: {
     listStyle: "none",
