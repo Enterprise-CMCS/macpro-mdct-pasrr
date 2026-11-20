@@ -139,7 +139,7 @@ describe("<AdminDashboard />", () => {
     );
   });
 
-  it("Reporting Year filter", async () => {
+  test("Reporting Year filter", async () => {
     await waitFor(() => {
       expect(screen.getByText("plan id")).toBeVisible();
     });
@@ -158,9 +158,20 @@ describe("<AdminDashboard />", () => {
       expect(screen.getByText("plan mn id")).toBeVisible();
       expect(screen.queryByText("plan id")).not.toBeInTheDocument();
     });
+
+    const reportingYearDropdown2025 = screen.getByRole("button", {
+      name: "2025 Filter by reporting year",
+    });
+    await userEvent.click(reportingYearDropdown2025);
+    await userEvent.click(screen.getByRole("option", { name: "All" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("plan mn id")).toBeVisible();
+      expect(screen.queryByText("plan id")).toBeVisible();
+    });
   });
 
-  it("State filters are selectable", async () => {
+  test("State filters are selectable", async () => {
     await waitFor(() => {
       expect(screen.getByText("plan id")).toBeVisible();
     });
