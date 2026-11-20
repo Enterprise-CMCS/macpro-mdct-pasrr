@@ -278,7 +278,7 @@ export const AdminDashboard = () => {
       switch (type) {
         case "State/Territory":
           return StateNames[answer.state] || "";
-        case "Report Name":
+        case "Submission name":
           return answer.name;
         case "Budget Period":
           return answer.budgetPeriod;
@@ -439,7 +439,7 @@ export const AdminDashboard = () => {
           ResponsiveTable({
             headers: [
               { label: "State/Territory", sortable: true },
-              { label: "Report Name", sortable: true },
+              { label: "Submission name", sortable: true },
               { label: "Budget Period", sortable: true },
               { label: "Last Edited", sortable: true },
               { label: "Status", sortable: true },
