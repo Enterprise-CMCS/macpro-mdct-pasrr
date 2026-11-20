@@ -28,7 +28,7 @@ describe("Test ProfilePage for admin users", () => {
 
   test("Check that Profile page renders properly", () => {
     expect(
-      screen.getByRole("row", { name: "Email adminuser@test.com" }),
+      screen.getByRole("row", { name: "Email adminuser@test.com" })
     ).toBeVisible();
     expect(screen.queryByText("stateuser@test.com")).not.toBeInTheDocument();
   });
@@ -51,7 +51,7 @@ describe("Test ProfilePage for state users", () => {
 
   test("Check that Profile page renders properly", () => {
     expect(
-      screen.getByRole("row", { name: "Email stateuser@test.com" }),
+      screen.getByRole("row", { name: "Email stateuser@test.com" })
     ).toBeVisible();
     expect(screen.queryByText("adminuser@test.com")).not.toBeInTheDocument();
   });

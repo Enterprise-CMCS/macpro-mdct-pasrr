@@ -32,8 +32,8 @@ describe("<AdminToolsPage />", () => {
   test("renders the banner editor description", () => {
     expect(
       screen.getByText(
-        "Create and edit announcement banners to display on state report dashboards.",
-      ),
+        "Create and edit announcement banners to display on state report dashboards."
+      )
     ).toBeVisible();
   });
 
@@ -44,7 +44,7 @@ describe("<AdminToolsPage />", () => {
 
   test("does not show notifications link for non-approver user", () => {
     expect(
-      screen.queryByRole("link", { name: "Notifications" }),
+      screen.queryByRole("link", { name: "Notifications" })
     ).not.toBeInTheDocument();
   });
 
