@@ -24,7 +24,9 @@ vi.mock("launchdarkly-react-client-sdk", () => ({
   }),
 }));
 
-const mockGetReport = vi.fn().mockResolvedValue([mockReport, mockReport2]);
+const mockGetReport = vi
+  .fn()
+  .mockResolvedValue([mockReport, { ...mockReport2, reportingYear: 2025 }]);
 vi.mock("../../utils/api/requestMethods/report", () => ({
   getReportByType: () => mockGetReport(),
   createReport: vi.fn(),
@@ -80,6 +82,27 @@ describe("<AdminDashboard />", () => {
     });
 
     expect(screen.getByText("plan id")).toBeVisible();
+  });
+
+  it("Reporting Year filter", async () => {
+    await waitFor(() => {
+      expect(screen.getByText("plan id")).toBeVisible();
+    });
+
+    const reportingYearDropdown = screen.getByRole("button", {
+      name: "All Filter by reporting year",
+    });
+    await userEvent.click(reportingYearDropdown);
+
+    expect(screen.getByRole("option", { name: "2026" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "2025" })).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("option", { name: "2025" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("plan mn id")).toBeVisible();
+      expect(screen.queryByText("plan id")).not.toBeInTheDocument();
+    });
   });
 
   it("State filters are selectable", async () => {
