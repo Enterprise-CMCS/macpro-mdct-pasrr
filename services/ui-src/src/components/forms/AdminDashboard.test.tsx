@@ -25,7 +25,9 @@ vi.mock("launchdarkly-react-client-sdk", () => ({
   }),
 }));
 
-const mockGetReport = vi.fn().mockResolvedValue([mockReport, mockReport2]);
+const mockGetReport = vi
+  .fn()
+  .mockResolvedValue([mockReport, { ...mockReport2, reportingYear: 2025 }]);
 vi.mock("../../utils/api/requestMethods/report", () => ({
   getReportByType: () => mockGetReport(),
   createReport: vi.fn(),
@@ -68,7 +70,7 @@ describe("<AdminDashboard />", () => {
     ).toBeVisible();
     expect(screen.getByRole("button", { name: "States select" })).toBeVisible();
     expect(
-      screen.getByRole("button", { name: "All Filter by Budget Period" })
+      screen.getByRole("button", { name: "All Filter by reporting year" })
     ).toBeVisible();
     expect(
       screen.getByRole("button", { name: "Clear All Filters" })
@@ -135,6 +137,38 @@ describe("<AdminDashboard />", () => {
     ].forEach((text, index) =>
       expect(listItems[index]).toHaveTextContent(text)
     );
+  });
+
+  test("Reporting Year filter", async () => {
+    await waitFor(() => {
+      expect(screen.getByText("plan id")).toBeVisible();
+    });
+
+    const reportingYearDropdown = screen.getByRole("button", {
+      name: "All Filter by reporting year",
+    });
+    await userEvent.click(reportingYearDropdown);
+
+    expect(screen.getByRole("option", { name: "2026" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "2025" })).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("option", { name: "2025" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("plan mn id")).toBeVisible();
+      expect(screen.queryByText("plan id")).not.toBeInTheDocument();
+    });
+
+    const reportingYearDropdown2025 = screen.getByRole("button", {
+      name: "2025 Filter by reporting year",
+    });
+    await userEvent.click(reportingYearDropdown2025);
+    await userEvent.click(screen.getByRole("option", { name: "All" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("plan mn id")).toBeVisible();
+      expect(screen.queryByText("plan id")).toBeVisible();
+    });
   });
 
   test("State filters are selectable", async () => {
