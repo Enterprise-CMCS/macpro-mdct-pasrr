@@ -279,7 +279,7 @@ export const AdminDashboard = () => {
       return [
         StateNames[report.state],
         report.name,
-        report.reportingYear,
+        report.budgetPeriod,
         formatMonthDayYear(report.lastEdited!),
         getStatus(report),
         report.submissionCount,
@@ -295,8 +295,8 @@ export const AdminDashboard = () => {
           return StateNames[answer.state] || "";
         case "Report Name":
           return answer.name;
-        case "Reporting year":
-          return answer.reportingYear;
+        case "Budget Period":
+          return answer.budgetPeriod;
         case "Last Edited":
           return answer.lastEdited!;
         case "Status":
