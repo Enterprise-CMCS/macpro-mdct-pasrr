@@ -25,7 +25,7 @@ const renderAt = (path: string) =>
   render(
     <MemoryRouter initialEntries={[path]}>
       <AppRoutes />
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 
 describe("<AppRoutes /> admin routes", () => {
@@ -43,7 +43,7 @@ describe("<AppRoutes /> admin routes", () => {
       mockedUseStore.mockReturnValue(mockStateUserStore);
       renderAt(path);
       expect(
-        screen.getByRole("heading", { name: "Profile page" }),
+        screen.getByRole("heading", { name: "Profile page" })
       ).toBeVisible();
     });
   });
