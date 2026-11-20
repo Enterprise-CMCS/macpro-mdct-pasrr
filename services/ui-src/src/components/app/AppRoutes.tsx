@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes, useLocation } from "react-router";
 import {
   AdminPage,
+  AdminToolsPage,
   HelpPage,
   HomePage,
   ProfilePage,
@@ -46,6 +47,12 @@ export const AppRoutes = () => {
           <Route path="/" element={<HomePage />} />
           <Route
             path="/admin"
+            element={
+              !userIsAdmin ? <Navigate to="/profile" /> : <AdminToolsPage />
+            }
+          />
+          <Route
+            path="/admin/banner-editor"
             element={!userIsAdmin ? <Navigate to="/profile" /> : <AdminPage />}
           />
           <Route

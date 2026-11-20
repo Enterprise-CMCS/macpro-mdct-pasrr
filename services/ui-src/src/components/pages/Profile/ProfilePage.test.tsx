@@ -29,7 +29,7 @@ describe("Test ProfilePage for admin users", () => {
 
   test("Check that Profile page renders properly", () => {
     expect(
-      screen.getByRole("row", { name: "Email adminuser@test.com" })
+      screen.getByRole("row", { name: "Email adminuser@test.com" }),
     ).toBeVisible();
     expect(screen.queryByText("stateuser@test.com")).not.toBeInTheDocument();
   });
@@ -43,10 +43,10 @@ describe("Test ProfilePage for admin users", () => {
     expect(screen.getByText("N/A")).toBeVisible();
   });
 
-  test("Check that admin button navigates to /admin on click", async () => {
+  test("Check that admin button navigates to /admin/banner-editor on click", async () => {
     const adminButton = screen.getByRole("button", { name: "Banner Editor" });
     await userEvent.click(adminButton);
-    expect(window.location.pathname).toEqual("/admin");
+    expect(window.location.pathname).toEqual("/admin/banner-editor");
   });
 });
 
@@ -58,7 +58,7 @@ describe("Test ProfilePage for state users", () => {
 
   test("Check that Profile page renders properly", () => {
     expect(
-      screen.getByRole("row", { name: "Email stateuser@test.com" })
+      screen.getByRole("row", { name: "Email stateuser@test.com" }),
     ).toBeVisible();
     expect(screen.queryByText("adminuser@test.com")).not.toBeInTheDocument();
   });

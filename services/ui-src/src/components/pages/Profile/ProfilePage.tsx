@@ -36,7 +36,9 @@ export const ProfilePage = () => {
       </Text>
       <Table content={tableContent} variant="striped" />
       {userIsAdmin && (
-        <Button onClick={() => navigate("/admin")}>Banner Editor</Button>
+        <Button onClick={() => navigate("/admin/banner-editor")}>
+          Banner Editor
+        </Button>
       )}
     </PageTemplate>
   );

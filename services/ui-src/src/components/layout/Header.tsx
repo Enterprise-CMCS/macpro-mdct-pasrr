@@ -1,10 +1,11 @@
 import { Link as RouterLink, useLocation } from "react-router";
 import { UsaBanner } from "@cmsgov/design-system";
 import { Box, Container, Flex, Image, Link } from "@chakra-ui/react";
-import { AdminMenu, Menu, MenuOption, SubnavBar } from "components";
+import { Menu, MenuOption, SubnavBar } from "components";
 import { useBreakpoint, useStore } from "utils";
 import appLogo from "assets/logos/logo_mdct_pasrr.svg";
 import getHelpIcon from "assets/icons/help/icon_help_white.svg";
+import gearIcon from "assets/icons/icon_gear.svg";
 
 export const Header = ({ handleLogout }: Props) => {
   const { isMobile } = useBreakpoint();
@@ -23,7 +24,16 @@ export const Header = ({ handleLogout }: Props) => {
               <Image src={appLogo} alt="PASRR logo" />
             </Link>
             <Flex sx={sx.menuFlex}>
-              {userIsAdmin ? <AdminMenu /> : null}
+              {userIsAdmin ? (
+                <Link as={RouterLink} to="/admin" variant="unstyled">
+                  <MenuOption
+                    icon={gearIcon}
+                    altText=""
+                    text="Admin"
+                    hideText={isMobile}
+                  />
+                </Link>
+              ) : null}
               <Link
                 as={RouterLink}
                 to="/help"

@@ -49,6 +49,7 @@ export { LoginCognito } from "./logins/LoginCognito";
 export { LoginIDM } from "./logins/LoginIDM";
 // pages
 export { AdminPage } from "./pages/Admin/AdminPage";
+export { AdminToolsPage } from "./pages/Admin/AdminToolsPage";
 export { ExportedReportPage } from "./pages/Export/ExportedReportPage";
 export { HelpPage } from "./pages/HelpPage/HelpPage";
 export { AccessDeniedPage } from "./pages/AccessDenied/AccessDeniedPage";
@@ -64,7 +65,6 @@ export { Sidebar } from "./report/Sidebar";
 export { StatusTableElement } from "./report/StatusTable";
 export { SubnavBar } from "./report/SubnavBar";
 // menus
-export { AdminMenu } from "./menus/AdminMenu";
 export { Menu } from "./menus/Menu";
 export { MenuOption } from "./menus/MenuOption";
 // modals
