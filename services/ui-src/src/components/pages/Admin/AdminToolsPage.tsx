@@ -4,30 +4,45 @@ import { PageTemplate } from "components";
 import { useStore } from "utils";
 import { UserRoles } from "@pasrr/shared";
 
+const adminTools = [
+  {
+    text: "Banner editor",
+    to: "/admin/banner-editor",
+    description:
+      "Create and edit announcement banners to display on state report dashboards.",
+  },
+];
+
+const approverTools = [
+  {
+    text: "Notifications",
+    to: "/notifications",
+    description:
+      "Assign CMS Project Officers to the states they manage and receive report notifications.",
+  },
+];
+
 export const AdminToolsPage = () => {
   const { userRole } = useStore().user ?? {};
+  const tools =
+    userRole === UserRoles.APPROVER
+      ? [...adminTools, ...approverTools]
+      : adminTools;
 
   return (
     <PageTemplate data-testid="admin-tools-view">
       <Heading as="h1" id="AdminToolsHeader" tabIndex={-1} sx={sx.headerText}>
-        Admin Tools
+        Admin tools
       </Heading>
-      <Text mb="1.25rem">
-        Select a tool below to manage announcements and other admin tasks.
-      </Text>
       <Box as="ul" sx={sx.toolList}>
-        <li>
-          <Link as={RouterLink} to="/admin/banner-editor" sx={sx.toolLink}>
-            Banner Editor
-          </Link>
-        </li>
-        {userRole === UserRoles.APPROVER && (
-          <li>
-            <Link as={RouterLink} to="/notifications" sx={sx.toolLink}>
-              Notifications
+        {tools.map(({ text, to, description }) => (
+          <Box as="li" key={to} sx={sx.toolItem}>
+            <Link as={RouterLink} to={to} sx={sx.toolLink}>
+              {text}
             </Link>
-          </li>
-        )}
+            <Text sx={sx.toolDescription}>{description}</Text>
+          </Box>
+        ))}
       </Box>
     </PageTemplate>
   );
@@ -35,7 +50,7 @@ export const AdminToolsPage = () => {
 
 const sx = {
   headerText: {
-    marginBottom: "spacer2",
+    marginBottom: "spacer4",
     fontSize: "heading_3xl",
     fontWeight: "heading_3xl",
   },
@@ -43,11 +58,14 @@ const sx = {
     listStyle: "none",
     padding: 0,
     margin: 0,
-    display: "flex",
-    flexDirection: "column",
-    gap: "1rem",
+  },
+  toolItem: {
+    paddingY: "spacer2",
   },
   toolLink: {
     fontWeight: "bold",
+  },
+  toolDescription: {
+    marginTop: "spacer1",
   },
 };

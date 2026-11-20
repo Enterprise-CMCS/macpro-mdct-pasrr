@@ -25,12 +25,20 @@ describe("<AdminToolsPage />", () => {
     render(adminToolsComponent);
   });
 
-  test("renders the Admin Tools heading", () => {
-    expect(screen.getByRole("heading", { name: "Admin Tools" })).toBeVisible();
+  test("renders the Admin tools heading", () => {
+    expect(screen.getByRole("heading", { name: "Admin tools" })).toBeVisible();
+  });
+
+  test("renders the banner editor description", () => {
+    expect(
+      screen.getByText(
+        "Create and edit announcement banners to display on state report dashboards.",
+      ),
+    ).toBeVisible();
   });
 
   test("banner editor link navigates to /admin/banner-editor", async () => {
-    await userEvent.click(screen.getByRole("link", { name: "Banner Editor" }));
+    await userEvent.click(screen.getByRole("link", { name: "Banner editor" }));
     expect(window.location.pathname).toEqual("/admin/banner-editor");
   });
 
