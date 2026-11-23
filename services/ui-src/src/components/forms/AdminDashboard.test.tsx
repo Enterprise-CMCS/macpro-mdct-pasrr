@@ -167,7 +167,7 @@ describe("<AdminDashboard />", () => {
 
     await waitFor(() => {
       expect(screen.getByText("plan mn id")).toBeVisible();
-      expect(screen.queryByText("plan id")).toBeVisible();
+      expect(screen.getByText("plan id")).toBeVisible();
     });
   });
 
