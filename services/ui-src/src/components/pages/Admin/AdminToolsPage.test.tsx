@@ -39,7 +39,7 @@ describe("<AdminToolsPage />", () => {
 
   test("banner editor link navigates to /admin/banner-editor", async () => {
     await userEvent.click(screen.getByRole("link", { name: "Banner editor" }));
-    expect(window.location.pathname).toEqual("/admin/banner-editor");
+    expect(window.location.pathname).toBe("/admin/banner-editor");
   });
 
   test("does not show notifications link for non-approver user", () => {

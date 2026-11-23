@@ -80,11 +80,23 @@ describe("<Header />", () => {
       >);
     });
 
-    test("is hidden for non-admin users", () => {
+    test("is not rendered for non-admin users", () => {
       render(headerComponent);
       expect(
         screen.queryByRole("link", { name: "Admin" })
       ).not.toBeInTheDocument();
+    });
+
+    test("shows its text on desktop", () => {
+      mockedUseStore.mockReturnValue(mockAdminUserStore);
+      mockedUseBreakpoint.mockReturnValue({ isMobile: false } as ReturnType<
+        typeof useBreakpoint
+      >);
+      render(headerComponent);
+
+      const adminLink = screen.getByRole("link", { name: "Admin" });
+      expect(adminLink).toHaveAttribute("href", "/admin");
+      expect(adminLink).toHaveTextContent("Admin");
     });
 
     test("keeps an accessible name on mobile when its text is hidden", () => {
@@ -96,7 +108,7 @@ describe("<Header />", () => {
 
       const adminLink = screen.getByRole("link", { name: "Admin" });
       expect(adminLink).toHaveAttribute("href", "/admin");
-      expect(screen.queryByText("Admin")).not.toBeInTheDocument();
+      expect(adminLink).not.toHaveTextContent("Admin");
     });
   });
 

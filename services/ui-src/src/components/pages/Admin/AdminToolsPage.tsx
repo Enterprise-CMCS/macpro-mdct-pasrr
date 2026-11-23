@@ -1,5 +1,5 @@
 import { Link as RouterLink } from "react-router";
-import { Box, Heading, Link, Text } from "@chakra-ui/react";
+import { Heading, Link, List, ListItem, Text } from "@chakra-ui/react";
 import { PageTemplate } from "components";
 import { useStore } from "utils";
 import { UserRoles } from "@pasrr/shared";
@@ -39,16 +39,16 @@ export const AdminToolsPage = () => {
       <Heading as="h1" variant="h1" sx={sx.headerText}>
         Admin tools
       </Heading>
-      <Box as="ul" sx={sx.toolList}>
+      <List sx={sx.toolList}>
         {visibleTools.map(({ text, to, description }) => (
-          <Box as="li" key={to} sx={sx.toolItem}>
+          <ListItem key={to} sx={sx.toolItem}>
             <Link as={RouterLink} to={to} sx={sx.toolLink}>
               {text}
             </Link>
             <Text sx={sx.toolDescription}>{description}</Text>
-          </Box>
+          </ListItem>
         ))}
-      </Box>
+      </List>
     </PageTemplate>
   );
 };
@@ -58,7 +58,6 @@ const sx = {
     marginBottom: "spacer4",
   },
   toolList: {
-    listStyle: "none",
     padding: 0,
     margin: 0,
   },
