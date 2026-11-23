@@ -38,7 +38,6 @@ import {
 } from "utils";
 import { MultiSelect } from "./Multiselect";
 import closeTag from "assets/icons/close/icon_close_tag.svg";
-import { budgetPeriodFilterOptions } from "./../../constants";
 import { ReportCommentDrawer } from "components/drawers/ReportCommentDrawer";
 import { getStatus } from "utils/other/status";
 import { getAssignedStatesByEmail } from "utils/api/requestMethods/notificationRecipients";
@@ -118,7 +117,6 @@ const AdminCreateReportModal = ({
   );
 };
 
-const budgetPeriodValues = [1, 2, 3, 4, 5];
 const stateAbbr = Object.keys(StateNames);
 
 const getSavedStateFilter = () => {
@@ -126,6 +124,8 @@ const getSavedStateFilter = () => {
   if (!savedFilter) return [];
   return savedFilter.split(",");
 };
+
+const ALL_YEARS = "All";
 
 export const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -135,7 +135,6 @@ export const AdminDashboard = () => {
     (string | number | JSX.Element | undefined)[][]
   >([]);
   const navigate = useNavigate();
-  const [budgetValue, setBudgetValue] = useState("All");
   const [selectedStates, setSelectedStates] = useState<string[]>(
     getSavedStateFilter()
   );
@@ -147,6 +146,7 @@ export const AdminDashboard = () => {
   const [commentDrawerOpen, setCommentDrawerOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState<Report>();
   const [createReportModalOpen, setCreateReportModalOpen] = useState(false);
+  const [reportingYearFilter, setReportingYearFilter] = useState(ALL_YEARS);
   const { email: userEmail, userRole } = useStore().user ?? {};
   const flags = useFlags();
   const userCanStartReport =
@@ -187,11 +187,10 @@ export const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
-    const filterBudgetPeriod =
-      budgetValue == null || budgetValue == "All"
-        ? budgetPeriodValues
-        : [parseInt(budgetValue)];
-
+    const filterReportingYear =
+      reportingYearFilter === ALL_YEARS
+        ? undefined
+        : parseInt(reportingYearFilter);
     const sessionStateFilter = localStorage.getItem("states");
     const filterStates = !sessionStateFilter
       ? stateAbbr
@@ -199,25 +198,41 @@ export const AdminDashboard = () => {
 
     const filtered = reports.filter(
       (report) =>
-        filterBudgetPeriod.includes(report.budgetPeriod) &&
+        (filterReportingYear === undefined ||
+          report.reportingYear === filterReportingYear) &&
         filterStates.includes(report.state)
     );
 
     setSortedReports(filtered);
-  }, [reports, selectedStates, budgetValue]);
+  }, [reports, selectedStates, reportingYearFilter]);
 
   //after reports are filtered, we apply the last saved sort
   useEffect(() => {
     sortRows(lastSorted.sort, lastSorted.type);
   }, [sortedReports]);
 
-  const handleBudgetPeriodChange = (evt: { target: { value: string } }) => {
-    setBudgetValue(evt.target.value);
+  const handleReportingYearChange = (evt: { target: { value: string } }) => {
+    setReportingYearFilter(evt.target.value);
   };
+
+  const reportingYears = [
+    ...new Set(
+      reports
+        .map((report) => report.reportingYear)
+        .filter((year) => typeof year === "number")
+    ),
+  ].toSorted((a, b) => b - a);
+  const reportingYearFilterOptions = [
+    { label: ALL_YEARS, value: ALL_YEARS },
+    ...reportingYears.map((year) => ({
+      label: year.toString(),
+      value: year.toString(),
+    })),
+  ];
 
   const clearFilter = () => {
     setStatesHandler([]);
-    setBudgetValue("All");
+    setReportingYearFilter(ALL_YEARS);
     setSortedReports(reports);
   };
 
@@ -264,7 +279,7 @@ export const AdminDashboard = () => {
       return [
         StateNames[report.state],
         report.name,
-        report.budgetPeriod,
+        report.reportingYear,
         formatMonthDayYear(report.lastEdited!),
         getStatus(report),
         report.submissionCount,
@@ -278,10 +293,10 @@ export const AdminDashboard = () => {
       switch (type) {
         case "State/Territory":
           return StateNames[answer.state] || "";
-        case "Report Name":
+        case "Submission name":
           return answer.name;
-        case "Budget Period":
-          return answer.budgetPeriod;
+        case "Reporting year":
+          return answer.reportingYear;
         case "Last Edited":
           return answer.lastEdited!;
         case "Status":
@@ -400,11 +415,11 @@ export const AdminDashboard = () => {
             onChange={(selected) => setStatesHandler(selected)}
           />
           <CmsdsDropdownField
-            name="budgetPeriodFilter"
-            label="Filter by Budget Period"
-            value={budgetValue}
-            onChange={handleBudgetPeriodChange}
-            options={budgetPeriodFilterOptions}
+            name="reportingYearFilter"
+            label="Filter by reporting year"
+            value={reportingYearFilter}
+            onChange={handleReportingYearChange}
+            options={reportingYearFilterOptions}
           />
           <Button
             onClick={clearFilter}
@@ -439,8 +454,8 @@ export const AdminDashboard = () => {
           ResponsiveTable({
             headers: [
               { label: "State/Territory", sortable: true },
-              { label: "Report Name", sortable: true },
-              { label: "Budget Period", sortable: true },
+              { label: "Submission name", sortable: true },
+              { label: "Reporting year", sortable: true },
               { label: "Last Edited", sortable: true },
               { label: "Status", sortable: true },
               { label: "#" },

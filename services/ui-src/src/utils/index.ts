@@ -7,6 +7,7 @@ export * from "./api/requestMethods/report";
 export * from "./auth/UserProvider";
 export * from "./auth/authLifecycle";
 // state management
+export * from "./state/reportLogic/reportActions";
 export * from "./state/useStore";
 //other
 export * from "./other/parsing";
@@ -15,4 +16,3 @@ export * from "./other/time";
 export * from "./other/email";
 export * from "./other/routing";
 export * from "./other/a11y";
-export * from "./state/reportLogic/reportActions";
