@@ -239,7 +239,7 @@ describe("<AdminDashboard />", () => {
 
     await sortResult("State/Territory", [0, 7], ["Minnesota", "New Jersey"]);
     await sortResult("Submission name", [1, 8], ["plan id", "plan mn id"]);
-    await sortResult("Budget Period", [2, 9], ["1", "2"]);
+    await sortResult("Reporting year", [2, 9], ["2025", "2026"]);
     await sortResult("Last Edited", [3, 10], ["04/17/2026", "04/17/2026"]);
     await sortResult("Status", [4, 11], ["In progress", "Not started"]);
   });
