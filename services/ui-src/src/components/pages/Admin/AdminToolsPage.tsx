@@ -8,7 +8,6 @@ type AdminTool = {
   text: string;
   to: string;
   description: string;
-  // Omit to show the tool to every admin user
   roles?: UserRoles[];
 };
 
@@ -31,7 +30,7 @@ const tools: AdminTool[] = [
 export const AdminToolsPage = () => {
   const { userRole } = useStore().user ?? {};
   const visibleTools = tools.filter(
-    ({ roles }) => !roles || roles.includes(userRole as UserRoles)
+    ({ roles }) => !roles || roles.includes(userRole as UserRoles),
   );
 
   return (

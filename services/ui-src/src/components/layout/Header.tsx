@@ -35,6 +35,7 @@ export const Header = ({ handleLogout }: Props) => {
                     icon={gearIcon}
                     altText=""
                     text="Admin"
+                    role="group"
                     hideText={isMobile}
                   />
                 </Link>
