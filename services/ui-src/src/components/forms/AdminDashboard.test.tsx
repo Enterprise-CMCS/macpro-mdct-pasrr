@@ -12,7 +12,7 @@ import { RouterWrappedComponent } from "utils/testing/mockRouter";
 import { mockReport, mockReport2 } from "utils/testing/mockForm";
 import userEvent from "@testing-library/user-event";
 import { testA11yAct } from "utils/testing/commonTests";
-import { createReport, useStore } from "utils";
+import { useStore } from "utils";
 import { mockAdminUserStore } from "utils/testing/setupTest";
 
 vi.mock("utils/state/useStore");
@@ -30,7 +30,6 @@ const mockGetReport = vi
   .mockResolvedValue([mockReport, { ...mockReport2, reportingYear: 2025 }]);
 vi.mock("../../utils/api/requestMethods/report", () => ({
   getReportByType: () => mockGetReport(),
-  createReport: vi.fn(),
 }));
 
 vi.mock("../../utils/api/requestMethods/commentMethods", () => ({
@@ -265,50 +264,6 @@ describe("<AdminDashboard />", () => {
     expect(
       screen.queryByRole("heading", { name: /Add comment to/ })
     ).not.toBeInTheDocument();
-  });
-
-  test("Can open and close admin create report modal", async () => {
-    const createReportButton = screen.getByRole("button", {
-      name: "Start First Annual Report",
-    });
-    await userEvent.click(createReportButton);
-    expect(
-      screen.getByRole("heading", { name: "Start First Annual Report" })
-    ).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Close" }));
-    expect(
-      screen.queryByRole("heading", { name: "Start First Annual Report" })
-    ).not.toBeInTheDocument();
-  });
-
-  test("Cannot create report for state with existing report", async () => {
-    const createReportButton = screen.getByRole("button", {
-      name: "Start First Annual Report",
-    });
-    await userEvent.click(createReportButton);
-
-    const stateDropdown = screen.getAllByLabelText("State")[1];
-    await userEvent.click(stateDropdown);
-    // mock reports for NJ and MN so should not see those options
-    expect(
-      screen.queryByRole("option", { name: "New Jersey" })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("option", { name: "Minnesota" })
-    ).not.toBeInTheDocument();
-  });
-
-  test("Can create report for state with no existing report", async () => {
-    const createReportButton = screen.getByRole("button", {
-      name: "Start First Annual Report",
-    });
-    await userEvent.click(createReportButton);
-
-    const stateDropdown = screen.getAllByLabelText("State")[1];
-    await userEvent.click(stateDropdown);
-    await userEvent.click(screen.getByRole("option", { name: "Alaska" }));
-    await userEvent.click(screen.getByRole("button", { name: "Start" }));
-    expect(createReport).toHaveBeenCalled();
   });
 });
 describe("Test A11y", () => {

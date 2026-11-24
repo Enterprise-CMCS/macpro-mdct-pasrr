@@ -14,23 +14,17 @@ import {
   UnorderedList,
   ListItem,
 } from "@chakra-ui/react";
+import { Dropdown as CmsdsDropdownField } from "@cmsgov/design-system";
 import {
-  Dropdown as CmsdsDropdownField,
-  Dropdown,
-} from "@cmsgov/design-system";
-import {
-  AlertTypes,
-  dropdownEmptyOption,
   Report,
   ReportType,
   StateDropdownOptions,
   StateNames,
   UserRoles,
 } from "@pasrr/shared";
-import { PageTemplate, AccordionItem, Modal, Alert } from "components";
+import { PageTemplate, AccordionItem } from "components";
 import { ResponsiveTable, SORT_TYPE } from "components/tables/ResponsiveTable";
 import {
-  createReport,
   formatMonthDayYear,
   getReportByType,
   reportBasePath,
@@ -41,81 +35,8 @@ import closeTag from "assets/icons/close/icon_close_tag.svg";
 import { ReportCommentDrawer } from "components/drawers/ReportCommentDrawer";
 import { getStatus } from "utils/other/status";
 import { getAssignedStatesByEmail } from "utils/api/requestMethods/notificationRecipients";
-import { DropdownOptions } from "types";
 import { useFlags } from "launchdarkly-react-client-sdk";
 import { DevTools, ToolType } from "components/devTools/DevTools";
-
-const AdminCreateReportModal = ({
-  modalDisclosure,
-  reports,
-  reloadReports,
-}: any) => {
-  const [submitting, setSubmitting] = useState(false);
-  const [errorAlert, setErrorAlert] = useState();
-  const [selectedState, setSelectedState] = useState(dropdownEmptyOption.value);
-  const [dropdownOptions, setDropdownOptions] =
-    useState<DropdownOptions[]>(StateDropdownOptions);
-
-  const onClose = () => {
-    setErrorAlert(undefined);
-    setSelectedState(dropdownEmptyOption.value);
-    modalDisclosure.onClose();
-  };
-
-  const onSubmit = async () => {
-    setSubmitting(true);
-
-    try {
-      await createReport(ReportType.PASRR, selectedState);
-      await reloadReports(ReportType.PASRR);
-      onClose();
-    } catch (error: any) {
-      const errorMessage =
-        error.message?.split(" - ").at(-1) || "Unknown error";
-      setErrorAlert(errorMessage);
-    }
-
-    setSubmitting(false);
-  };
-
-  useEffect(() => {
-    const statesAlreadyCreated = reports.map((report: Report) => report.state);
-    const options = StateDropdownOptions.filter(
-      ({ value }) => !statesAlreadyCreated.includes(value)
-    );
-    setDropdownOptions([dropdownEmptyOption, ...options]);
-  }, [modalDisclosure.isOpen]);
-
-  return (
-    <Modal
-      modalDisclosure={{
-        isOpen: modalDisclosure.isOpen,
-        onClose: onClose,
-      }}
-      content={{
-        heading: "Start First Annual Report",
-        subheading:
-          "This will start the first annual report for the state selected below.",
-        actionButtonText: "Start",
-      }}
-      onConfirmHandler={onSubmit}
-      submitting={submitting}
-    >
-      {errorAlert !== undefined && (
-        <Alert status={AlertTypes.ERROR} title="Failed to create report">
-          {errorAlert}
-        </Alert>
-      )}
-      <Dropdown
-        label="State"
-        name="State"
-        onChange={(event) => setSelectedState(event.target.value)}
-        options={dropdownOptions}
-        value={selectedState}
-      />
-    </Modal>
-  );
-};
 
 const stateAbbr = Object.keys(StateNames);
 
@@ -145,7 +66,6 @@ export const AdminDashboard = () => {
 
   const [commentDrawerOpen, setCommentDrawerOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState<Report>();
-  const [createReportModalOpen, setCreateReportModalOpen] = useState(false);
   const [reportingYearFilter, setReportingYearFilter] = useState(ALL_YEARS);
   const { email: userEmail, userRole } = useStore().user ?? {};
   const flags = useFlags();
@@ -390,21 +310,17 @@ export const AdminDashboard = () => {
             </Box>
           </AccordionItem>
         </Accordion>
-        {userCanStartReport && (
-          <Box>
-            <Text mb="spacer2">
-              To begin the first annual report for a state, select Start First
-              Annual Report. Note, this function will no longer be available
-              after the first Annual Report.
-            </Text>
-            <Button
-              variant="outline"
-              onClick={() => setCreateReportModalOpen(true)}
-            >
-              Start First Annual Report
-            </Button>
-          </Box>
-        )}
+        <Heading as="h2" variant="h2">
+          State Submissions
+        </Heading>
+        <Box>
+          The table below lists PASRR reports for all states. By default, this
+          list is automatically filtered to show your assigned states. Selecting
+          an option from the State(s) or Budget Period dropdowns will
+          immediately update the table content below. You can search and select
+          multiple states to add them to your view, or select Clear Filters to
+          reset the table.
+        </Box>
         <Flex gap="spacer3" alignItems="flex-end" sx={sx.filters}>
           <MultiSelect
             label="State(s)"
@@ -475,14 +391,6 @@ export const AdminDashboard = () => {
           selectedReport={selectedReport}
         />
       )}
-      <AdminCreateReportModal
-        modalDisclosure={{
-          isOpen: createReportModalOpen,
-          onClose: () => setCreateReportModalOpen(false),
-        }}
-        reports={reports}
-        reloadReports={reloadReports}
-      />
     </PageTemplate>
   );
 };
