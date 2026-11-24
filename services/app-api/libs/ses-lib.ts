@@ -15,12 +15,5 @@ const client = new SESClient(awsConfig);
 
 export default {
   sendSesEmail: (params: SendEmailRequest) =>
-    client.send(
-      new SendEmailCommand({
-        ...params,
-        ...(process.env.SES_CONFIGURATION_SET
-          ? { ConfigurationSetName: process.env.SES_CONFIGURATION_SET }
-          : {}),
-      })
-    ),
+    client.send(new SendEmailCommand(params)),
 };

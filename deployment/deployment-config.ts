@@ -20,15 +20,13 @@ export interface DeploymentConfigProperties {
   kafkaAuthorizedSubnetIds: string;
   brokerString: string;
   datadogApiKey?: string;
-  dkimPrivateKey?: string;
 }
 
 export const determineDeploymentConfig = async (stage: string) => {
   const project = process.env.PROJECT!;
   const isDev = isLocalStack || !["main", "val", "production"].includes(stage);
-  const defaultSecret = await loadDefaultSecret(project, stage);
   const secretConfigOptions = {
-    ...defaultSecret,
+    ...(await loadDefaultSecret(project, stage)),
     ...(await loadStageSecret(project, stage)),
   };
 
@@ -45,13 +43,6 @@ export const determineDeploymentConfig = async (stage: string) => {
   if (!isLocalStack && stage !== "bootstrap") {
     validateConfig(config);
   }
-
-  if (!config.isDev) {
-    assertDkimPrivateKey(defaultSecret.dkimPrivateKey);
-  }
-  // The identity reads this from Secrets Manager at deploy time. Drop it so the
-  // private key is not carried on the stack props.
-  delete config.dkimPrivateKey;
 
   return config;
 };
@@ -107,19 +98,6 @@ function validateConfig(
   ) {
     throw new Error(
       "datadogApiKey is missing or invalid in the project default secret; it is required for val and production stages"
-    );
-  }
-}
-
-function assertDkimPrivateKey(value: unknown): asserts value is string {
-  const isOneLineKey =
-    typeof value === "string" &&
-    value.length > 0 &&
-    !value.includes("BEGIN") && // pragma: allowlist secret
-    !/\s/.test(value);
-  if (!isOneLineKey) {
-    throw new Error(
-      'dkimPrivateKey is missing or invalid in the project default secret; store the one-line base64 private key (no PEM headers) under "dkimPrivateKey" before deploying main, val, or production'
     );
   }
 }
