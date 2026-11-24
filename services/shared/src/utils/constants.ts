@@ -114,7 +114,8 @@ export const tabTitleMap = {
   "/": "Preadmission Screening and Resident Review",
   "/help": "How can we help you? - PASRR",
   "/profile": "My Account - PASRR",
-  "/admin": "Banner Admin - PASRR",
+  "/admin": "Admin tools - PASRR",
+  "/admin/banner-editor": "Banner Admin - PASRR",
   "/403": "Access Denied",
 };
 
