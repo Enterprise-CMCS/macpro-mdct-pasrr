@@ -6,10 +6,15 @@ import {
 import { proxyEvent } from "../../testing/proxyEvent";
 import { UserRoles } from "@pasrr/shared";
 
-const mockDecode = vi.fn();
+const mockVerifier = vi.fn();
 
-vi.mock("jwt-decode", () => ({
-  default: () => mockDecode(),
+vi.mock("aws-jwt-verify", () => ({
+  __esModule: true,
+  CognitoJwtVerifier: {
+    create: vi.fn().mockImplementation(() => ({
+      verify: mockVerifier,
+    })),
+  },
 }));
 
 const apiKeyEvent = { ...proxyEvent, headers: { "x-api-key": "test" } };
@@ -24,33 +29,33 @@ const mockToken = {
 
 describe("Authentication methods", () => {
   describe("Test authorization with api key and environment variables", () => {
+    beforeEach(() => {
+      process.env["COGNITO_USER_POOL_ID"] = "fakeId";
+      process.env["COGNITO_USER_POOL_CLIENT_ID"] = "fakeClientId";
+    });
     afterEach(() => {
+      delete process.env.COGNITO_USER_POOL_ID;
+      delete process.env.COGNITO_USER_POOL_CLIENT_ID;
       vi.clearAllMocks();
     });
-    test("is not authorized when token is missing or invalid", () => {
-      mockDecode.mockImplementation(() => {
-        return undefined;
+
+    test("is not authorized when token is invalid", async () => {
+      mockVerifier.mockImplementation(() => {
+        throw new Error("could not verify");
       });
-      const authStatus = authenticatedUser(apiKeyEvent);
+      const authStatus = await authenticatedUser(apiKeyEvent);
       expect(authStatus).toBeFalsy();
     });
-    test("is authorized when api key is passed and environment variables are set", () => {
-      mockDecode.mockReturnValue(mockToken);
-      const authStatus = authenticatedUser(apiKeyEvent);
+    test("is not authorized when token is missing", async () => {
+      const authStatus = await authenticatedUser(proxyEvent);
+      expect(authStatus).toBeFalsy();
+      expect(mockVerifier).not.toHaveBeenCalled();
+    });
+    test("is authorized when api key is passed and environment variables are set", async () => {
+      mockVerifier.mockReturnValue(mockToken);
+      const authStatus = await authenticatedUser(apiKeyEvent);
       expect(authStatus).toBeTruthy();
-    });
-  });
-
-  describe("Test authorization with api key", () => {
-    beforeEach(() => {
-      mockDecode.mockReturnValue(mockToken);
-    });
-    afterEach(() => {
-      vi.clearAllMocks();
-    });
-    test("is authorized when api key is passed", () => {
-      const authStatus = authenticatedUser(apiKeyEvent);
-      expect(authStatus).toBeTruthy();
+      expect(mockVerifier).toHaveBeenCalledWith("test");
     });
   });
 

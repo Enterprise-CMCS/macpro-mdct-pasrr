@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent, User } from "../types/types";
-import jwtDecode from "jwt-decode";
+import { CognitoJwtVerifier } from "aws-jwt-verify";
 import { isStateAbbr, isUserRole } from "@pasrr/shared";
 import { logger } from "../libs/debug-lib";
 
@@ -12,23 +12,47 @@ export interface DecodedToken {
   family_name?: string;
 }
 
+const createVerifier = () =>
+  CognitoJwtVerifier.create({
+    userPoolId: process.env.COGNITO_USER_POOL_ID!,
+    tokenUse: "id",
+    clientId: process.env.COGNITO_USER_POOL_CLIENT_ID!,
+  });
+
+// Kept between requests so Cognito's signing keys are only downloaded once
+let verifier: ReturnType<typeof createVerifier> | undefined;
+
 /**
  * Extract user information from the event's auth headers.
  *
  * Returns `undefined` if the headers are invalid.
  */
-export const authenticatedUser = (
+export const authenticatedUser = async (
   event: APIGatewayProxyEvent
-): User | undefined => {
+): Promise<User | undefined> => {
   const apiKey = event.headers?.["x-api-key"];
-  if (apiKey) {
-    const token = jwtDecode(apiKey) as DecodedToken;
-    if (token) {
-      logger.debug(`Requesting user has sub '${token.sub}'`);
-      return parseUserFromToken(token);
-    }
+  if (!apiKey) {
+    return undefined;
   }
-  return undefined;
+
+  const token = await verifyAndParseToken(apiKey);
+  if (!token) {
+    return undefined;
+  }
+
+  logger.debug(`Requesting user has sub '${token.sub}'`);
+  return parseUserFromToken(token);
+};
+
+/** Verify the signature on the JWT */
+const verifyAndParseToken = async (apiKey: string) => {
+  try {
+    verifier ??= createVerifier();
+    return await verifier.verify(apiKey);
+  } catch (error) {
+    logger.warn("Token rejected: %s", (error as Error).message);
+    return undefined;
+  }
 };
 
 export const parseUserFromToken = (token: DecodedToken) => {
