@@ -1,6 +1,14 @@
 import { Link as RouterLink } from "react-router";
-import { Heading, Link, List, ListItem, Text } from "@chakra-ui/react";
-import { PageTemplate } from "components";
+import {
+  Button,
+  Heading,
+  Link,
+  List,
+  ListItem,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { AdminCreateReportModal, PageTemplate } from "components";
 import { useStore } from "utils";
 import { UserRoles } from "@pasrr/shared";
 
@@ -29,6 +37,7 @@ const tools: AdminTool[] = [
 
 export const AdminToolsPage = () => {
   const { userRole } = useStore().user ?? {};
+  const createReportModal = useDisclosure();
   const visibleTools = tools.filter(
     ({ roles }) => !roles || roles.includes(userRole as UserRoles)
   );
@@ -47,7 +56,25 @@ export const AdminToolsPage = () => {
             <Text sx={sx.toolDescription}>{description}</Text>
           </ListItem>
         ))}
+        <ListItem sx={sx.toolItem}>
+          <Button
+            variant="link"
+            onClick={createReportModal.onOpen}
+            sx={sx.toolLink}
+          >
+            Create a report
+          </Button>
+          <Text sx={sx.toolDescription}>
+            Create a report for a state or territory and reporting year.
+          </Text>
+        </ListItem>
       </List>
+      <AdminCreateReportModal
+        modalDisclosure={{
+          isOpen: createReportModal.isOpen,
+          onClose: createReportModal.onClose,
+        }}
+      />
     </PageTemplate>
   );
 };

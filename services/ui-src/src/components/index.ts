@@ -69,6 +69,7 @@ export { Menu } from "./menus/Menu";
 export { MenuOption } from "./menus/MenuOption";
 // modals
 export { Modal } from "./modals/Modal";
+export { AdminCreateReportModal } from "./modals/AdminCreateReportModal";
 export { CreateReportModal } from "./modals/CreateReportModal";
 // Redirects
 export { PostLogoutRedirect } from "./PostLogoutRedirect/index";
