@@ -11,6 +11,10 @@ import {
 } from "utils/testing/setupTest";
 
 vi.mock("utils/state/useStore");
+vi.mock("utils/api/requestMethods/report", () => ({
+  getReportByType: vi.fn().mockResolvedValue([]),
+  createReport: vi.fn(),
+}));
 const mockedUseStore = useStore as unknown as MockedFunction<typeof useStore>;
 
 const adminToolsComponent = (
@@ -40,6 +44,16 @@ describe("<AdminToolsPage />", () => {
   test("banner editor link navigates to /admin/banner-editor", async () => {
     await userEvent.click(screen.getByRole("link", { name: "Banner editor" }));
     expect(window.location.pathname).toBe("/admin/banner-editor");
+  });
+
+  test("opens and closes the create report modal", async () => {
+    await userEvent.click(
+      screen.getByRole("button", { name: "Create a report" })
+    );
+    expect(screen.getAllByText("Reporting year").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("State or territory").length).toBeGreaterThan(0);
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(screen.queryByText("Reporting year")).not.toBeInTheDocument();
   });
 
   test("does not show notifications link for non-approver user", () => {
