@@ -52,6 +52,7 @@ export const buildReport = async (
     subType: reportOptions.subType,
     subTypeKey: reportOptions.subTypeKey,
     budgetPeriod: reportOptions.budgetPeriod,
+    reportingYear: reportOptions.reportingYear,
     copyFromReportId: reportOptions.copyFromReportId,
     submissionCount: 0,
     pages,

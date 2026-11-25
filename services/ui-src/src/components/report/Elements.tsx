@@ -25,6 +25,7 @@ import arrowLeftIcon from "assets/icons/arrows/icon_arrow_left_blue.svg";
 import { parseHintText, parseHtml, useStore } from "utils";
 import successIcon from "assets/icons/status/icon_status_check.svg";
 import { useElementIsHidden } from "utils/state/hooks/useElementIsHidden";
+import { ElementType as ReactElementType, Fragment } from "react";
 
 export type PageElementProps<T extends PageElement = PageElement> = T extends {
   answer?: any;
@@ -59,7 +60,7 @@ export const HeaderElement = ({
 
   return (
     <Heading as="h1" variant="h1">
-      <Flex direction="row" width="100%">
+      <Flex as="span" direction="row" width="100%">
         {icon && (
           <span>
             <Image
@@ -78,6 +79,9 @@ export const HeaderElement = ({
   );
 };
 
+const hasBlockLevelElements = (text?: string) =>
+  Boolean(text && /<\/?(div|p|ul|ol|li)\b/i.test(text));
+
 export const SubHeaderElement = ({
   element,
 }: PageElementProps<SubHeaderTemplate>) => {
@@ -85,15 +89,32 @@ export const SubHeaderElement = ({
   if (hideElement) {
     return null;
   }
+  const level = `h${element.headingLevel || 2}` as ReactElementType;
+  const Wrapper = element.noWrapper ? Fragment : Stack;
+  const hasBlocks = hasBlockLevelElements(element.helperText);
+  let helperContainerType: ReactElementType = hasBlocks ? "div" : "p";
+
+  if (element.noWrapper && !hasBlocks) {
+    helperContainerType = "span";
+  }
+
   return (
-    <Stack>
-      <Heading as="h2" variant="subHeader">
+    <Wrapper>
+      <Heading as={level} variant="subHeader">
         {element.text}
       </Heading>
       {element.helperText && (
-        <Text variant="helperText">{element.helperText}</Text>
+        <Text
+          as={helperContainerType}
+          display="flex"
+          flexDirection="column"
+          gap="spacer1"
+          variant="helperText"
+        >
+          {parseHtml(element.helperText)}
+        </Text>
       )}
-    </Stack>
+    </Wrapper>
   );
 };
 
@@ -102,13 +123,27 @@ export const ParagraphElement = ({
 }: PageElementProps<ParagraphTemplate>) => {
   const { setModalComponent } = useStore();
   const styleObject = (type: string) => {
-    let styleDefault = { weight: "normal", size: "body_md", color: "base" };
+    let styleDefault = {
+      weight: "normal",
+      size: "body_md",
+      color: "base",
+      marginBottom: 0,
+    };
 
     switch (type) {
       case "bold":
         return { ...styleDefault, weight: "bold" };
       case "hint":
         return { ...styleDefault, size: "body_sm", color: "gray_dark" };
+      case "paragraph":
+        return { ...styleDefault, color: "gray_dark" };
+      case "eyebrow":
+        return {
+          ...styleDefault,
+          weight: "bold",
+          color: "gray",
+          marginBottom: "-spacer2",
+        };
     }
     return styleDefault;
   };
@@ -116,18 +151,28 @@ export const ParagraphElement = ({
   const obj = styleObject(element.style ?? "");
 
   const parsedHint = parseHintText(element, setModalComponent);
+  const textContainerType: ReactElementType = hasBlockLevelElements(
+    element.text
+  )
+    ? "div"
+    : "p";
 
   return (
-    <Stack>
+    <Stack marginBottom={obj.marginBottom}>
       {element.title && (
         <Text fontSize="heading_md" fontWeight="heading_md">
           {element.title}
         </Text>
       )}
-      <Box fontSize={obj.size} fontWeight={obj.weight} color={obj.color}>
+      <Box
+        as={textContainerType}
+        fontSize={obj.size}
+        fontWeight={obj.weight}
+        color={obj.color}
+      >
         {parseHtml(element.text)}
       </Box>
-      <Text>{parsedHint}</Text>
+      {parsedHint && <Text>{parsedHint}</Text>}
     </Stack>
   );
 };

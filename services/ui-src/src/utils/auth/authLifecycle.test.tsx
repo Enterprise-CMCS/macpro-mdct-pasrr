@@ -2,6 +2,7 @@ import { initAuthManager, updateTimeout, getExpiration } from "utils";
 import { refreshCredentials } from "./authLifecycle";
 import { Hub } from "aws-amplify/utils";
 import { sub } from "date-fns";
+import { VISITED_LINKS_STORAGE_KEY } from "../../constants";
 
 describe("utils/auth", () => {
   describe("Test AuthManager Init", () => {
@@ -15,6 +16,20 @@ describe("utils/auth", () => {
       initAuthManager();
       const clearedTime = localStorage.getItem("mdctpasrr_session_exp");
       expect(clearedTime).toEqual(null);
+    });
+
+    test("Expired session on load resets session visited links", async () => {
+      const expired = sub(Date.now(), {
+        days: 5,
+      }).toDateString();
+      localStorage.setItem("mdctpasrr_session_exp", expired);
+      sessionStorage.setItem(
+        VISITED_LINKS_STORAGE_KEY,
+        JSON.stringify(["https://example.com"])
+      );
+
+      initAuthManager();
+      expect(sessionStorage.getItem(VISITED_LINKS_STORAGE_KEY)).toEqual(null);
     });
   });
 

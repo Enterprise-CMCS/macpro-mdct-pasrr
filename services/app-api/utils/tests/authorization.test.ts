@@ -122,7 +122,7 @@ describe("Authorization functions", () => {
       report: {
         state: "CO" as StateAbbr,
         reportType: ReportType.PASRR,
-        id: "report-123",
+        id: "mock-report-id",
       },
     };
 

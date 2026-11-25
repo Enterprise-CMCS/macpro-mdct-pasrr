@@ -33,7 +33,7 @@ export const DateField = (props: PageElementProps<DateTemplate>) => {
   const labelText = dateTextbox.label;
 
   return (
-    <Box>
+    <Box className={dateTextbox.fullWidth ? "full-width" : ""} width="100%">
       <CmsdsDateField
         name={dateTextbox.id}
         label={labelText}

@@ -12,13 +12,13 @@ mockedUseStore.mockReturnValue(mockUseStore);
 const mockFile = {
   name: "mock-file.txt",
   size: 100,
-  fileId: "mock-file-id",
+  fileId: "mockKsuId_mock-file-id.pdf",
 };
 
 describe("Test ExportedReportElements", () => {
   test("render SubHeader element", () => {
     const element = renderElements({
-      id: "mock-sub-header",
+      id: "mock_subHeaderId",
       text: "mock sub header",
       type: ElementType.SubHeader,
     });
@@ -28,7 +28,7 @@ describe("Test ExportedReportElements", () => {
   test("render AttachmentArea element", () => {
     const notAnswered = {
       type: ElementType.AttachmentArea,
-      id: "mock-attachment-area",
+      id: "mock_attachmentAreaId",
       label: "",
       required: true,
     } as AttachmentAreaTemplate;
@@ -48,7 +48,7 @@ describe("Test ExportedReportElements", () => {
   test("render ActionTable element", () => {
     const element = renderElements({
       type: ElementType.ActionTable,
-      id: "mock-action-table",
+      id: "mock_actionTableId",
       label: "action table",
       heading: "Action Table",
       modal: {
@@ -63,16 +63,16 @@ describe("Test ExportedReportElements", () => {
         },
         {
           header: "mock header 1",
-          id: "header-1",
+          id: "mock_actionTableId_header1",
           type: ElementType.Paragraph,
         },
         {
           header: "mock header 2",
-          id: "header-2",
+          id: "mock_actionTableId_header2",
           type: ElementType.Paragraph,
         },
       ],
-      answer: [[{ id: "header-1", value: "mock value" }]],
+      answer: [[{ id: "mock_actionTableId_header1", value: "mock value" }]],
       required: true,
     });
     render(element);

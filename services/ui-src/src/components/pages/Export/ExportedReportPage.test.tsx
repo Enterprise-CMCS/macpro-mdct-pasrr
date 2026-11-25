@@ -14,9 +14,9 @@ const report = {
   name: "mock-title",
   pages: [
     { childPageIds: ["1", "2"] },
-    { title: "Section 1", id: "id-1" },
-    { title: "Section 2", id: "id-2" },
-    { title: "Section 3", id: "review-submit" },
+    { title: "Section 1", id: "mock-page-id-1" },
+    { title: "Section 2", id: "mock-page-id-2" },
+    { title: "Review & Submit", id: "review-submit" },
   ],
   lastEdited: 1751987780396,
   lastEditedBy: "last edited",

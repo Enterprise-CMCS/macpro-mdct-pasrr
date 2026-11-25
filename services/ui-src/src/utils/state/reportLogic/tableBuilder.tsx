@@ -1,27 +1,51 @@
 import {
-  TextField as CmsdsTextField,
+  TextField,
   SingleInputDateField,
   Dropdown,
   DropdownOption,
 } from "@cmsgov/design-system";
-import { TextField as PasrrTextField } from "components";
 import { ErrorMessages } from "../../../constants";
-import { ActionElement, ElementType, TextboxTemplate } from "@pasrr/shared";
 import {
+  ActionElement,
+  ElementType,
+  SummationTableRowAnswerShape,
+} from "@pasrr/shared";
+import {
+  isEmptyValue,
+  isWholePositiveNumber,
   parseNumber,
-  validateDate,
   maskByType,
+  validateDate,
 } from "utils/validation/inputValidation";
 
-export const buildElement = (
-  element: ActionElement,
-  defaultValue: string | number,
-  onChange: (value: string[]) => void,
-  label?: string,
-  errorMessage?: string
-) => {
-  const { type } = element;
+export const buildElement = ({
+  defaultValue,
+  element,
+  errorMessage,
+  id,
+  key,
+  label,
+  onChange,
+  readonly = false,
+}: {
+  defaultValue: string | number;
+  element: ActionElement;
+  errorMessage?: string;
+  id: string;
+  key: string;
+  label?: string;
+  onChange: (value: string[]) => void;
+  readonly?: boolean;
+}) => {
+  let type = element.type;
   const children = "children" in element ? element.children : [];
+
+  if (
+    [ElementType.NumberField, ElementType.Textbox].includes(type) &&
+    readonly
+  ) {
+    type = ElementType.Paragraph;
+  }
 
   switch (type) {
     case ElementType.Paragraph:
@@ -31,8 +55,8 @@ export const buildElement = (
     case ElementType.Dropdown:
       return (
         <Dropdown
-          key={`dropdown-${label}`}
-          name={label ?? "dropdown"}
+          key={`dropdown-${key}`}
+          name={id}
           label={label}
           onChange={(event) => {
             onChange([event.target.value]);
@@ -45,31 +69,12 @@ export const buildElement = (
         />
       );
     case ElementType.Textbox:
-      return (
-        <PasrrTextField
-          key={`textbox-${label}`}
-          element={
-            {
-              ...element,
-              label: label ?? "textbox",
-              answer: defaultValue,
-              skipOptionalTag: true,
-            } as TextboxTemplate
-          }
-          updateElement={(updatedElement: Partial<TextboxTemplate>) => {
-            if (updatedElement.answer !== undefined) {
-              onChange([updatedElement.answer]);
-            }
-          }}
-          disabled={element.disabled}
-        />
-      );
     case ElementType.NumberField:
       return (
-        <CmsdsTextField
-          key={`textbox-${label}`}
+        <TextField
+          key={`textbox-${key}`}
           label={label}
-          name={label ?? "textbox"}
+          name={id}
           onChange={(event) => {
             onChange([event.target.value]);
           }}
@@ -85,10 +90,10 @@ export const buildElement = (
       );
     case ElementType.TextAreaField:
       return (
-        <CmsdsTextField
-          key={`textarea-${label}`}
+        <TextField
+          key={`textarea-${key}`}
           label={label}
-          name={label ?? "textarea"}
+          name={id}
           onChange={(event) => {
             onChange([event.target.value]);
           }}
@@ -105,8 +110,8 @@ export const buildElement = (
     case ElementType.Date:
       return (
         <SingleInputDateField
-          key={`date-${label}`}
-          name={label ?? "date-field"}
+          key={`date-${key}`}
+          name={id}
           label={label}
           onChange={(_rawValue: string, maskedValue: string) => {
             onChange([_rawValue, maskedValue]);
@@ -118,24 +123,33 @@ export const buildElement = (
       );
     default:
       console.error("missing: " + element);
+      return null;
   }
-  return null;
 };
 
-export const getErrorMessage = (
-  type: string,
-  required: boolean,
-  value: string[]
-) => {
-  if (!value[0] && required) {
+export const getErrorMessage = ({
+  required = true,
+  type,
+  validators = {},
+  value,
+}: {
+  required?: boolean;
+  type: string;
+  validators?: {
+    [key: string]: (value: string) => boolean;
+  };
+  value: string[];
+}) => {
+  if (isEmptyValue(value[0]) && required) {
     return ErrorMessages.requiredResponse;
   }
 
   switch (type) {
     case ElementType.NumberField:
-      const parsedValue = parseNumber(value[0]);
-      const valueIsNonNumeric = value && parsedValue === undefined;
-      if (valueIsNonNumeric) {
+      if (validators?.[type] && !validators[type](value[0])) {
+        return ErrorMessages.mustBeANumber;
+      }
+      if (parseNumber(value[0]) === undefined) {
         return ErrorMessages.mustBeANumber;
       }
       break;
@@ -146,3 +160,13 @@ export const getErrorMessage = (
 
   return "";
 };
+
+export const sumById = (rows: SummationTableRowAnswerShape[], id: string) =>
+  rows.reduce((sum, row) => {
+    const cell = row.find((t) => t.id === id);
+    return sum + (isWholePositiveNumber(cell?.value) ? Number(cell?.value) : 0);
+  }, 0);
+
+export const getNonPresetRows = (
+  answerRows: SummationTableRowAnswerShape[] = []
+) => answerRows.filter((answerRow) => answerRow.every((cell) => !cell.preset));

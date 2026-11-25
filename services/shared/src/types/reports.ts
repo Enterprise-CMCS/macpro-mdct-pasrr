@@ -25,6 +25,7 @@ export const isReportType = (
 
 export interface CreateReportOptions {
   mockDate?: string;
+  reportingYear: number;
 }
 
 export interface ZipRequestBody {
@@ -47,6 +48,7 @@ export interface ReportOptions {
   subType: PasrrSubType;
   subTypeKey: string;
   budgetPeriod: number;
+  reportingYear: number;
   pages: ReportPages;
   copyFromReportId?: string;
 }
@@ -127,7 +129,7 @@ export type ReportPages = ReportPage[];
 export type ParentPageTemplate = {
   id: PageId;
   childPageIds: PageId[];
-  title?: undefined;
+  title?: string;
   type?: undefined;
   elements?: undefined;
   sidebar?: undefined;
@@ -190,6 +192,8 @@ export enum ElementType {
   AccordionGroup = "accordionGroup",
   ActionTable = "actionTable",
   RequestFeedbackButton = "requestFeedbackButton",
+  FieldGroup = "fieldGroup",
+  SummationTable = "summationTable",
 }
 
 export type PageElement =
@@ -213,7 +217,9 @@ export type PageElement =
   | AccordionGroupTemplate
   | AttachmentAreaTemplate
   | ActionTableTemplate
-  | RequestFeedbackButtonTemplate;
+  | RequestFeedbackButtonTemplate
+  | FieldGroupTemplate
+  | SummationTableTemplate;
 
 export type HideCondition = {
   controllerElementId: string;
@@ -293,10 +299,14 @@ export interface StatusAlertTemplate extends DisplayElementTemplate {
   for?: string;
 }
 
+export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+
 export interface SubHeaderTemplate extends DisplayElementTemplate {
   type: ElementType.SubHeader;
   helperText?: string;
   hideCondition?: HideCondition;
+  headingLevel?: HeadingLevel;
+  noWrapper?: boolean;
 }
 
 interface InputElementTemplate {
@@ -311,6 +321,7 @@ interface InputElementTemplate {
   onlyCmsAdminCanEdit?: boolean;
   cmsAdminCanEditInSubmitted?: boolean;
   skipOptionalTag?: boolean;
+  fullWidth?: boolean;
 }
 
 export interface CheckboxTemplate extends InputElementTemplate {
@@ -412,18 +423,68 @@ export type ActionAnswerShape = { id: string; value: string | number }[];
 export interface ActionTableTemplate extends InputElementTemplate {
   type: ElementType.ActionTable;
   heading: string;
+  rows: ActionRowElement[];
   modal: {
     title: string;
     hintText?: string;
     elements: ActionModalElement[];
   };
-  rows: ActionRowElement[];
   answer?: ActionAnswerShape[];
 }
 
 export interface RequestFeedbackButtonTemplate {
   type: ElementType.RequestFeedbackButton;
   id: string;
+}
+
+export type FieldGroupElement = DropdownTemplate | TextboxTemplate;
+
+export type FieldGroupAnswerShape = {
+  id: string;
+  value: string;
+};
+
+export interface FieldGroupTemplate {
+  type: ElementType.FieldGroup;
+  id: string;
+  label: string;
+  helperText?: string;
+  required: boolean;
+  elements: FieldGroupElement[];
+  answer?: FieldGroupAnswerShape[];
+  headingLevel?: HeadingLevel;
+}
+
+export type SummationTableCellAnswerShape = {
+  id: string;
+  value: string | number;
+  preset?: boolean;
+  readonly?: boolean;
+};
+
+export type SummationTableRowAnswerShape = SummationTableCellAnswerShape[];
+
+export type SummationTableAnswerShape = {
+  rows: SummationTableRowAnswerShape[];
+  total: SummationTableRowAnswerShape[];
+};
+
+export interface SummationTableRowElement extends ActionElement {
+  header: string;
+  addRowLabel?: string;
+}
+
+export interface SummationTableTemplate extends Omit<
+  InputElementTemplate,
+  "label" | "helperText" | "helperTextLink" | "skipOptionalTag"
+> {
+  type: ElementType.SummationTable;
+  caption: string;
+  rows: SummationTableRowElement[];
+  answer?: SummationTableAnswerShape;
+  addRowButtonText?: string;
+  addRowHelperText?: string;
+  addRowMax?: number;
 }
 
 export interface PasrrSubTypeData {

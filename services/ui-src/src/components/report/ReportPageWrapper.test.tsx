@@ -31,13 +31,13 @@ const setupMockStore = (customState?: Partial<any>) => {
       report: mockReport,
       pageMap: new Map([
         ["root", 0],
-        ["general-info", 1],
-        ["mock-report-page", 2],
+        ["general-information", 1],
+        ["mock-page-id", 2],
       ]),
-      currentPageId: "general-info",
+      currentPageId: "general-information",
       parentPage: {
         index: 0,
-        childPageIds: ["general-info", "mock-report-page"],
+        childPageIds: ["general-information", "mock-page-id"],
       },
       saveReport: () => mockSaveReport(),
       setAnswers: vi.fn(),
@@ -99,7 +99,7 @@ describe("ReportPageWrapper", () => {
     const continueBtn = screen.getByRole("button", { name: "Continue" });
     await userEvent.click(continueBtn);
     expect(mockNavigate).toHaveBeenCalledWith(
-      "/report/PASRR/NJ/PASRRNJ123/mock-report-page"
+      "/report/PASRR/NJ/PASRRNJ123/mock-page-id"
     );
   });
 });

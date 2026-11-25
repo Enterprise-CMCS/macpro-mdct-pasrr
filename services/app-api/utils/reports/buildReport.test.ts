@@ -112,13 +112,13 @@ describe("makeQuarterlyChanges utility", () => {
 
   const mockHeader: PageElement = {
     type: ElementType.Header,
-    id: "mock-page-1-header",
+    id: "mock_headerId",
     text: "Mock Page 1",
   };
 
   const mockTextBox1: PageElement = {
     type: ElementType.Textbox,
-    id: "mock-textbox-1",
+    id: "mock_textboxId",
     label: "Mock Textbox 1",
     quarterly: false,
     required: true,
@@ -126,7 +126,7 @@ describe("makeQuarterlyChanges utility", () => {
 
   const mockTextBox2: PageElement = {
     type: ElementType.Textbox,
-    id: "mock-textbox-2",
+    id: "mock_textboxQuarterlyId",
     label: "Mock Textbox 2",
     quarterly: true,
     required: true,
@@ -134,7 +134,7 @@ describe("makeQuarterlyChanges utility", () => {
 
   const mockPages: FormPageTemplate[] = [
     {
-      id: "mock-page-1",
+      id: "mock-page-id",
       title: "Mock Report Page",
       type: PageType.Standard,
       elements: [mockHeader, mockTextBox1, mockTextBox2],

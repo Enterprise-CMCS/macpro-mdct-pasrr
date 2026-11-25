@@ -36,14 +36,14 @@ describe("polling utils", () => {
   describe("getPSURL", () => {
     test("getPSURL fails when no object found", async () => {
       (s3Lib.headObject as Mock).mockRejectedValueOnce("failed");
-      const result = await getPSURL("zip-id-123");
+      const result = await getPSURL("mock-zip-id");
       expect(result.statusCode).toBe(StatusCodes.Ok);
       expect(result.body).toEqual(JSON.stringify({ status: "pending" }));
     });
 
     test("getPSURL returns ready when complete", async () => {
       (s3Lib.headObject as Mock).mockResolvedValue({});
-      const result = await getPSURL("zip-id-123");
+      const result = await getPSURL("mock-zip-id");
       expect(result.statusCode).toBe(StatusCodes.Ok);
       expect(result.body).toEqual(
         JSON.stringify({ status: "ready", psurl: "https://s3.file.mock" })
@@ -69,7 +69,7 @@ describe("polling utils", () => {
           },
         ],
       });
-      const result = await getPSURL("zip-id-123");
+      const result = await getPSURL("mock-zip-id");
       expect(result.statusCode).toBe(StatusCodes.Ok);
       expect(result.body).toEqual(
         JSON.stringify({ status: "ready", psurl: "https://s3.file.mock" })
@@ -85,7 +85,7 @@ describe("polling utils", () => {
   describe("zipBuffer", () => {
     test("zipBuffer works", async () => {
       const mockZip = new JSZip();
-      await zipBuffer("zip-id-123", "tags", mockZip);
+      await zipBuffer("mock-zip-id", "tags", mockZip);
       expect(s3Lib.putObject).toHaveBeenCalled();
     });
   });

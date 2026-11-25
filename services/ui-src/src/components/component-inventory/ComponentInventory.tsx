@@ -19,7 +19,7 @@ export const ComponentInventory = () => {
   const mockReport = {
     name: "Mock Report",
     state: "PA",
-    id: "mock-id",
+    id: "mock-report-id",
     type: ReportType.PASRR,
     status: ReportStatus.IN_PROGRESS,
     submissionCount: 0,

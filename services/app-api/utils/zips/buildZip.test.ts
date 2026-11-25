@@ -28,18 +28,19 @@ vi.mock("../../libs/s3-lib", () => ({
 
 const mockReport: Report = {
   ...validReport,
-  id: "mock-report",
+  id: "mock-report-id",
   pages: [
     {
       id: "root",
-      childPageIds: ["mock-page-1"],
+      childPageIds: ["mock-page-id"],
     },
     {
-      id: "mock-attachment-area-page",
+      id: "mock-page-id",
       elements: [
         {
           type: ElementType.AttachmentArea,
-          answer: [{ name: "mock-name" }],
+          id: "mock_attachmentAreaId",
+          answer: [{ name: "mock-file-id.pdf" }],
         } as AttachmentAreaTemplate,
       ],
     } as FormPageTemplate,
@@ -60,24 +61,24 @@ describe("buildZip util", () => {
     expect(sort).toStrictEqual({
       accordions: [
         {
-          type: "accordionGroup",
-          id: "mock-accordion-group",
+          type: ElementType.AccordionGroup,
+          id: "mock_accordionFieldGroupId",
           accordions: [
             {
               elements: [
                 {
                   answer: "Mock Accordion 1 Answer",
-                  id: "mock-accordion-1-textbox",
+                  id: "mock_accordionId_textboxId",
                   label: "Mock Accordion 1 Textbox",
-                  type: "textbox",
+                  type: ElementType.Textbox,
                 },
                 {
-                  id: "attachment-id",
-                  type: "attachmentArea",
+                  id: "mock_accordionId_attachmentAreaId",
+                  type: ElementType.AttachmentArea,
                   answer: [
                     {
-                      fileId: "mock-id",
-                      name: "mock-name",
+                      fileId: "mockKsuId_mock-file-id.pdf",
+                      name: "mock-file-id.pdf",
                       size: 100,
                     },
                   ],
@@ -90,8 +91,9 @@ describe("buildZip util", () => {
       ],
       area: [
         {
+          id: "mock_attachmentAreaId",
           type: ElementType.AttachmentArea,
-          answer: [{ name: "mock-name" }],
+          answer: [{ name: "mock-file-id.pdf" }],
         },
       ],
     });
@@ -102,8 +104,8 @@ describe("buildZip util", () => {
     );
     expect(files).toStrictEqual([
       {
-        fileId: "mock-id",
-        name: "mock-name",
+        fileId: "mockKsuId_mock-file-id.pdf",
+        name: "mock-file-id.pdf",
         size: 100,
       },
     ]);
@@ -111,14 +113,14 @@ describe("buildZip util", () => {
   test("getAttachmentAreaFiles", () => {
     const attachmentArea: AttachmentAreaTemplate = {
       type: ElementType.AttachmentArea,
-      id: "success-attachments",
+      id: "mock_attachmentAreaId",
       label: "mock area",
       required: false,
       answer: [
         {
           name: "mock-file",
           size: 2000,
-          fileId: "mock-id",
+          fileId: "mockKsuId_mock-file-id.pdf",
         },
       ],
     };
@@ -128,7 +130,7 @@ describe("buildZip util", () => {
       {
         name: "mock-file",
         size: 2000,
-        fileId: "mock-id",
+        fileId: "mockKsuId_mock-file-id.pdf",
       },
     ]);
   });

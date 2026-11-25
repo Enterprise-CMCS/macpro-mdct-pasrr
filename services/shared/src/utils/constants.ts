@@ -1,5 +1,12 @@
 //Shared constants between frontend and backend
 
+import {
+  ElementType,
+  FieldGroupElement,
+  SummationTableAnswerShape,
+  SummationTableRowElement,
+} from "../types/reports";
+
 // STATES
 
 // NOTE: this is the thing we would need to remove to allow a ZZ IDM user to exist if it is requested
@@ -62,7 +69,8 @@ export const StateNames = {
   ...(!isProdEnv && { ZZ: "Test State ZZ" }),
 };
 
-export const dropdownEmptyOption = { label: "- Select an option -", value: "" };
+export const dropdownEmptyLabel = "- Select an option -";
+export const dropdownEmptyOption = { label: dropdownEmptyLabel, value: "" };
 
 export const StateDropdownOptions = Object.entries(StateNames).map(
   ([key, value]) => ({
@@ -106,7 +114,8 @@ export const tabTitleMap = {
   "/": "Preadmission Screening and Resident Review",
   "/help": "How can we help you? - PASRR",
   "/profile": "My Account - PASRR",
-  "/admin": "Banner Admin - PASRR",
+  "/admin": "Admin tools - PASRR",
+  "/admin/banner-editor": "Banner Admin - PASRR",
   "/403": "Access Denied",
 };
 
@@ -121,3 +130,136 @@ export const getExtension = (filename: string): string | undefined => {
 export const isAllowedFileExtension = (ext: string): boolean => {
   return acceptedFileTypes.includes(ext.toLowerCase());
 };
+
+// Used with FieldGroup component
+export const getPostalAddressElements = ({
+  id,
+  required = true,
+  skipOptionalTag = true,
+}: {
+  id: string;
+  required?: boolean;
+  skipOptionalTag?: boolean;
+}): FieldGroupElement[] => {
+  return [
+    {
+      id: `${id}_street`,
+      type: ElementType.Textbox,
+      label: "Street address",
+      required,
+      skipOptionalTag,
+    },
+    {
+      id: `${id}_streetLine2`,
+      type: ElementType.Textbox,
+      label: "Street address line 2",
+      required: false,
+      skipOptionalTag: false,
+    },
+    {
+      id: `${id}_city`,
+      type: ElementType.Textbox,
+      label: "City",
+      required,
+      skipOptionalTag,
+    },
+    {
+      id: `${id}_state`,
+      type: ElementType.Dropdown,
+      label: "State",
+      options: [
+        dropdownEmptyOption,
+        ...Object.entries(StateNames).map(([value, label]) => ({
+          label,
+          value,
+        })),
+      ],
+      required,
+      skipOptionalTag,
+    },
+    {
+      id: `${id}_zipCode`,
+      type: ElementType.Textbox,
+      label: "Postal code",
+      required,
+      skipOptionalTag,
+    },
+  ];
+};
+
+// Used with SummationTable component
+export const getResidentDispositionsPresetRowsAndAnswer = ({
+  id,
+}: {
+  id: string;
+}): {
+  rows: SummationTableRowElement[];
+  answer: SummationTableAnswerShape;
+  addRowButtonText: string;
+  addRowHelperText: string;
+  addRowMax: number;
+} => {
+  const dispositionColumnId = `${id}_disposition`;
+
+  const rows = [
+    {
+      id: dispositionColumnId,
+      header: "Disposition",
+      type: ElementType.Textbox,
+      addRowLabel: "Other:",
+    },
+    {
+      id: `${id}_numberOfResidents`,
+      header: "# of residents",
+      type: ElementType.NumberField,
+    },
+  ];
+
+  const dispositions = [
+    "Discharged to community",
+    "Discharged to Medicaid home and community-based services waiver",
+    "Discharged to an institution for mental diseases (IMD) or inpatient psychiatric facility",
+    "Discharged to an intermediate care facility for individuals with intellectual disabilities or related conditions (ICF/IID)",
+    "Discharged (setting unknown)",
+    "Discharged after appeal",
+    "Pending appeal",
+    "Pending home or community placement",
+    "Pending institutional (IMD, inpatient psychiatric facility, ICF/IID) placement",
+    "Died prior to discharge",
+    "Unknown",
+  ];
+
+  const answerRows = dispositions.map((value) => [
+    {
+      id: dispositionColumnId,
+      value,
+      preset: true,
+      readonly: true,
+    },
+  ]);
+
+  const totalRows = rows.map((row) => ({
+    id: row.id,
+    value: row.id === dispositionColumnId ? "Total" : 0,
+    ...(row.id === dispositionColumnId ? { preset: true } : {}),
+    readonly: true,
+  }));
+  const total = [totalRows];
+
+  return {
+    rows,
+    answer: {
+      rows: answerRows,
+      total,
+    },
+    addRowButtonText: "Add resident disposition",
+    addRowHelperText:
+      "To add an additional disposition category, select the “Add resident disposition” button below. You can add up to five.",
+    addRowMax: summationTableAddRowMax,
+  };
+};
+
+export const summationTableAddRowMax = 5;
+export const kebabCaseRegex = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+export const snakeCaseOrCamelCaseRegex =
+  /^[a-z]+(_[a-z0-9]+([A-Z][a-z0-9]*)*)*$/;

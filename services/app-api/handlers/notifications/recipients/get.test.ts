@@ -34,7 +34,7 @@ const testEvent: APIGatewayProxyEvent = {
 };
 
 const mockRecipient: NotificationRecipientRecord = {
-  id: "123",
+  id: "mock-recipient-id",
   email: "test@email.com",
   state: "PA",
   addedBy: "Approver User",

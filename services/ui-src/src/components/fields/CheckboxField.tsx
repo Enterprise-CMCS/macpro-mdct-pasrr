@@ -39,7 +39,7 @@ export const CheckboxField = (props: PageElementProps<CheckboxTemplate>) => {
   const labelText = checkbox.label;
 
   return (
-    <Box>
+    <Box className={checkbox.fullWidth ? "full-width" : ""} width="100%">
       <CmsdsChoiceList
         name={checkbox.id}
         type={"checkbox"}

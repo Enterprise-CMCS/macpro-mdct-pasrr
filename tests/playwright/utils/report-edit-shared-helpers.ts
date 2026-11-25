@@ -7,6 +7,8 @@ export type ReportEditLabel = string | RegExp;
 export type GeneralInfoField = {
   label: ReportEditLabel;
   value: string;
+  /** Zero-based index when multiple fields share the same label. */
+  nth?: number;
 };
 
 export type GeneralInfoFillMode = "overwrite" | "fill-empty";
@@ -20,12 +22,25 @@ export const escapeRegExp = (str: string): string =>
 export const GENERAL_INFORMATION_SECTION = "general-information";
 export const REVIEW_SUBMIT_SECTION = "review-submit";
 
-export const CONTACT_NAME_LABEL = /^Contact name\s*(?:Required)?\s*$/i;
-export const CONTACT_EMAIL_LABEL = /^Contact email\s*(?:Required)?\s*$/i;
+// "Name" labels both the report owner and alternate contact fields, so those
+// fields are targeted by their order on the page.
+export const NAME_LABEL = /^Name\s*(?:Required)?\s*$/i;
+export const CONTACT_NAME_NTH = 0;
+export const ALTERNATE_CONTACT_NAME_NTH = 1;
+export const CONTACT_EMAIL_LABEL =
+  /^Contact email address\s*(?:Required)?\s*$/i;
+export const ALTERNATE_CONTACT_EMAIL_LABEL =
+  /^Email address\s*(?:Required)?\s*$/i;
 
 export const GENERAL_INFO_FIELDS: GeneralInfoField[] = [
-  { label: CONTACT_NAME_LABEL, value: "Test Contact" },
+  { label: NAME_LABEL, nth: CONTACT_NAME_NTH, value: "Test Contact" },
   { label: CONTACT_EMAIL_LABEL, value: "contact@test.gov" },
+  {
+    label: NAME_LABEL,
+    nth: ALTERNATE_CONTACT_NAME_NTH,
+    value: "Test Alternate",
+  },
+  { label: ALTERNATE_CONTACT_EMAIL_LABEL, value: "alternate@test.gov" },
 ];
 
 const normalizeRunId = (id: string): string => {
@@ -56,18 +71,19 @@ export const createArtifactId = (): string =>
 
 export const createUniqueGeneralInfoFields = (
   runId: string = getReportTestRunId()
-): GeneralInfoField[] =>
-  GENERAL_INFO_FIELDS.map(({ label }) => {
-    if (label === CONTACT_NAME_LABEL) {
-      return { label, value: `Contact Name ${runId}` };
-    }
-
-    if (label === CONTACT_EMAIL_LABEL) {
-      return { label, value: `contact-${runId}@test.gov` };
-    }
-
-    return { label, value: `General Info ${runId}` };
-  });
+): GeneralInfoField[] => [
+  { label: NAME_LABEL, nth: CONTACT_NAME_NTH, value: `Contact Name ${runId}` },
+  { label: CONTACT_EMAIL_LABEL, value: `contact-${runId}@test.gov` },
+  {
+    label: NAME_LABEL,
+    nth: ALTERNATE_CONTACT_NAME_NTH,
+    value: `Alternate Name ${runId}`,
+  },
+  {
+    label: ALTERNATE_CONTACT_EMAIL_LABEL,
+    value: `alternate-${runId}@test.gov`,
+  },
+];
 
 export const editGeneralInformationFields = async (
   editor: ReportEditorPage,
@@ -76,14 +92,14 @@ export const editGeneralInformationFields = async (
 ): Promise<void> => {
   for (const field of fields) {
     if (mode === "fill-empty") {
-      const input = editor.getTextField(field.label);
+      const input = editor.getTextField(field.label, field.nth);
       const currentValue = await input.inputValue().catch(() => "");
       if (currentValue.trim().length > 0) {
         continue;
       }
     }
 
-    await editor.fillTextField(field.label, field.value);
+    await editor.fillTextField(field.label, field.value, field.nth);
   }
 };
 

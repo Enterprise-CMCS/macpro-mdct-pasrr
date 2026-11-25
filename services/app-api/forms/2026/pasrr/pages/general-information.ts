@@ -1,0 +1,93 @@
+import { FormPageTemplate, PageType, ElementType } from "@pasrr/shared";
+
+export const generalInformation: FormPageTemplate = {
+  id: "general-information",
+  title: "General Information",
+  type: PageType.Standard,
+  sidebar: true,
+  elements: [
+    {
+      type: ElementType.Header,
+      id: "gi_header",
+      text: "General Information",
+    },
+    {
+      type: ElementType.Paragraph,
+      id: "gi_requiredParagraph",
+      style: "paragraph",
+      text: "All fields are required unless marked optional.",
+    },
+    {
+      type: ElementType.SubHeader,
+      id: "gi_stateReportOwnerSubheader",
+      text: "State report owner information",
+      helperText:
+        "Enter the name of the state Medicaid agency person who is responsible for the accuracy and submission of this form. CMS PASRR staff will contact the person listed here if there are questions regarding the report.",
+    },
+    {
+      id: "gi_contactName",
+      type: ElementType.Textbox,
+      label: "Name",
+      required: true,
+      skipOptionalTag: true,
+      helperText: "First and last name of the contact person.",
+    },
+    {
+      id: "gi_contactEmail",
+      type: ElementType.Textbox,
+      label: "Contact email address",
+      required: true,
+      skipOptionalTag: true,
+      helperText:
+        "Enter an email address. Department or program-wide email addresses are allowed.",
+    },
+    {
+      id: "gi_contactPhone",
+      type: ElementType.Textbox,
+      label: "Phone number",
+      required: true,
+      skipOptionalTag: true,
+      helperText: "Enter phone number as ###-###-####.",
+    },
+    {
+      type: ElementType.SubHeader,
+      id: "gi_alternateContactSubheader",
+      text: "Alternate state Medicaid agency contact",
+      helperText:
+        "Enter the contact information for a secondary contact in case the primary person is unavailable.",
+    },
+    {
+      id: "gi_alternateContactName",
+      type: ElementType.Textbox,
+      label: "Name",
+      required: true,
+      skipOptionalTag: true,
+      helperText: "First and last name of the secondary contact person.",
+    },
+    {
+      id: "gi_alternateContactEmail",
+      type: ElementType.Textbox,
+      label: "Email address",
+      required: true,
+      skipOptionalTag: true,
+      helperText:
+        "Enter an email address. Department or program-wide email addresses are allowed.",
+    },
+    {
+      type: ElementType.SubHeader,
+      id: "gi_dataSourcesSubheader",
+      text: "Data sources",
+      helperText:
+        "Enter your state PASRR program records and tracking systems or other sources. For example, other sources may include fair hearings (appeals) or nursing facility data.",
+    },
+    {
+      id: "gi_dataSources",
+      type: ElementType.ListInput,
+      label: "Data sources",
+      fieldLabel: "Data source",
+      buttonText: "Add data source",
+      required: true,
+      skipOptionalTag: true,
+    },
+  ],
+};

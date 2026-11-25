@@ -1,6 +1,10 @@
 import { Flex } from "@chakra-ui/react";
 import { ElementType, PageElement, ReportPage } from "@pasrr/shared";
-import { renderElements, shouldUseTable } from "./ExportedReportElements";
+import {
+  isUnansweredList,
+  renderElements,
+  shouldUseTable,
+} from "./ExportedReportElements";
 import { chunkBy } from "utils/other/arrays";
 import { ExportedReportTable, ReportTableType } from "./ExportedReportTable";
 
@@ -19,7 +23,8 @@ export const renderReportDisplay = (
 
 //for certain elements i.e. ListInputs and AttachmentArea, we want to have multiple rows to split an array for answers so this function is to capture that
 export const renderExpandedAnswers = (element: PageElement) => {
-  if (!("answer" in element) || !element.answer) return element;
+  if (!("answer" in element) || !element.answer || isUnansweredList(element))
+    return element;
 
   switch (element.type) {
     case ElementType.ListInput:
@@ -28,7 +33,10 @@ export const renderExpandedAnswers = (element: PageElement) => {
         (item, index) =>
           ({
             type: element.type,
-            label: `${element.label}  ${index + 1}`,
+            label:
+              element.type === ElementType.ListInput
+                ? element.label
+                : `${element.label}  ${index + 1}`,
             helperText: element.helperText,
             answer: [item],
           }) as any
@@ -77,8 +85,11 @@ export const ExportedReportWrapper = ({ section }: Props) => {
           expandedElements.push(...childElements);
         }
         return expandedElements;
-      } else if (element.type === ElementType.AttachmentArea) {
-        //expand attachments that are outside an accordion
+      } else if (
+        element.type === ElementType.AttachmentArea ||
+        element.type === ElementType.ListInput
+      ) {
+        //expand each list answer and attachment into its own row, outside an accordion
         return renderExpandedAnswers(element);
       } else {
         // All other element types stand on their own.

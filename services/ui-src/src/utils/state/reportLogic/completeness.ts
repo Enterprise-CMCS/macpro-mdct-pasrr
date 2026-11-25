@@ -7,9 +7,19 @@ import {
   PageElement,
   PageStatus,
   Report,
+  summationTableAddRowMax,
+  SummationTableRowAnswerShape,
 } from "@pasrr/shared";
 import { isFormPageTemplate, assertExhaustive } from "types";
-import { isEmail, isPhone, isZipCode } from "utils/validation/inputValidation";
+import {
+  isEmail,
+  isEmptyValue,
+  isPhone,
+  isWholePositiveNumber,
+  isZipCode,
+  parseNumber,
+} from "utils/validation/inputValidation";
+import { getNonPresetRows, sumById } from "./tableBuilder";
 
 /**
  * Calculate the status of any page, including calculated values.
@@ -82,20 +92,26 @@ export const pageIsCompletable = (report: Report, pageId: string) => {
   if (!targetPage.elements) return true;
 
   for (const element of targetPage.elements) {
-    if (element.type === ElementType.AccordionGroup) {
-      const accordionElements = element.accordions.flatMap(
-        (accordion) => accordion.elements
-      );
-      for (const element of accordionElements) {
-        const satisfied = elementSatisfiesRequired(
-          element,
-          targetPage.elements
+    let pageElements: PageElement[];
+
+    switch (element.type) {
+      case ElementType.AccordionGroup:
+        pageElements = element.accordions.flatMap(
+          (accordion) => accordion.elements
         );
-        if (!satisfied) return false;
+        break;
+      case ElementType.FieldGroup:
+        pageElements = element.elements;
+        break;
+      default:
+        pageElements = [element];
+        break;
+    }
+
+    for (const el of pageElements) {
+      if (!elementSatisfiesRequired(el, targetPage.elements)) {
+        return false;
       }
-    } else {
-      const satisfied = elementSatisfiesRequired(element, targetPage.elements);
-      if (!satisfied) return false;
     }
   }
 
@@ -106,85 +122,134 @@ export const elementSatisfiesRequired = (
   element: PageElement,
   pageElements: PageElement[]
 ) => {
-  //while list input is not required, if the user adds a field and leaves it blank, that would make it incomplete and prevent form submission
-  if (
-    element.type === ElementType.ListInput &&
-    element.answer?.some((item) => item === "" || item === undefined)
-  ) {
-    return false;
-  }
+  switch (true) {
+    //while list input is not required, if the user adds a field and leaves it blank, that would make it incomplete and prevent form submission
+    case element.type === ElementType.ListInput &&
+      element.answer?.some((item) => item === "" || item === undefined):
+      return false;
 
-  // TODO: make less ugly
-  if (
-    !("required" in element) ||
-    !element.required ||
-    ("hideCondition" in element &&
-      elementIsHidden(element.hideCondition, pageElements))
-  ) {
-    return true;
-  }
-  if (!("answer" in element) || !element.answer) {
-    // TODO: number fields are currently represented as strings, need to be handled here when fixed
-    return false;
-  }
-  // Special handling - nested children
-  if (element.type === ElementType.Radio) {
-    for (const choice of element.choices) {
-      if (choice.value !== element.answer || !choice.checkedChildren) continue;
-      for (const childElement of choice.checkedChildren) {
-        const satisfied = elementSatisfiesRequired(childElement, pageElements);
-        if (!satisfied) return false;
+    // TODO: make less ugly
+    case !("required" in element) ||
+      !element.required ||
+      ("hideCondition" in element &&
+        elementIsHidden(element.hideCondition, pageElements)):
+      return true;
+
+    case !("answer" in element) || !element.answer:
+      // TODO: number fields are currently represented as strings, need to be handled here when fixed
+      return false;
+
+    // Special handling - nested children
+    case element.type === ElementType.Radio:
+      for (const choice of element.choices) {
+        if (choice.value !== element.answer || !choice.checkedChildren) {
+          continue;
+        }
+        for (const childElement of choice.checkedChildren) {
+          if (!elementSatisfiesRequired(childElement, pageElements)) {
+            return false;
+          }
+        }
       }
-    }
-  }
-  if (
-    element.type === ElementType.ActionTable &&
-    element.id === "metrics-table"
-  ) {
-    //only get metric rows that haven't been abandoned
-    const activeElements = element.answer
-      .filter((rows) =>
-        rows.find(
-          (column) => column.id === "status" && column.value !== "Abandoned"
+      return true;
+
+    case element.type === ElementType.ActionTable &&
+      element.id.toLowerCase().includes("metrics"): {
+      //only get metric rows that haven't been abandoned
+      const activeElements = element.answer
+        .filter((rows) =>
+          rows.find(
+            (column) => column.id === "status" && column.value !== "Abandoned"
+          )
         )
-      )
-      .flat();
+        .flat();
 
-    const requiredAnswers = activeElements.filter((column) => {
-      const modalElement = element.modal.elements.find(
-        (modalElement) => modalElement.id === column.id
+      const requiredAnswers = activeElements.filter((column) => {
+        const modalElement = element.modal.elements.find(
+          (modalElement) => modalElement.id === column.id
+        );
+        return modalElement?.required !== false;
+      });
+
+      return requiredAnswers.every(
+        (column) => column.value && column.value !== ""
       );
-      return modalElement?.required !== false;
-    });
+    }
 
-    return requiredAnswers.every(
-      (column) => column.value && column.value !== ""
-    );
+    case element.type === ElementType.SummationTable: {
+      const answerRows = element.answer?.rows || [];
+      const answerTotal = element.answer?.total || [];
+      const rows = element.rows;
+      const nonPresetRows = getNonPresetRows(answerRows);
+      const addRowMax = element.addRowMax ?? summationTableAddRowMax;
+
+      if (
+        answerRows.length === 0 ||
+        answerTotal.length === 0 ||
+        rows.length === 0 ||
+        nonPresetRows.length > addRowMax
+      ) {
+        return false;
+      }
+
+      const validateRows = (
+        dataRows: SummationTableRowAnswerShape[],
+        isTotal: boolean
+      ) => {
+        return dataRows.every((row) => {
+          const rowMap = new Map(row.map((t) => [t.id, t.value]));
+
+          return rows.every((header) => {
+            const value = rowMap.get(header.id);
+
+            if (!isTotal && isEmptyValue(value)) {
+              return false;
+            }
+
+            if (header.type === ElementType.NumberField) {
+              const isValidNumber = isWholePositiveNumber(value);
+              if (!isValidNumber) return false;
+
+              if (isTotal) {
+                return (
+                  sumById(answerRows, header.id) === parseNumber(String(value))
+                );
+              }
+            }
+
+            return true;
+          });
+        });
+      };
+
+      return validateRows(answerRows, false) && validateRows(answerTotal, true);
+    }
+
+    case element.type === ElementType.Textbox: {
+      const textboxValidations = (value: string) => [
+        {
+          match: element.id.toLowerCase().includes("email"),
+          validation: isEmail(value),
+        },
+        {
+          match: element.id.toLowerCase().includes("phone"),
+          validation: isPhone(value),
+        },
+        {
+          match: element.id.toLowerCase().includes("zipcode"),
+          validation: isZipCode(value),
+        },
+      ];
+
+      const customValidation = textboxValidations(element.answer).find(
+        (v) => v.match
+      );
+      return customValidation?.validation ?? true;
+    }
+
+    default:
+      return true;
   }
-
-  const textboxValidations = (value: string) => [
-    {
-      match: element.id.includes("email"),
-      validation: isEmail(value),
-    },
-    {
-      match: element.id.includes("phone"),
-      validation: isPhone(value),
-    },
-    {
-      match: element.id.includes("zipcode"),
-      validation: isZipCode(value),
-    },
-  ];
-  const customValidation =
-    typeof element.answer === "string"
-      ? textboxValidations(element.answer).find((v) => v.match)
-      : null;
-  if (customValidation) {
-    return customValidation.validation;
-  }
-
-  return true;
 };
 
 export const elementIsHidden = (

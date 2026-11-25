@@ -1,5 +1,6 @@
 import {
   ActionTableTemplate,
+  dropdownEmptyOption,
   ElementType,
   FormPageTemplate,
   ListInputTemplate,
@@ -7,6 +8,7 @@ import {
   PageStatus,
   RadioTemplate,
   Report,
+  SummationTableTemplate,
   TextboxTemplate,
 } from "@pasrr/shared";
 import {
@@ -21,12 +23,12 @@ describe("inferredReportStatus", () => {
     const report = {
       pages: [
         {
-          id: "general-id",
+          id: "mock-page-id",
           required: true,
           title: "a title",
           elements: [
             {
-              id: "good-question",
+              id: "mock_textboxId",
               type: ElementType.Textbox,
               answer: "Good",
               required: true,
@@ -34,41 +36,94 @@ describe("inferredReportStatus", () => {
           ],
         },
         {
-          id: "other-id",
+          id: "mock-page-id-2",
           required: true,
           title: "a title",
           elements: [
             {
-              id: "no-question",
+              id: "mock_textboxNoAnswerId",
               type: ElementType.Textbox,
               answer: undefined,
               required: true,
             },
           ],
         },
+        {
+          id: "mock-page-id-3",
+          required: true,
+          title: "a title",
+          elements: [
+            {
+              id: "mock_textboxId",
+              type: ElementType.Textbox,
+              answer: "Good",
+              required: true,
+            },
+            {
+              id: "mock_textboxNoAnswerId",
+              type: ElementType.Textbox,
+              answer: undefined,
+              required: true,
+            },
+          ],
+        },
+        {
+          id: "mock-page-id-4",
+          status: PageStatus.ABANDONED,
+          required: true,
+          title: "a title",
+          elements: [
+            {
+              id: "mock_textboxId",
+              type: ElementType.Textbox,
+              answer: "Good",
+              required: true,
+            },
+          ],
+        },
       ],
     } as any;
-    expect(inferredReportStatus(report, "general-id")).toEqual(
+    expect(inferredReportStatus(report, "mock-page-id")).toBe(
       PageStatus.COMPLETE
     );
-    expect(inferredReportStatus(report, "other-id")).toEqual(
+    expect(inferredReportStatus(report, "mock-page-id-2")).toBe(
       PageStatus.NOT_STARTED
     );
+    expect(inferredReportStatus(report, "mock-page-id-3")).toBe(
+      PageStatus.IN_PROGRESS
+    );
+    expect(inferredReportStatus(report, "mock-page-id-4")).toBe(
+      PageStatus.ABANDONED
+    );
+    expect(
+      inferredReportStatus(report, "mock-missing-page-id")
+    ).toBeUndefined();
   });
 });
 
 describe("pageInProgress", () => {
-  const isInProgress = (element: object) => {
+  const isInProgress = (element: object, pageId = "mock-page-id") => {
     const report = {
       pages: [
         {
           id: "mock-page-id",
           elements: [element as PageElement],
         },
+        {
+          id: "mock-page-id-2",
+        },
       ],
     } as Report;
-    return pageInProgress(report, "mock-page-id");
+    return pageInProgress(report, pageId);
   };
+
+  test("should treat missing elements as in progress", () => {
+    expect(isInProgress({}, "mock-page-id-2")).toBe(true);
+  });
+
+  test("should treat missing page as not in progress", () => {
+    expect(isInProgress({}, "mock-missing-page-id")).toBe(false);
+  });
 
   test("should treat missing or empty answers as not in progress", () => {
     expect(isInProgress({})).toBe(false);
@@ -118,57 +173,136 @@ describe("pageIsCompletable", () => {
     const report = {
       pages: [
         {
-          id: "my-id",
+          id: "mock-page-id",
           status: PageStatus.IN_PROGRESS,
           elements: [
             {
-              id: "bad-question",
+              id: "mock_badQuestionId",
+              type: ElementType.TextAreaField,
+              answer: undefined,
+              required: true,
+            },
+            {
+              id: "mock_badRadioQuestionId",
               type: ElementType.Radio,
               answer: undefined,
               required: true,
+              choices: [
+                {
+                  label: "Choice 1",
+                  value: "A",
+                  checked: false,
+                },
+                {
+                  label: "Choice 2",
+                  value: "B",
+                  checked: false,
+                },
+                {
+                  label: "Choice 3",
+                  value: "C",
+                  checked: false,
+                },
+              ],
+            },
+            {
+              id: "mock_badDropdownQuestionId",
+              type: ElementType.Dropdown,
+              answer: "",
+              required: true,
+              options: [
+                dropdownEmptyOption,
+                { label: "2026", value: "2026" },
+                { label: "2027", value: "2027" },
+              ],
             },
           ],
         },
       ],
     } as Report;
-    expect(pageIsCompletable(report, "my-id")).toBeFalsy();
+    expect(pageIsCompletable(report, "mock-page-id")).toBeFalsy();
   });
 
   test("succeeds when complete element", () => {
     const report = {
       pages: [
         {
-          id: "my-id",
+          id: "mock-page-id",
           status: PageStatus.IN_PROGRESS,
           elements: [
             {
-              id: "good-question",
-              type: ElementType.Textbox,
-              answer: "WOW",
+              id: "mock_textboxId",
+              type: ElementType.TextAreaField,
+              answer: "mock text",
               required: true,
+            },
+            {
+              id: "mock_radioId",
+              type: ElementType.Radio,
+              answer: "A",
+              required: true,
+              choices: [
+                {
+                  label: "Choice 1",
+                  value: "A",
+                  checked: false,
+                },
+                {
+                  label: "Choice 2",
+                  value: "B",
+                  checked: false,
+                },
+                {
+                  label: "Choice 3",
+                  value: "C",
+                  checked: false,
+                },
+              ],
+            },
+            {
+              id: "mock_hiddenElementId",
+              type: ElementType.TextAreaField,
+              answer: undefined,
+              required: true,
+              hideCondition: {
+                controllerElementId: "mock_radioId",
+                answer: "A",
+              },
+            },
+            {
+              id: "mock_dropdownId",
+              type: ElementType.Dropdown,
+              answer: "2026",
+              required: true,
+              options: [
+                dropdownEmptyOption,
+                { label: "2026", value: "2026" },
+                { label: "2027", value: "2027" },
+              ],
             },
           ],
         },
       ],
     } as Report;
-    expect(pageIsCompletable(report, "my-id")).toBeTruthy();
+    expect(pageIsCompletable(report, "mock-page-id")).toBeTruthy();
   });
+
   test("is completable when element type is an AccordionGroup", () => {
     const report = {
       pages: [
         {
-          id: "my-id",
+          id: "mock-page-id",
           status: PageStatus.IN_PROGRESS,
           elements: [
             {
               type: ElementType.AccordionGroup,
-              id: "accordion",
+              id: "mock_accordionGroupId",
               accordions: [
                 {
                   label: "",
                   elements: [
                     {
-                      id: "good-question",
+                      id: "mock_accordionId_textboxId",
                       type: ElementType.Textbox,
                       answer: "WOW",
                       required: true,
@@ -182,28 +316,56 @@ describe("pageIsCompletable", () => {
         },
       ],
     } as Report;
-    expect(pageIsCompletable(report, "my-id")).toBeTruthy();
+    expect(pageIsCompletable(report, "mock-page-id")).toBeTruthy();
+  });
+
+  test("is completable when element type is fieldGroup", () => {
+    const report = {
+      pages: [
+        {
+          id: "mock-page-id",
+          status: PageStatus.IN_PROGRESS,
+          elements: [
+            {
+              type: ElementType.FieldGroup,
+              id: "mock_fieldGroupId",
+              elements: [
+                {
+                  type: ElementType.Textbox,
+                  id: "mock_textboxId",
+                  required: true,
+                  answer: "mock text",
+                },
+              ],
+              answer: [{ id: "mock_textboxId", value: "mock text" }],
+              required: true,
+            },
+          ],
+        },
+      ],
+    } as Report;
+    expect(pageIsCompletable(report, "mock-page-id")).toBeTruthy();
   });
 });
 
 describe("elementSatisfiesRequired", () => {
   test("returns true when hidden or not required", () => {
     const hiddenElement: TextboxTemplate = {
-      id: "other-element",
+      id: "mock_hiddenElementId",
       label: "hidden textbox",
       answer: "foo",
       type: ElementType.Textbox,
       required: true,
     };
     const notRequired: TextboxTemplate = {
-      id: "not-element",
+      id: "mock_notRequiredElementId",
       label: "optional textbox",
       answer: "foo",
       type: ElementType.Textbox,
       required: false,
     };
     const otherElement: TextboxTemplate = {
-      id: "other-element",
+      id: "mock_otherElementId",
       label: "irrelevant other textbox",
       answer: "foo",
       type: ElementType.Textbox,
@@ -216,7 +378,7 @@ describe("elementSatisfiesRequired", () => {
 
   test("handles radios", () => {
     const radio = {
-      id: "other-element",
+      id: "mock_radioId",
       answer: "foo",
       type: ElementType.Radio,
       choices: [
@@ -228,7 +390,7 @@ describe("elementSatisfiesRequired", () => {
       required: true,
     } as RadioTemplate;
     const incompleteChildren = {
-      id: "bad-element",
+      id: "mock_incompleteChildrenId",
       answer: "me",
       type: ElementType.Radio,
       choices: [
@@ -260,15 +422,32 @@ describe("elementSatisfiesRequired", () => {
     expect(elementSatisfiesRequired(element, [element])).toBeFalsy();
   });
 
+  test("required ListInput is incomplete until a value is entered", () => {
+    const element = {
+      type: ElementType.ListInput,
+      required: true,
+    } as ListInputTemplate;
+    expect(elementSatisfiesRequired(element, [element])).toBeFalsy();
+
+    const answered = { ...element, answer: ["data source"] };
+    expect(elementSatisfiesRequired(answered, [answered])).toBeTruthy();
+  });
+
   test("handles Metrics Table", () => {
     const element = {
       type: ElementType.ActionTable,
-      id: "metrics-table",
+      id: "mock_metricsTable",
       label: "action table",
       heading: "Heading",
       modal: { title: "", elements: [] },
-      rows: [{ id: "row", type: ElementType.Paragraph, header: "" }],
-      answer: [[{ id: "row", value: "2" as string }]],
+      rows: [
+        {
+          id: "mock_metricsTable_textboxId",
+          type: ElementType.Paragraph,
+          header: "",
+        },
+      ],
+      answer: [[{ id: "mock_metricsTable_textboxId", value: "2" as string }]],
       required: true,
     } as ActionTableTemplate;
     expect(elementSatisfiesRequired(element, [element])).toBeTruthy();
@@ -277,30 +456,36 @@ describe("elementSatisfiesRequired", () => {
   test("ignores optional Metrics Table columns", () => {
     const element = {
       type: ElementType.ActionTable,
-      id: "metrics-table",
+      id: "mock_metricsTable",
       label: "action table",
       heading: "Heading",
       modal: {
         title: "",
         elements: [
           {
-            id: "required-column",
+            id: "mock_metricsTable_textboxId",
             type: ElementType.Textbox,
             required: true,
           },
           {
-            id: "optional-column",
+            id: "mock_metricsTable_textboxOptionalId",
             type: ElementType.Textbox,
             required: false,
           },
         ],
       },
-      rows: [{ id: "row", type: ElementType.Paragraph, header: "" }],
+      rows: [
+        {
+          id: "mock_metricsTable_textboxId",
+          type: ElementType.Paragraph,
+          header: "",
+        },
+      ],
       answer: [
         [
           { id: "status", value: "Active" },
-          { id: "required-column", value: "complete" },
-          { id: "optional-column", value: "" },
+          { id: "mock_metricsTable_textboxId", value: "complete" },
+          { id: "mock_metricsTable_textboxOptionalId", value: "" },
         ],
       ],
       required: true,
@@ -312,7 +497,7 @@ describe("elementSatisfiesRequired", () => {
   test("handles invalid email field", () => {
     const element = {
       type: ElementType.Textbox,
-      id: "test-email-field",
+      id: "mock_textboxId_email",
       required: true,
     } as TextboxTemplate;
     const invalidEmail = {
@@ -330,36 +515,205 @@ describe("elementSatisfiesRequired", () => {
   test("handles invalid phone field", () => {
     const element = {
       type: ElementType.Textbox,
-      id: "test-phone-field",
+      id: "mock_textboxId_phone",
       required: true,
     } as TextboxTemplate;
-    const invalidEmail = {
+    const invalidPhone = {
       ...element,
       answer: "not-a-valid-phone",
     };
-    const validEmail = {
+    const validPhone = {
       ...element,
       answer: "555-555-5555",
     };
-    expect(elementSatisfiesRequired(invalidEmail, [invalidEmail])).toBeFalsy();
-    expect(elementSatisfiesRequired(validEmail, [validEmail])).toBeTruthy();
+    expect(elementSatisfiesRequired(invalidPhone, [invalidPhone])).toBeFalsy();
+    expect(elementSatisfiesRequired(validPhone, [validPhone])).toBeTruthy();
   });
 
   test("handles invalid zip code field", () => {
     const element = {
       type: ElementType.Textbox,
-      id: "test-zipcode-field",
+      id: "mock_textboxId_zipCode",
       required: true,
     } as TextboxTemplate;
-    const invalidEmail = {
+    const invalidZipCode = {
       ...element,
-      answer: "not-a-valid-zipcode",
+      answer: "not-a-valid-zipCode",
     };
-    const validEmail = {
+    const validZipCode = {
       ...element,
       answer: "55555",
     };
-    expect(elementSatisfiesRequired(invalidEmail, [invalidEmail])).toBeFalsy();
-    expect(elementSatisfiesRequired(validEmail, [validEmail])).toBeTruthy();
+    expect(
+      elementSatisfiesRequired(invalidZipCode, [invalidZipCode])
+    ).toBeFalsy();
+    expect(elementSatisfiesRequired(validZipCode, [validZipCode])).toBeTruthy();
+  });
+
+  describe("SummationTable completeness", () => {
+    const element = {
+      type: ElementType.SummationTable,
+      id: "mock_summationTableId",
+      caption: "Summation Table",
+      required: true,
+      rows: [
+        {
+          id: "mock_summationTableId_textboxId",
+          header: "Textbox",
+          type: ElementType.Textbox,
+        },
+        {
+          id: "mock_summationTableId_numberFieldId",
+          header: "NumberField",
+          type: ElementType.NumberField,
+        },
+      ],
+      answer: {
+        rows: [],
+        total: [],
+      },
+      addRowButtonText: "Add row",
+      addRowHelperText: "Helper text",
+    } as SummationTableTemplate;
+    const missingTotal = {
+      ...element,
+      answer: {
+        rows: [
+          [
+            { id: "mock_summationTableId_textboxId", value: "mock text" },
+            { id: "mock_summationTableId_numberFieldId", value: 12345 },
+          ],
+        ],
+        total: [
+          [
+            {
+              id: "mock_summationTableId_textboxId",
+              value: "Total",
+              preset: true,
+              readonly: true,
+            },
+          ],
+        ],
+      },
+    };
+    const incorrectTotal = {
+      ...element,
+      answer: {
+        rows: missingTotal.answer.rows,
+        total: [
+          [
+            {
+              id: "mock_summationTableId_textboxId",
+              value: "Total",
+              preset: true,
+              readonly: true,
+            },
+            {
+              id: "mock_summationTableId_numberFieldId",
+              value: 0,
+              readonly: true,
+            },
+          ],
+        ],
+      },
+    };
+    const missingValues = {
+      ...element,
+      answer: {
+        rows: [[{ id: "mock_summationTableId_textboxId", value: "mock text" }]],
+        total: incorrectTotal.answer.total,
+      },
+    };
+    const invalidValues = {
+      ...element,
+      answer: {
+        rows: [
+          [
+            { id: "mock_summationTableId_textboxId", value: "mock text" },
+            { id: "mock_summationTableId_numberFieldId", value: "mock text" },
+          ],
+          [
+            { id: "mock_summationTableId_textboxId", value: "mock text" },
+            { id: "mock_summationTableId_numberFieldId", value: -1 },
+          ],
+        ],
+        total: incorrectTotal.answer.total,
+      },
+    };
+    const tooManyRows = {
+      ...element,
+      addRowMax: 0,
+      answer: {
+        rows: [
+          [
+            { id: "mock_summationTableId_textboxId", value: "mock text" },
+            { id: "mock_summationTableId_numberFieldId", value: 12345 },
+          ],
+        ],
+        total: [
+          [
+            {
+              id: "mock_summationTableId_textboxId",
+              value: "Total",
+              preset: true,
+              readonly: true,
+            },
+            {
+              id: "mock_summationTableId_numberFieldId",
+              value: 12345,
+              readonly: true,
+            },
+          ],
+        ],
+      },
+    };
+    const validSummationTable = {
+      ...element,
+      answer: {
+        rows: [
+          [
+            { id: "mock_summationTableId_textboxId", value: "mock text" },
+            { id: "mock_summationTableId_numberFieldId", value: 12345 },
+          ],
+          [
+            { id: "mock_summationTableId_textboxId", value: "mock text" },
+            { id: "mock_summationTableId_numberFieldId", value: 12345 },
+          ],
+        ],
+        total: [
+          [
+            {
+              id: "mock_summationTableId_textboxId",
+              value: "Total",
+              preset: true,
+              readonly: true,
+            },
+            {
+              id: "mock_summationTableId_numberFieldId",
+              value: 24690,
+              readonly: true,
+            },
+          ],
+        ],
+      },
+    };
+
+    test.each([
+      { id: "newTable", element },
+      { id: "missingTotal", element: missingTotal },
+      { id: "incorrectTotal", element: incorrectTotal },
+      { id: "missingValues", element: missingValues },
+      { id: "invalidValues", element: invalidValues },
+      { id: "tooManyRows", element: tooManyRows },
+    ])("$id is incomplete", (t) => {
+      expect(elementSatisfiesRequired(t.element, [t.element])).toBeFalsy();
+    });
+
+    test.each([{ id: "validSummationTable", element: validSummationTable }])(
+      "$id is complete",
+      (t) => {
+        expect(elementSatisfiesRequired(t.element, [t.element])).toBeTruthy();
+      }
+    );
   });
 });

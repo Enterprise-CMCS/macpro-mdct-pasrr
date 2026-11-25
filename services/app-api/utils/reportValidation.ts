@@ -24,8 +24,23 @@ import {
   ZipRequestTypes,
   ZipRequestBody,
   CommentType,
+  dropdownEmptyLabel,
+  FieldGroupElement,
+  snakeCaseOrCamelCaseRegex,
+  kebabCaseRegex,
 } from "@pasrr/shared";
 import { error } from "./constants";
+
+export const elementId = () =>
+  string()
+    .required()
+    .matches(snakeCaseOrCamelCaseRegex, "ID must be snake_case and camelCase");
+
+export const pageId = () =>
+  string().required().matches(kebabCaseRegex, "ID must be kebab-case");
+
+const reportId = ({ required = true }: { required?: boolean } = {}) =>
+  required ? string().required() : string().notRequired();
 
 const helperTextLinkSchema = object()
   .shape({
@@ -45,22 +60,23 @@ const hideConditionSchema = object()
 
 const headerTemplateSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.Header)),
-  id: string().required(),
+  id: elementId(),
   text: string().required(),
   icon: string().notRequired(),
 });
 
 const subHeaderTemplateSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.SubHeader)),
-  id: string().required(),
+  id: elementId(),
   text: string().required(),
   helperText: string().notRequired(),
   hideCondition: hideConditionSchema,
+  headingLevel: number().integer().min(1).max(6).notRequired(),
 });
 
 const paragraphTemplateSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.Paragraph)),
-  id: string().required(),
+  id: elementId(),
   text: string().required(),
   title: string().notRequired(),
   style: string().notRequired(),
@@ -68,7 +84,7 @@ const paragraphTemplateSchema = object().shape({
 });
 
 const inputElementSchema = {
-  id: string().required(),
+  id: elementId(),
   label: string().required(),
   helperText: string().notRequired(),
   helperTextLink: helperTextLinkSchema,
@@ -78,6 +94,7 @@ const inputElementSchema = {
   onlyCmsAdminCanEdit: boolean().notRequired(),
   cmsAdminCanEditInSubmitted: boolean().notRequired(),
   skipOptionalTag: boolean().notRequired(),
+  fullWidth: boolean().notRequired(),
 };
 
 const textboxTemplateSchema = object().shape({
@@ -124,7 +141,11 @@ const dropdownTemplateSchema = object().shape({
   options: array().of(
     object().shape({
       label: string().required(),
-      value: string().required(),
+      value: string().when("label", {
+        is: dropdownEmptyLabel,
+        then: (schema) => schema.notRequired(),
+        otherwise: (schema) => schema.required(),
+      }),
       checked: boolean().notRequired(),
       checkedChildren: lazy(() => array().of(pageElementSchema).notRequired()),
     })
@@ -134,7 +155,7 @@ const dropdownTemplateSchema = object().shape({
 
 const accordionTemplateSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.Accordion)),
-  id: string().required(),
+  id: elementId(),
   label: string().required(),
   value: string().required(),
 });
@@ -169,9 +190,9 @@ export const uploadListPropSchema = object().shape({
     ),
 });
 
-const pageElementSchema = lazy((value: PageElement): Schema => {
+const getPageElementSchema = (value: PageElement): Schema => {
   if (!value.type) {
-    throw new Error("Some error message");
+    throw new Error("ElementType is missing");
   }
   switch (value.type) {
     case ElementType.Header:
@@ -216,10 +237,16 @@ const pageElementSchema = lazy((value: PageElement): Schema => {
       return actionTableSchema;
     case ElementType.RequestFeedbackButton:
       return requestFeedbackButtonSchema;
+    case ElementType.FieldGroup:
+      return fieldGroupTemplateSchema;
+    case ElementType.SummationTable:
+      return summationTableTemplateSchema;
     default:
-      throw new Error("Page Element type is not valid");
+      throw new Error("ElementType is not valid");
   }
-});
+};
+
+export const pageElementSchema = lazy(getPageElementSchema);
 
 const radioTemplateSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.Radio)),
@@ -253,7 +280,7 @@ const checkboxTemplateSchema = object().shape({
 
 const accordionGroupTemplateSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.AccordionGroup)),
-  id: string().required(),
+  id: elementId(),
   accordions: array()
     .of(
       object().shape({
@@ -268,7 +295,7 @@ const accordionGroupTemplateSchema = object().shape({
 
 const buttonLinkTemplateSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.ButtonLink)),
-  id: string().required(),
+  id: elementId(),
   label: string().required(),
   to: string().required(),
   style: string().optional(),
@@ -283,7 +310,7 @@ const attachmentAreaSchema = object().shape({
 });
 
 const ActionElementsSchema = {
-  id: string().required(),
+  id: elementId(),
   type: string().required(),
   hintText: string().notRequired(),
   disabled: boolean().notRequired(),
@@ -332,30 +359,31 @@ const actionTableSchema = object().shape({
 
 const dividerSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.Divider)),
-  id: string().required(),
+  id: elementId(),
 });
 
 const submissionParagraphSchema = object().shape({
   type: string()
     .required()
     .matches(new RegExp(ElementType.SubmissionParagraph)),
-  id: string().required(),
+  id: elementId(),
 });
 
 const statusTableTemplateSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.StatusTable)),
-  id: string().required(),
+  id: elementId(),
   to: string().required(),
 });
 
 const parentPageTemplateSchema = object().shape({
-  id: string().required(),
-  childPageIds: array().of(string()).required(),
+  id: pageId(),
+  title: string().notRequired(),
+  childPageIds: array().of(pageId()).required(),
 });
 
 const statusAlertSchema = object().shape({
   type: string().required().matches(new RegExp(ElementType.StatusAlert)),
-  id: string().required(),
+  id: elementId(),
   title: string().required(),
   text: string().required(),
   status: string().required(),
@@ -363,14 +391,14 @@ const statusAlertSchema = object().shape({
 });
 
 const formPageTemplateSchema = object().shape({
-  id: string().required(),
+  id: pageId(),
   title: string().required(),
   type: mixed<PageType>().oneOf(Object.values(PageType)).required(),
   status: string().notRequired(),
   elements: array().of(pageElementSchema).required(),
   sidebar: boolean().notRequired(),
   hideNavButtons: boolean().notRequired(),
-  childPageIds: array().of(string()).notRequired(),
+  childPageIds: array().of(pageId()).notRequired(),
 });
 
 const reviewSubmitTemplateSchema = formPageTemplateSchema.shape({
@@ -381,7 +409,55 @@ const requestFeedbackButtonSchema = object().shape({
   type: string()
     .required()
     .matches(new RegExp(ElementType.RequestFeedbackButton)),
-  id: string().required(),
+  id: elementId(),
+});
+
+export const fieldGroupElementSchema = lazy(
+  (value: FieldGroupElement): Schema => {
+    switch (value.type) {
+      case ElementType.Dropdown:
+      case ElementType.Textbox:
+        return getPageElementSchema(value);
+      default:
+        throw new Error("ElementType is not valid");
+    }
+  }
+);
+
+const fieldGroupTemplateSchema = object().shape({
+  type: string().required().matches(new RegExp(ElementType.FieldGroup)),
+  id: elementId(),
+  label: string().required(),
+  helperText: string().notRequired(),
+  required: boolean().required(),
+  elements: array().of(fieldGroupElementSchema).required(),
+  answer: array().of(mixed()).notRequired(),
+  headingLevel: number().integer().min(1).max(6).notRequired(),
+});
+
+const summationTableTemplateSchema = object().shape({
+  type: string().required().matches(new RegExp(ElementType.SummationTable)),
+  id: elementId(),
+  caption: string().required(),
+  required: boolean().required(),
+  rows: array()
+    .of(
+      object().shape({
+        ...ActionElementsSchema,
+        header: string().required(),
+        addRowLabel: string().notRequired(),
+      })
+    )
+    .required(),
+  answer: object()
+    .shape({
+      rows: array().of(mixed()).notRequired(),
+      total: array().of(mixed()).notRequired(),
+    })
+    .notRequired(),
+  addRowButtonText: string().notRequired(),
+  addRowHelperText: string().notRequired(),
+  addRowMax: number().integer().min(0).notRequired(),
 });
 
 /**
@@ -398,7 +474,7 @@ const pagesSchema = array()
         if (pageObject.id && pageObject.childPageIds) {
           return parentPageTemplateSchema;
         } else {
-          throw new Error("Some error message");
+          throw new Error("Page element id/childPageIds are missing");
         }
       } else {
         switch (pageObject.type) {
@@ -418,6 +494,7 @@ export const isCreateReportOptions = (
   const createReportOptionsValidationSchema = object()
     .shape({
       mockDate: string().notRequired(),
+      reportingYear: number().required(),
     })
     .required()
     .noUnknown();
@@ -439,7 +516,7 @@ export const isZipRequestBody = (
       report: object()
         .shape({
           state: string().required(),
-          id: string().required(),
+          id: reportId(),
           reportType: mixed<ReportType>()
             .oneOf(Object.values(ReportType))
             .required(),
@@ -463,7 +540,7 @@ export const isZipRequestBody = (
 const commentSchema = object().shape({
   contextId: string().required(),
   created: number().required(),
-  id: string().required(),
+  id: pageId(),
   author: string().required(),
   authorEmail: string().required(),
   isInternal: boolean().required(),
@@ -473,7 +550,7 @@ const commentSchema = object().shape({
 });
 
 const reportValidateSchema = object().shape({
-  id: string().notRequired(),
+  id: reportId({ required: false }),
   state: string().required(),
   created: number().notRequired(),
   copyFromReportId: string().notRequired(),
@@ -496,6 +573,7 @@ const reportValidateSchema = object().shape({
   subType: mixed<PasrrSubType>().oneOf(Object.values(PasrrSubType)).required(),
   subTypeKey: string().required(),
   budgetPeriod: number().min(0).max(5).required(),
+  reportingYear: number().required(),
   submissionCount: number().required(),
   pages: pagesSchema,
 });

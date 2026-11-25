@@ -1,7 +1,9 @@
 import {
   isEmail,
+  isEmptyValue,
   isPhone,
   isUrl,
+  isWholePositiveNumber,
   isZipCode,
   magicNumberMask,
   makeEmptyStringCopyOf,
@@ -145,14 +147,14 @@ describe("Input validation utilities", () => {
       const result = validateNumber("texas", true);
       expect(result.parsedValue).toBeUndefined();
       expect(result.isValid).toBe(false);
-      expect(result.errorMessage).toBe("Response must be a number");
+      expect(result.errorMessage).toBe("Response must be a valid number");
     });
 
     test("should reject invalid numbers for optional fields", () => {
       const result = validateNumber("texas", false);
       expect(result.parsedValue).toBeUndefined();
       expect(result.isValid).toBe(false);
-      expect(result.errorMessage).toBe("Response must be a number");
+      expect(result.errorMessage).toBe("Response must be a valid number");
     });
 
     test("should allow valid numbers", () => {
@@ -289,6 +291,30 @@ describe("Input validation utilities", () => {
     });
   });
 
+  describe("isEmptyValue()", () => {
+    test("should accept undefined", () => {
+      expect(isEmptyValue(undefined)).toBe(true);
+    });
+
+    test("should accept the empty string", () => {
+      expect(isEmptyValue("")).toBe(true);
+    });
+
+    test.each([{ input: "mock text" }, { input: 0 }])(
+      "should reject the value '$input'",
+      ({ input }) => {
+        expect(isEmptyValue(input)).toBe(false);
+      }
+    );
+
+    test.each([{ input: null }, { input: " " }])(
+      "should accept the value '$input'",
+      ({ input }) => {
+        expect(isEmptyValue(input)).toBe(true);
+      }
+    );
+  });
+
   describe("magicNumberMask()", () => {
     test.each([
       { input: "1000", expected: "1,000" },
@@ -324,5 +350,29 @@ describe("Input validation utilities", () => {
     ])("formats '$input' as '$expected'", ({ input, expected }) => {
       expect(numberNAMask(input)).toBe(expected);
     });
+  });
+
+  describe("isWholePositiveNumber()", () => {
+    test("should reject undefined", () => {
+      expect(isWholePositiveNumber(undefined)).toBe(false);
+    });
+
+    test("should reject the empty string", () => {
+      expect(isWholePositiveNumber("")).toBe(false);
+    });
+
+    test.each([{ input: "mock text" }, { input: ".5" }, { input: "-1" }])(
+      "should reject the string '$input'",
+      ({ input }) => {
+        expect(isWholePositiveNumber(input)).toBe(false);
+      }
+    );
+
+    test.each([{ input: "0" }, { input: "1" }])(
+      "should accept the string '$input'",
+      ({ input }) => {
+        expect(isWholePositiveNumber(input)).toBe(true);
+      }
+    );
   });
 });

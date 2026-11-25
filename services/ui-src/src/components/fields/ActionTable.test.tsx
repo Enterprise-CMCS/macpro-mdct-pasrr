@@ -15,7 +15,7 @@ const mockedUseStore = useStore as unknown as MockedFunction<typeof useStore>;
 const updateSpy = vi.fn();
 
 const mockActionTableElement: ActionTableTemplate = {
-  id: "mock-action-table-id",
+  id: "mock_actionTableId",
   type: ElementType.ActionTable,
   label: "",
   heading: "",
@@ -42,7 +42,7 @@ const mockActionTableElement: ActionTableTemplate = {
       type: ElementType.Paragraph,
     },
     {
-      id: "mock-text",
+      id: "mock_textboxId",
       header: "Text",
       type: ElementType.Textbox,
     },
@@ -54,11 +54,11 @@ const mockActionTableElement: ActionTableTemplate = {
   ],
   answer: [
     [
-      { id: "mock-text", value: "hello" },
+      { id: "mock_textboxId", value: "hello" },
       { id: "status", value: "active" },
     ],
     [
-      { id: "mock-text", value: "bye" },
+      { id: "mock_textboxId", value: "bye" },
       { id: "status", value: "Abandoned" },
     ],
   ],

@@ -5,13 +5,14 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import { AdminDashboard } from "./AdminDashboard";
 import { RouterWrappedComponent } from "utils/testing/mockRouter";
 import { mockReport, mockReport2 } from "utils/testing/mockForm";
 import userEvent from "@testing-library/user-event";
 import { testA11yAct } from "utils/testing/commonTests";
-import { createReport, useStore } from "utils";
+import { useStore } from "utils";
 import { mockAdminUserStore } from "utils/testing/setupTest";
 
 vi.mock("utils/state/useStore");
@@ -24,10 +25,11 @@ vi.mock("launchdarkly-react-client-sdk", () => ({
   }),
 }));
 
-const mockGetReport = vi.fn().mockResolvedValue([mockReport, mockReport2]);
+const mockGetReport = vi
+  .fn()
+  .mockResolvedValue([mockReport, { ...mockReport2, reportingYear: 2025 }]);
 vi.mock("../../utils/api/requestMethods/report", () => ({
   getReportByType: () => mockGetReport(),
-  createReport: vi.fn(),
 }));
 
 vi.mock("../../utils/api/requestMethods/commentMethods", () => ({
@@ -58,7 +60,7 @@ describe("<AdminDashboard />", () => {
       );
     });
   });
-  it("AdminDashboard renders", async () => {
+  test("AdminDashboard renders", async () => {
     expect(
       screen.getByRole("heading", { name: "PASRR Admin Dashboard" })
     ).toBeVisible();
@@ -67,7 +69,7 @@ describe("<AdminDashboard />", () => {
     ).toBeVisible();
     expect(screen.getByRole("button", { name: "States select" })).toBeVisible();
     expect(
-      screen.getByRole("button", { name: "All Filter by Budget Period" })
+      screen.getByRole("button", { name: "All Filter by reporting year" })
     ).toBeVisible();
     expect(
       screen.getByRole("button", { name: "Clear All Filters" })
@@ -82,7 +84,93 @@ describe("<AdminDashboard />", () => {
     expect(screen.getByText("plan id")).toBeVisible();
   });
 
-  it("State filters are selectable", async () => {
+  test("renders the instructions accordion closed by default", () => {
+    expect(
+      screen.getByRole("button", { name: "Admin Instructions" })
+    ).toHaveAttribute("aria-expanded", "false");
+
+    const panel = screen.getByRole("region", {
+      name: "Admin Instructions",
+      hidden: true,
+    });
+    expect(panel).not.toBeVisible();
+  });
+
+  test("shows the admin instructions when the accordion is opened", async () => {
+    const accordionButton = screen.getByRole("button", {
+      name: "Admin Instructions",
+    });
+    const panel = screen.getByRole("region", {
+      name: "Admin Instructions",
+      hidden: true,
+    });
+    await userEvent.click(accordionButton);
+    expect(accordionButton).toHaveAttribute("aria-expanded", "true");
+
+    await waitFor(() => {
+      expect(panel).toBeVisible();
+    });
+
+    const paragraphs = within(panel).getAllByRole("paragraph");
+
+    // section headings and the filtering intro
+    [
+      "Reviewing submissions",
+      "Filtering state submissions",
+      "The table below lists PASRR reports for all states.",
+      "Reopening submissions for revision",
+    ].forEach((text, index) =>
+      expect(paragraphs[index]).toHaveTextContent(text)
+    );
+
+    const listItems = within(panel).getAllByRole("listitem");
+
+    // one distinctive phrase from each bullet
+    [
+      "To view a state or territory’s submission, select “View”.",
+      "After you finish your review",
+      "Select an option from the",
+      "Search and select multiple states",
+      "To allow a state or territory to make corrections or edits",
+      "Submission count is shown in the # column",
+    ].forEach((text, index) =>
+      expect(listItems[index]).toHaveTextContent(text)
+    );
+  });
+
+  test("Reporting Year filter", async () => {
+    await waitFor(() => {
+      expect(screen.getByText("plan id")).toBeVisible();
+    });
+
+    const reportingYearDropdown = screen.getByRole("button", {
+      name: "All Filter by reporting year",
+    });
+    await userEvent.click(reportingYearDropdown);
+
+    expect(screen.getByRole("option", { name: "2026" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "2025" })).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("option", { name: "2025" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("plan mn id")).toBeVisible();
+      expect(screen.queryByText("plan id")).not.toBeInTheDocument();
+    });
+
+    const reportingYearDropdown2025 = screen.getByRole("button", {
+      name: "2025 Filter by reporting year",
+    });
+    await userEvent.click(reportingYearDropdown2025);
+    await userEvent.click(screen.getByRole("option", { name: "All" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("plan mn id")).toBeVisible();
+      expect(screen.getByText("plan id")).toBeVisible();
+    });
+  });
+
+  test("State filters are selectable", async () => {
     await waitFor(() => {
       expect(screen.getByText("plan id")).toBeVisible();
     });
@@ -124,7 +212,7 @@ describe("<AdminDashboard />", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("Table sort are clickable", async () => {
+  test("Table sort are clickable", async () => {
     await waitFor(() => {
       expect(screen.queryByText("plan id")).toBeVisible();
     });
@@ -149,13 +237,13 @@ describe("<AdminDashboard />", () => {
     };
 
     await sortResult("State/Territory", [0, 7], ["Minnesota", "New Jersey"]);
-    await sortResult("Report Name", [1, 8], ["plan id", "plan mn id"]);
-    await sortResult("Budget Period", [2, 9], ["1", "2"]);
+    await sortResult("Submission name", [1, 8], ["plan id", "plan mn id"]);
+    await sortResult("Reporting year", [2, 9], ["2025", "2026"]);
     await sortResult("Last Edited", [3, 10], ["04/17/2026", "04/17/2026"]);
     await sortResult("Status", [4, 11], ["In progress", "Not started"]);
   });
 
-  it("View report", async () => {
+  test("View report", async () => {
     await waitFor(() => {
       expect(screen.getByText("plan id")).toBeVisible();
     });
@@ -164,7 +252,7 @@ describe("<AdminDashboard />", () => {
     expect(mockUseNavigate).toHaveBeenCalled();
   });
 
-  it("Can open and close comment drawer", async () => {
+  test("Can open and close comment drawer", async () => {
     const commentStatusButton = screen.getAllByRole("button", {
       name: "Comment/Status",
     })[0];
@@ -176,50 +264,6 @@ describe("<AdminDashboard />", () => {
     expect(
       screen.queryByRole("heading", { name: /Add comment to/ })
     ).not.toBeInTheDocument();
-  });
-
-  it("Can open and close admin create report modal", async () => {
-    const createReportButton = screen.getByRole("button", {
-      name: "Start First Annual Report",
-    });
-    await userEvent.click(createReportButton);
-    expect(
-      screen.getByRole("heading", { name: "Start First Annual Report" })
-    ).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Close" }));
-    expect(
-      screen.queryByRole("heading", { name: "Start First Annual Report" })
-    ).not.toBeInTheDocument();
-  });
-
-  it("Cannot create report for state with existing report", async () => {
-    const createReportButton = screen.getByRole("button", {
-      name: "Start First Annual Report",
-    });
-    await userEvent.click(createReportButton);
-
-    const stateDropdown = screen.getAllByLabelText("State")[1];
-    await userEvent.click(stateDropdown);
-    // mock reports for NJ and MN so should not see those options
-    expect(
-      screen.queryByRole("option", { name: "New Jersey" })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("option", { name: "Minnesota" })
-    ).not.toBeInTheDocument();
-  });
-
-  it("Can create report for state with no existing report", async () => {
-    const createReportButton = screen.getByRole("button", {
-      name: "Start First Annual Report",
-    });
-    await userEvent.click(createReportButton);
-
-    const stateDropdown = screen.getAllByLabelText("State")[1];
-    await userEvent.click(stateDropdown);
-    await userEvent.click(screen.getByRole("option", { name: "Alaska" }));
-    await userEvent.click(screen.getByRole("button", { name: "Start" }));
-    expect(createReport).toHaveBeenCalled();
   });
 });
 describe("Test A11y", () => {

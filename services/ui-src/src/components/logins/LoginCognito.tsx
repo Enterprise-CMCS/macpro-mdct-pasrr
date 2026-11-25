@@ -5,6 +5,7 @@ import { Box, Button, Heading, Input, Stack, Text } from "@chakra-ui/react";
 import { Alert } from "components";
 import { AlertTypes } from "@pasrr/shared";
 import { getReturnUrl } from "utils";
+import { clearSessionVisitedLinks } from "utils/other/sessionVisitedLinks";
 
 export const LoginCognito = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ export const LoginCognito = () => {
     setError(undefined);
     try {
       await signIn({ username, password });
+      // Each login starts a new session, so reset visited links.
+      clearSessionVisitedLinks();
       navigate(getReturnUrl());
     } catch (error) {
       setError(error instanceof Error ? error.message : "");

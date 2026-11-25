@@ -1,5 +1,5 @@
 import { Mock, MockedFunction } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import { DashboardPage } from "components";
 import { RouterWrappedComponent, mockUseStore } from "utils/testing/setupTest";
 import { useStore } from "utils";
@@ -27,7 +27,7 @@ vi.mock("react-router", async (importOriginal) => ({
 
 const mockReportsInDatabase = [
   {
-    id: "PASRRCO123",
+    id: "mock-report-id",
     type: "PASRR",
     state: "CO",
     lastEdited: new Date("2026-10-24T08:31:54").valueOf(),
@@ -35,10 +35,11 @@ const mockReportsInDatabase = [
     status: "Not started",
     name: "Mock Report Name",
     budgetPeriod: 1,
+    reportingYear: 2025,
     subTypeKey: "A1",
   } as Report,
   {
-    id: "PASRRCO1234",
+    id: "mock-report-id-2",
     type: "PASRR",
     state: "CO",
     lastEdited: new Date("2027-10-24T08:31:54").valueOf(),
@@ -46,6 +47,7 @@ const mockReportsInDatabase = [
     status: "Not started",
     name: "Mock Report 2027",
     budgetPeriod: 2,
+    reportingYear: 2026,
     subTypeKey: "A2",
   } as Report,
 ];
@@ -94,28 +96,38 @@ describe("DashboardPage with state user", () => {
 
   test("should not call reloadReports if no reportType passed in", async () => {
     (useParams as Mock).mockResolvedValueOnce(null).mockResolvedValueOnce(null);
-
     render(dashboardComponent);
     expect(getReportsForState).toHaveBeenCalledTimes(0);
   });
 
   test("should render report data", async () => {
-    const { container } = render(dashboardComponent);
+    render(dashboardComponent);
     await waitFor(() => {
       expect(getReportsForState).toHaveBeenCalled();
       expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
     });
 
-    const table = container.querySelector("table")!;
-    const columns = [...table.querySelectorAll("tr th")].map(
-      (th) => th.textContent!
-    );
-    const rows = [...table.querySelectorAll("tbody tr")].map((tr) => [
-      ...tr.querySelectorAll("td"),
-    ]);
+    // Get the different sections of the table
+    const rowGroups = screen.getAllByRole("rowgroup");
+    const [thead, tbody, tfoot] = rowGroups;
+    expect(rowGroups).toHaveLength(3);
+    expect(thead.tagName).toBe("THEAD");
+    expect(tbody.tagName).toBe("TBODY");
+    expect(tfoot.tagName).toBe("TFOOT");
 
-    expect(columns.length).toBeGreaterThanOrEqual(4);
-    expect(rows.length).toBe(2);
+    const columns = within(thead)
+      .getAllByRole("columnheader")
+      .map((th) => th.textContent);
+
+    const rows = within(tbody)
+      .getAllByRole("row")
+      .map((tr) => [...tr.children] as HTMLElement[]);
+
+    expect(columns).toHaveLength(6);
+    expect(rows).toHaveLength(2);
+    expect(
+      within(tbody).getByRole("rowheader", { name: "Mock Report Name" })
+    ).toBeVisible();
 
     const cellContent = (columnName: string) => {
       const columnIndex = columns.indexOf(columnName);
@@ -123,34 +135,65 @@ describe("DashboardPage with state user", () => {
       const cell = rows[0][columnIndex];
       return cell.textContent;
     };
+
     expect(cellContent("Submission name")).toBe("Mock Report Name");
     expect(cellContent("Last edited")).toBe("10/24/2026");
+    expect(cellContent("Reporting year")).toBe("2025");
     expect(cellContent("Edited by")).toBe("Mock User");
+    expect(cellContent("Status")).toBe("Not started");
+    expect(cellContent("Actions")).toBe("Enter Active ReportComment");
   });
 
-  test("should be able to filter reports", async () => {
-    const { container } = render(dashboardComponent);
+  test("should list reporting years from reports, newest first", async () => {
+    render(dashboardComponent);
+    await waitFor(() => {
+      expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
+    });
+
+    const dropdown = screen.getAllByLabelText("Filter by reporting year")[0];
+    const options = [...dropdown.querySelectorAll("option[value]")].map(
+      (option) => option.textContent
+    );
+    expect(options).toEqual(["All", "2026", "2025"]);
+    expect(dropdown).toHaveValue("All");
+    expect(
+      screen.queryByLabelText("Filter by Budget Period")
+    ).not.toBeInTheDocument();
+  });
+
+  test("should be able to filter reports by reporting year", async () => {
+    render(dashboardComponent);
     await waitFor(() => {
       expect(getReportsForState).toHaveBeenCalled();
       expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
     });
 
-    await userEvent.click(screen.getByText("Clear Filter"));
     await userEvent.selectOptions(
-      screen.queryAllByLabelText("Filter by Budget Period")[0],
-      "Budget Period 1"
+      screen.getAllByLabelText("Filter by reporting year")[0],
+      "2025"
     );
 
-    const table = container.querySelector("table")!;
-    const columns = [...table.querySelectorAll("tr th")].map(
-      (th) => th.textContent!
-    );
-    const rows = [...table.querySelectorAll("tbody tr")].map((tr) => [
-      ...tr.querySelectorAll("td"),
-    ]);
+    // Get the different sections of the table
+    const rowGroups = screen.getAllByRole("rowgroup");
+    const [thead, tbody, tfoot] = rowGroups;
+    expect(rowGroups).toHaveLength(3);
+    expect(thead.tagName).toBe("THEAD");
+    expect(tbody.tagName).toBe("TBODY");
+    expect(tfoot.tagName).toBe("TFOOT");
 
-    expect(columns.length).toBeGreaterThanOrEqual(4);
-    expect(rows.length).toBe(1);
+    const columns = within(thead)
+      .getAllByRole("columnheader")
+      .map((th) => th.textContent);
+
+    const rows = within(tbody)
+      .getAllByRole("row")
+      .map((tr) => [...tr.children] as HTMLElement[]);
+
+    expect(columns).toHaveLength(6);
+    expect(rows).toHaveLength(1);
+    expect(
+      within(tbody).getByRole("rowheader", { name: "Mock Report Name" })
+    ).toBeVisible();
 
     const cellContent = (columnName: string) => {
       const columnIndex = columns.indexOf(columnName);
@@ -162,6 +205,23 @@ describe("DashboardPage with state user", () => {
     expect(cellContent("Last edited")).toBe("10/24/2026");
     expect(cellContent("Edited by")).toBe("Mock User");
     expect(screen.queryByText("Mock Report 2027")).not.toBeInTheDocument();
+  });
+
+  test("should reset the reporting year filter to All when cleared", async () => {
+    render(dashboardComponent);
+    await waitFor(() => {
+      expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
+    });
+
+    const dropdown = screen.getAllByLabelText("Filter by reporting year")[0];
+    await userEvent.selectOptions(dropdown, "2026");
+    expect(screen.queryByText("Mock Report Name")).not.toBeInTheDocument();
+    expect(screen.getByText("Mock Report 2027")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Clear Filter" }));
+    expect(dropdown).toHaveValue("All");
+    expect(screen.getByText("Mock Report Name")).toBeInTheDocument();
+    expect(screen.getByText("Mock Report 2027")).toBeInTheDocument();
   });
 
   test("should be able to open the modal to start new report", async () => {
@@ -177,7 +237,11 @@ describe("DashboardPage with state user", () => {
     expect(reportModalButton).toBeEnabled();
     await userEvent.click(reportModalButton);
 
-    expect(screen.getByText("Add New PASRR Report")).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: "Create a PASRR Report" })
+      ).toBeVisible()
+    );
   });
 
   test("should render the new intro copy", async () => {
@@ -195,7 +259,7 @@ describe("DashboardPage with state user", () => {
     );
     expect(paragraphs[1]).toBeVisible();
     expect(paragraphs[1]).toHaveTextContent(
-      "While this tool will not prevent you from creating multiple reports for the same reporting period, you should only submit one report per reporting period."
+      "You can submit one report per year. You’ll be able to create your next report at the start of the new year."
     );
   });
 

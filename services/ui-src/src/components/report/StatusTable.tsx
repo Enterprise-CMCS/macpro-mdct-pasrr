@@ -1,6 +1,9 @@
+import { Fragment } from "react";
+import { PageStatus } from "@pasrr/shared";
 import { useNavigate, useParams } from "react-router";
 import {
   Button,
+  Image,
   Table,
   Tbody,
   Td,
@@ -11,7 +14,12 @@ import {
 } from "@chakra-ui/react";
 import { useStore } from "utils";
 import { TableStatusIcon } from "components/tables/TableStatusIcon";
-import { submittableMetricsSelector } from "utils/state/selectors";
+import {
+  ReviewRow,
+  SectionDetails,
+  submittableMetricsSelector,
+} from "utils/state/selectors";
+import editIcon from "assets/icons/edit/icon_edit_primary.svg";
 
 export const StatusTableElement = () => {
   const { report } = useStore();
@@ -28,14 +36,22 @@ export const StatusTableElement = () => {
     navigate(path);
   };
 
-  // Build Rows
-  const rows = submittableMetrics?.sections.map((sectionDetails, index) => {
+  const renderSectionRow = (
+    sectionDetails: SectionDetails | null,
+    key: string,
+    nested: boolean
+  ) => {
     if (!sectionDetails) return;
-    const { section, displayStatus: status } = sectionDetails;
+    const { section, displayStatus, submittable } = sectionDetails;
+    // Optional pages have no required fields, so they show Complete once they are submittable.
+    const status =
+      displayStatus === PageStatus.OPTIONAL && submittable
+        ? PageStatus.COMPLETE
+        : displayStatus;
     return (
-      <Tr key={section.id || index} p={0}>
+      <Tr key={key} p={0}>
         <Td>
-          <Text>{section.title}</Text>
+          <Text ml={nested ? "1.25rem" : 0}>{section.title}</Text>
         </Td>
         <Td>
           <TableStatusIcon tableStatus={status} showLabel={true} />
@@ -44,6 +60,7 @@ export const StatusTableElement = () => {
           <Button
             variant="outline"
             width="100%"
+            leftIcon={<Image src={editIcon} alt="" />}
             onClick={() => handleEditClick(section.id)}
           >
             Edit
@@ -51,7 +68,28 @@ export const StatusTableElement = () => {
         </Td>
       </Tr>
     );
-  });
+  };
+
+  // Parent pages are labels only, so they have no status or Edit button.
+  const renderRow = (row: ReviewRow) => {
+    if ("section" in row) {
+      return renderSectionRow(row.section, row.id, false);
+    }
+    return (
+      <Fragment key={row.id}>
+        <Tr p={0}>
+          <Td>
+            <Text fontWeight="bold">{row.title}</Text>
+          </Td>
+          <Td />
+          <Td />
+        </Tr>
+        {row.children.map((child, index) =>
+          renderSectionRow(child, `${row.id}-${index}`, true)
+        )}
+      </Fragment>
+    );
+  };
 
   return (
     <>
@@ -60,10 +98,10 @@ export const StatusTableElement = () => {
           <Tr>
             <Th>Section</Th>
             <Th>Status</Th>
-            <Th></Th>
+            <Th>Actions</Th>
           </Tr>
         </Thead>
-        <Tbody>{rows}</Tbody>
+        <Tbody>{submittableMetrics?.rows.map(renderRow)}</Tbody>
       </Table>
     </>
   );

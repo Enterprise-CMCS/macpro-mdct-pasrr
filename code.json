@@ -21,7 +21,7 @@
   "disclaimerURL": "",
   "disclaimerText": "",
   "vcs": "git",
-  "laborHours": 11025,
+  "laborHours": 11328,
   "reuseFrequency": {
     "forks": 0,
     "clones": 0
@@ -32,8 +32,8 @@
     "TypeScript",
     "JavaScript",
     "SCSS",
-    "HTML",
     "Shell",
+    "HTML",
     "Smarty"
   ],
   "contractNumber": [],
@@ -43,8 +43,8 @@
   "partners": [],
   "date": {
     "created": "2026-04-28T12:45:20Z",
-    "lastModified": "2026-09-29T16:01:16Z",
-    "metadataLastUpdated": "2026-10-01T00:26:47.262Z"
+    "lastModified": "2026-10-30T18:43:42Z",
+    "metadataLastUpdated": "2026-11-01T00:16:49.893Z"
   },
   "tags": [],
   "contact": {

@@ -55,11 +55,11 @@ describe("Path parameter parsing", () => {
     test("should validate state and id", () => {
       const event = {
         ...proxyEvent,
-        pathParameters: { state: "CO", id: "123" },
+        pathParameters: { state: "CO", id: "mock-report-id" },
       };
       const result = parseStateAndId(event)!;
       expect(result).toBeDefined();
-      expect(result.id).toBe("123");
+      expect(result.id).toBe("mock-report-id");
       expect(result.state).toBe("CO");
     });
 
@@ -75,7 +75,7 @@ describe("Path parameter parsing", () => {
     test("should return false for invalid state", () => {
       const event = {
         ...proxyEvent,
-        pathParameters: { state: "XX", id: "123" },
+        pathParameters: { state: "XX", id: "mock-report-id" },
       };
       const result = parseStateAndId(event);
       expect(result).toBeUndefined();
@@ -117,19 +117,23 @@ describe("Path parameter parsing", () => {
     test("should validate report type and state", () => {
       const event = {
         ...proxyEvent,
-        pathParameters: { reportType: "PASRR", state: "CO", id: "foo" },
+        pathParameters: {
+          reportType: "PASRR",
+          state: "CO",
+          id: "mock-report-id",
+        },
       };
       const result = parseReportParameters(event)!;
       expect(result).toBeDefined();
       expect(result.reportType).toBe("PASRR");
       expect(result.state).toBe("CO");
-      expect(result.id).toBe("foo");
+      expect(result.id).toBe("mock-report-id");
     });
 
     test("should return false for invalid report type", () => {
       const event = {
         ...proxyEvent,
-        pathParameters: { reportType: "XX", state: "CO", id: "foo" },
+        pathParameters: { reportType: "XX", state: "CO", id: "mock-report-id" },
       };
       const result = parseReportParameters(event);
       expect(result).toBeUndefined();
@@ -138,7 +142,11 @@ describe("Path parameter parsing", () => {
     test("should return false for invalid state", () => {
       const event = {
         ...proxyEvent,
-        pathParameters: { reportType: "PASRR", state: "XX", id: "foo" },
+        pathParameters: {
+          reportType: "PASRR",
+          state: "XX",
+          id: "mock-report-id",
+        },
       };
       const result = parseReportParameters(event);
       expect(result).toBeUndefined();
@@ -158,11 +166,11 @@ describe("Path parameter parsing", () => {
     test("should validate zip id exists", () => {
       const event = {
         ...proxyEvent,
-        pathParameters: { id: "foo" },
+        pathParameters: { id: "mock-report-id" },
       };
       const result = parseZipIdParameters(event)!;
       expect(result).toBeDefined();
-      expect(result.id).toBe("foo");
+      expect(result.id).toBe("mock-report-id");
     });
 
     test("should return false for missing report ID", () => {

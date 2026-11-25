@@ -13,7 +13,7 @@ const mockDynamo = mockClient(DynamoDBDocumentClient);
 const mockComment = {
   contextId: "mockContextId",
   created: 123456,
-  id: "mockId",
+  id: "mock_commentId",
   author: "Mock Author",
   authorEmail: "mockEmail",
   isInternal: false,

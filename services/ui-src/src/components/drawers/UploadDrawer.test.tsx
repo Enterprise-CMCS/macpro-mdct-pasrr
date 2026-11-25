@@ -14,11 +14,13 @@ vi.mock("utils/api/requestMethods/fileMethods", async (importOriginal) => ({
   recordFileInDatabaseAndGetUploadUrl: vi
     .fn()
     .mockReturnValue({ presignedUploadUrl: "", fileId: "" }),
-  getUploadedFiles: vi
-    .fn()
-    .mockReturnValue([
-      { filename: "mock-name", fileSize: 100, fileId: "mock-id" },
-    ]),
+  getUploadedFiles: vi.fn().mockReturnValue([
+    {
+      filename: "mock-file-id.pdf",
+      fileSize: 100,
+      fileId: "mockKsuId_mock-file-id.pdf",
+    },
+  ]),
 }));
 
 vi.mock("utils", async (importOriginal) => ({
@@ -32,7 +34,9 @@ vi.mock("utils", async (importOriginal) => ({
   }),
 }));
 
-const mockPng = new File(["0xMockPngData"], "bar.png", { type: "image/png" });
+const mockPng = new File(["0xMockPngData"], "mock-file-id.png", {
+  type: "image/png",
+});
 
 const modalComponent = (
   <UploadDrawer

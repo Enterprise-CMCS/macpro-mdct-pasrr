@@ -14,8 +14,11 @@ import {
   Box,
   Button,
   Image,
+  TableCaption,
+  VisuallyHidden,
+  Tfoot,
 } from "@chakra-ui/react";
-import { JSX } from "react";
+import { Fragment, JSX } from "react";
 import sortIcon from "assets/icons/sort/icon_sort.svg";
 import sortAscIcon from "assets/icons/sort/icon_sort_asc.svg";
 import sortDescIcon from "assets/icons/sort/icon_sort_desc.svg";
@@ -63,13 +66,25 @@ const ariaSortType = (type: SORT_TYPE) => {
   }
 };
 
-const HorizontalTable = (
-  headers: { label: string; sortable?: boolean }[],
-  rows: TableRowType[][],
-  sorting: (header: string, type: SORT_TYPE) => void,
-  variant: string,
-  styleOverride?: string[]
-) => {
+const HorizontalTable = ({
+  caption,
+  footers = [],
+  headers,
+  ref,
+  rows,
+  sorting,
+  styleOverride,
+  variant = "",
+}: {
+  caption?: string;
+  headers: { label: string; sortable?: boolean }[];
+  rows: TableRowType[][];
+  footers?: TableRowType[][];
+  ref?: React.Ref<HTMLTableElement>;
+  sorting: (header: string, type: SORT_TYPE) => void;
+  styleOverride?: string[];
+  variant?: string;
+}) => {
   const onSort = (sortName: string) => {
     const type =
       sortName === sort.label ? setNextSort(sort.type) : SORT_TYPE.DESCENDING;
@@ -78,7 +93,12 @@ const HorizontalTable = (
   };
 
   return (
-    <Table variant={variant}>
+    <Table variant={variant} ref={ref}>
+      {caption && (
+        <TableCaption height="0" margin="0" padding="0" placement="top">
+          <VisuallyHidden>{caption}</VisuallyHidden>
+        </TableCaption>
+      )}
       <Thead>
         <Tr>
           {headers.map((item) => (
@@ -115,65 +135,162 @@ const HorizontalTable = (
       <Tbody>
         {rows.map((column: TableRowType[], rowIndex) => (
           <Tr
-            key={`row-${rowIndex}`}
+            key={`horizontal-table-body-row-${rowIndex}`}
             className={styleOverride?.[rowIndex] ?? ""}
+            data-table-row-index={rowIndex}
           >
             {column.map((data, dataIndex) => (
-              <Td key={`data-${rowIndex}-${dataIndex}`}>{data}</Td>
+              <Td key={`horizontal-table-body-data-${rowIndex}-${dataIndex}`}>
+                {data}
+              </Td>
             ))}
           </Tr>
         ))}
       </Tbody>
+      {footers.length > 0 && (
+        <Tfoot>
+          {footers.map((column: TableRowType[], rowIndex) => (
+            <Tr
+              key={`horizontal-table-foot-row-${rowIndex}`}
+              className={styleOverride?.[rowIndex] ?? ""}
+            >
+              {column.map((data, dataIndex) => (
+                <Td key={`horizontal-table-foot-data-${rowIndex}-${dataIndex}`}>
+                  {data}
+                </Td>
+              ))}
+            </Tr>
+          ))}
+        </Tfoot>
+      )}
     </Table>
   );
 };
 
-const VerticalTable = (headers: string[], rows: TableRowType[][]) => {
+const VerticalTable = ({
+  footers = [],
+  headers,
+  rows,
+  ref,
+}: {
+  footers?: TableRowType[][];
+  headers: string[];
+  rows: TableRowType[][];
+  ref?: React.Ref<HTMLDivElement>;
+}) => {
   return (
-    <VStack gap="1.5rem" alignItems="flex-start">
+    <VStack alignItems="flex-start" gap="spacer3" ref={ref}>
       <Divider />
-      {rows.map((row) => (
-        <>
+      {rows.map((row, rowIndex) => (
+        <Fragment key={`vertical-table-body-row-${rowIndex}`}>
           {row
             .map((data, dataIndex) => {
               return data ? (
                 <Grid
+                  data-table-row-index={rowIndex}
+                  key={`vertical-table-body-data-${rowIndex}-${dataIndex}`}
                   templateColumns="minmax(0, 40vw) minmax(0, 1fr) "
-                  gap="1.5rem"
+                  gap="spacer3"
                 >
-                  <Text fontSize="1rem" color="#71767a" fontWeight="bold">
+                  <Text fontSize="body_md" color="gray" fontWeight="bold">
                     {headers[dataIndex]}
                   </Text>
-                  <Box fontSize={{ base: "14px", sm: "16px" }}>{data}</Box>
+                  <Box
+                    fontSize={{ base: "body_sm", sm: "body_md" }}
+                    sx={sx.labelSrOnly}
+                  >
+                    {data}
+                  </Box>
                 </Grid>
               ) : undefined;
             })
             .filter(Boolean)}
           <Divider></Divider>
-        </>
+        </Fragment>
+      ))}
+      {footers.map((row, rowIndex) => (
+        <Fragment key={`vertical-table-foot-row-${rowIndex}`}>
+          {row
+            .map((data, dataIndex) => {
+              return data ? (
+                <Grid
+                  key={`vertical-table-foot-data-${rowIndex}-${dataIndex}`}
+                  templateColumns="minmax(0, 40vw) minmax(0, 1fr) "
+                  gap="spacer3"
+                >
+                  <Text fontSize="md" color="gray" fontWeight="bold">
+                    {headers[dataIndex]}
+                  </Text>
+                  <Box fontSize={{ base: "body_sm", sm: "body_md" }}>
+                    {data}
+                  </Box>
+                </Grid>
+              ) : undefined;
+            })
+            .filter(Boolean)}
+          <Divider></Divider>
+        </Fragment>
       ))}
     </VStack>
   );
 };
 
-export const ResponsiveTable = (
-  headers: { label: string; sortable?: boolean }[],
-  rows: TableRowType[][],
-  variant?: string,
-  sorting: (header: string, type: SORT_TYPE) => void = () => {},
-  styleOverride?: string[]
-) => {
+export const ResponsiveTable = ({
+  caption,
+  footers = [],
+  headers,
+  ref,
+  rows,
+  sorting = () => {},
+  styleOverride,
+  variant,
+}: {
+  caption?: string;
+  footers?: TableRowType[][];
+  headers: { label: string; sortable?: boolean }[];
+  ref?: React.Ref<HTMLTableElement>;
+  rows: TableRowType[][];
+  sorting?: (header: string, type: SORT_TYPE) => void;
+  styleOverride?: string[];
+  variant?: string;
+}) => {
   return (
     <>
       <Hide below="md" key="table">
-        {HorizontalTable(headers, rows, sorting, variant ?? "", styleOverride)}
+        {HorizontalTable({
+          caption,
+          footers,
+          headers,
+          ref,
+          rows,
+          sorting,
+          styleOverride,
+          variant,
+        })}
       </Hide>
       <Show below="md" key="table-mobile">
-        {VerticalTable(
-          headers.map((header) => header.label),
-          rows
-        )}
+        {VerticalTable({
+          footers,
+          headers: headers.map((header) => header.label),
+          ref,
+          rows,
+        })}
       </Show>
     </>
   );
+};
+
+const sx = {
+  labelSrOnly: {
+    ".ds-c-label": {
+      border: 0,
+      clip: "rect(0 0 0 0)",
+      height: "1px",
+      margin: "-1px",
+      overflow: "hidden",
+      padding: 0,
+      position: "absolute",
+      width: "1px",
+    },
+  },
 };

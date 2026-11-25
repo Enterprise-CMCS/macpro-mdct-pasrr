@@ -27,6 +27,8 @@ import {
   ListInput,
   AccordionGroup,
   ActionTable,
+  FieldGroup,
+  SummationTable,
 } from "components";
 import { useStore } from "utils";
 import { SubmissionParagraph } from "./SubmissionParagraph";
@@ -112,6 +114,10 @@ export const Page = ({ id, setElements, elements }: Props) => {
         return <ActionTable {...{ updateElement, disabled, element }} />;
       case ElementType.RequestFeedbackButton:
         return <RequestFeedbackButton />;
+      case ElementType.FieldGroup:
+        return <FieldGroup {...{ updateElement, element }} />;
+      case ElementType.SummationTable:
+        return <SummationTable {...{ updateElement, disabled, element }} />;
       default:
         assertExhaustive(element);
         return null;
@@ -124,7 +130,7 @@ export const Page = ({ id, setElements, elements }: Props) => {
   });
 
   return (
-    <VStack alignItems="flex-start" gap="spacer4">
+    <VStack alignItems="flex-start" gap="spacer3">
       {composedElements}
     </VStack>
   );

@@ -13,19 +13,19 @@ mockedUseStore.mockReturnValue(mockUseStore);
 
 const reports = [
   {
-    id: "abc",
+    id: "mock-report-id",
     name: "report 1",
     submissionCount: 0,
     status: ReportStatus.IN_PROGRESS,
   },
   {
-    id: "xyz",
+    id: "mock-report-id-2",
     name: "report 2",
     submissionCount: 0,
     status: ReportStatus.SUBMITTED,
   },
   {
-    id: "123",
+    id: "mock-report-id-3",
     name: "report 3",
     submissionCount: 1,
     status: ReportStatus.IN_PROGRESS,
@@ -42,7 +42,7 @@ describe("Dashboard table with state user", () => {
   beforeEach(() => vi.clearAllMocks());
   test("should render report name and edit button in table", async () => {
     render(dashboardTableComponent);
-    expect(screen.getByText("report 1")).toBeVisible();
+    expect(screen.getByRole("rowheader", { name: "report 1" })).toBeVisible();
   });
   test("should render In revision text for a returned report", async () => {
     render(dashboardTableComponent);

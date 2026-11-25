@@ -14,6 +14,7 @@ import {
   buildState,
   mergeAnswers,
   setPage,
+  flattenPageIds,
   saveReport,
   deepEquals,
   deepMerge,
@@ -27,20 +28,21 @@ const testReport: Report = {
   type: ReportType.PASRR,
   name: "plan id",
   state: "NJ",
-  id: "NJPASRR123",
+  id: "mock-report-id",
   status: ReportStatus.NOT_STARTED,
   created: 1776449695077,
   subType: PasrrSubType.ANNUAL,
   subTypeKey: "A1",
   budgetPeriod: 1,
+  reportingYear: 2026,
   submissionCount: 0,
   pages: [
     {
       id: "root",
-      childPageIds: ["general-info", "mock-report-page"],
+      childPageIds: ["general-information", "mock-page-id"],
     },
     {
-      id: "general-info",
+      id: "general-information",
       title: "General Information",
       type: PageType.Standard,
       status: PageStatus.NOT_STARTED,
@@ -48,12 +50,12 @@ const testReport: Report = {
       elements: [
         {
           type: ElementType.Header,
-          id: "",
+          id: "mock_headerId",
           text: "General Information",
         },
         {
           type: ElementType.Textbox,
-          id: "",
+          id: "mock_textboxId",
           label: "Contact title",
           required: true,
           helperText:
@@ -62,19 +64,19 @@ const testReport: Report = {
       ],
     },
     {
-      id: "mock-report-page",
+      id: "mock-page-id",
       title: "Mock Report Page",
       type: PageType.Standard,
       sidebar: true,
       elements: [
         {
           type: ElementType.Header,
-          id: "",
+          id: "mock_headerId",
           text: "Mock Report Page",
         },
         {
           type: ElementType.Textbox,
-          id: "mock-textbox-id",
+          id: "mock_textboxId",
           label: "Contact title",
           required: true,
           helperText:
@@ -90,11 +92,11 @@ describe("reportActions", () => {
   describe("state/management/reportState: buildState", () => {
     test("initializes relevant parts of the state", () => {
       const result = buildState(testReport, false);
-      expect(result.pageMap!.size).toEqual(3);
+      expect(result.pageMap!.size).toBe(3);
       expect(result.report).not.toBeUndefined();
       expect(result.rootPage).not.toBeUndefined();
-      expect(result.parentPage?.parent).toEqual("root");
-      expect(result.currentPageId).toEqual("general-info");
+      expect(result.parentPage?.parent).toBe("root");
+      expect(result.currentPageId).toBe("general-information");
     });
 
     test("returns early when no report provided", () => {
@@ -106,8 +108,119 @@ describe("reportActions", () => {
   describe("state/management/reportState: setPage", () => {
     test("updates the page info", () => {
       const state = buildState(testReport, false) as ReportState;
-      const result = setPage("mock-report-page", state);
-      expect(result.currentPageId).toEqual("mock-report-page");
+      const result = setPage("mock-page-id", state);
+      expect(result.currentPageId).toBe("mock-page-id");
+    });
+  });
+
+  describe("nested pages", () => {
+    const nestedReport = {
+      ...testReport,
+      pages: [
+        {
+          id: "root",
+          childPageIds: [
+            "mock-page-id-a",
+            "mock-parent-page-id-b",
+            "mock-page-id-c",
+            "mock-parent-page-id-d",
+          ],
+        },
+        {
+          id: "mock-page-id-a",
+          title: "A",
+          type: PageType.Standard,
+          elements: [],
+        },
+        {
+          id: "mock-parent-page-id-b",
+          title: "B",
+          type: PageType.Standard,
+          elements: [],
+          childPageIds: ["mock-child-page-id-b-1", "mock-child-page-id-b-2"],
+        },
+        {
+          id: "mock-child-page-id-b-1",
+          title: "B1",
+          type: PageType.Standard,
+          elements: [],
+        },
+        {
+          id: "mock-child-page-id-b-2",
+          title: "B2",
+          type: PageType.Standard,
+          elements: [],
+        },
+        {
+          id: "mock-page-id-c",
+          title: "C",
+          type: PageType.Standard,
+          elements: [],
+        },
+        {
+          id: "mock-parent-page-id-d",
+          title: "D",
+          childPageIds: ["mock-child-page-id-d-1"],
+        },
+        {
+          id: "mock-child-page-id-d-1",
+          title: "D1",
+          type: PageType.Standard,
+          elements: [],
+        },
+      ],
+    } as Report;
+    // "mock-parent-page-id-d" is a parent-only page, so navigation goes straight to its child
+    const expectedOrder = [
+      "mock-page-id-a",
+      "mock-parent-page-id-b",
+      "mock-child-page-id-b-1",
+      "mock-child-page-id-b-2",
+      "mock-page-id-c",
+      "mock-child-page-id-d-1",
+    ];
+
+    test("flattenPageIds lists children right after their parent", () => {
+      const pageMap = new Map(nestedReport.pages.map((pg, i) => [pg.id, i]));
+      expect(
+        flattenPageIds(nestedReport, pageMap, [
+          "mock-page-id-a",
+          "mock-parent-page-id-b",
+          "mock-page-id-c",
+          "mock-parent-page-id-d",
+        ])
+      ).toEqual(expectedOrder);
+    });
+
+    test("buildState uses the flattened order for navigation", () => {
+      const state = buildState(nestedReport, false) as ReportState;
+      expect(state.parentPage?.childPageIds).toEqual(expectedOrder);
+      expect(state.currentPageId).toBe("mock-page-id-a");
+    });
+
+    test("setPage on a child page points Continue at the next page in order", () => {
+      const state = buildState(nestedReport, false) as ReportState;
+      const { parentPage } = setPage("mock-child-page-id-b-2", state);
+      expect(parentPage?.index).toBe(3);
+      expect(parentPage?.childPageIds[parentPage.index + 1]).toBe(
+        "mock-page-id-c"
+      );
+    });
+
+    test("Continue from the last child of one section lands on the first child of the next parent-only section", () => {
+      const state = buildState(nestedReport, false) as ReportState;
+      const { parentPage } = setPage("mock-page-id-c", state);
+      expect(parentPage?.childPageIds[parentPage.index + 1]).toBe(
+        "mock-child-page-id-d-1"
+      );
+    });
+
+    test("setPage on a parent page continues into its first child", () => {
+      const state = buildState(nestedReport, false) as ReportState;
+      const { parentPage } = setPage("mock-parent-page-id-b", state);
+      expect(parentPage?.childPageIds[parentPage.index + 1]).toBe(
+        "mock-child-page-id-b-1"
+      );
     });
   });
 
@@ -216,8 +329,8 @@ describe("reportActions", () => {
       const page = result?.report?.pages[1] as FormPageTemplate;
       const elements = page?.elements;
       const question = elements[1] as TextboxTemplate;
-      expect(page.status).toEqual(PageStatus.IN_PROGRESS);
-      expect(question.answer).toEqual("ANSWERED");
+      expect(page.status).toBe(PageStatus.IN_PROGRESS);
+      expect(question.answer).toBe("ANSWERED");
     });
   });
 
@@ -236,8 +349,8 @@ describe("reportActions", () => {
 
       setAnswerInElement(
         testReport,
-        "mock-report-page",
-        "mock-textbox-id",
+        "mock-page-id",
+        "mock_textboxId",
         mockGetAnswer,
         mockSetAnswer
       );

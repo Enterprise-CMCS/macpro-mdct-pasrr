@@ -3,7 +3,7 @@ export const ErrorMessages = {
   mustBeADate: "Response must be a date in MMDDYYYY format",
   mustBeADateOptional:
     "If provided, response must be a date in MMDDYYYY format",
-  mustBeANumber: "Response must be a number",
+  mustBeANumber: "Response must be a valid number",
   requiredResponse: "A response is required",
   mustBeAnEmail: "Response must be a valid email address",
   denominatorZero: (
@@ -25,6 +25,13 @@ export const autoPopulatedText = "Auto-populates from previous response";
 export const autoCalculatesText = "Auto-calculates from previous response";
 
 export const HELP_DESK_EMAIL_ADDRESS = "mdct_help@cms.hhs.gov" as const;
+
+export const PASRR_OVERVIEW_URL =
+  "https://www.medicaid.gov/medicaid/long-term-services-supports/institutional-long-term-care/preadmission-screening-and-resident-review";
+
+export const VISITED_LINKS_STORAGE_KEY = "mdctpasrr_visited_links";
+
+export const externalLinkAltText = "(Opens in a new tab)";
 
 // TIMEOUT PARAMS
 export const IDLE_WINDOW = 30 * 60 * 1000; // ms

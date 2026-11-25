@@ -4,6 +4,8 @@ import { notAnsweredText } from "../../constants";
 import { ActionTableExport } from "components/fields/ActionTable";
 import { parseHtml } from "utils";
 import { AttachmentAreaExport } from "components/fields/AttachmentArea";
+import { FieldGroupExport } from "components/fields/FieldGroup";
+import { SummationTableExport } from "components/fields/SummationTable";
 
 // TODO: add PASRR-specific paragraph ids that should render in exports once
 // the PASRR report schema is defined.
@@ -25,11 +27,18 @@ const renderElementList = [
   ElementType.SubHeader,
   ElementType.Paragraph,
   ElementType.ActionTable,
+  ElementType.FieldGroup,
+  ElementType.SummationTable,
 ];
 
 export const shouldUseTable = (type: ElementType) => {
   return tableElementList.includes(type);
 };
+
+// A list with no non-blank entries has not been answered.
+export const isUnansweredList = (element: PageElement) =>
+  element.type === ElementType.ListInput &&
+  !element.answer?.some((item) => item.trim());
 
 export const renderElements = (element: PageElement) => {
   const { type } = element;
@@ -52,7 +61,13 @@ export const renderElements = (element: PageElement) => {
       return ActionTableExport(element);
     case ElementType.AccordionGroup:
       return "";
+    case ElementType.FieldGroup:
+      return FieldGroupExport(element);
+    case ElementType.SummationTable:
+      return SummationTableExport(element);
   }
+
+  if (isUnansweredList(element)) return notAnsweredText;
 
   if (!("answer" in element)) {
     return notAnsweredText;

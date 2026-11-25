@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Modal } from "components";
-import { Spinner, Flex } from "@chakra-ui/react";
+import { Spinner, Flex, Text } from "@chakra-ui/react";
 import {
   createReport,
   getReportsForState,
@@ -15,7 +15,9 @@ import {
 import { useStore } from "utils";
 
 const verbiage = {
-  addReportHeader: "Add New PASRR Report",
+  addReportHeader: "Create a PASRR Report",
+  reportingYearHint: (reportingYear: number) =>
+    `You’re creating the annual PASRR report for reporting year ${reportingYear}. The reporting year covers all data collected from January 1 to December 31, ${reportingYear}. This action cannot be undone.`,
   copyReportHeader: (latestReport: LiteReport) => {
     const latestReportSubType = latestReport.subTypeKey;
     const latest = PasrrSubTypeMap[latestReportSubType];
@@ -43,6 +45,14 @@ export const CreateReportModal = ({
 
   const { devDate } = useStore();
 
+  // Dev tools store the date as an epoch-millisecond string
+  const parsedDevDate =
+    devDate && /^\d+$/.test(devDate) ? Number(devDate) : devDate;
+  const currentYear = (
+    parsedDevDate ? new Date(parsedDevDate) : new Date()
+  ).getFullYear();
+  const reportingYear = currentYear - 1;
+
   useEffect(() => {
     (async () => {
       const reports = await getReportsForState(reportType, activeState);
@@ -64,6 +74,7 @@ export const CreateReportModal = ({
 
     const reportOptions: CreateReportOptions = {
       mockDate: devDate,
+      reportingYear,
     };
 
     try {
@@ -91,7 +102,7 @@ export const CreateReportModal = ({
       content={{
         heading: `${!latestReport ? verbiage.addReportHeader : verbiage.copyReportHeader(latestReport)}`,
         subheading: `${!latestReport ? "" : verbiage.copyReportSubheader}`,
-        actionButtonText: submitting ? <Spinner size="md" /> : "Save",
+        actionButtonText: submitting ? <Spinner size="md" /> : "Create",
         closeButtonText: "Cancel",
       }}
       disableConfirm={submitting}
@@ -103,6 +114,7 @@ export const CreateReportModal = ({
             {errorAlert}
           </Alert>
         ) : null}
+        <Text>{verbiage.reportingYearHint(reportingYear)}</Text>
       </Flex>
     </Modal>
   );

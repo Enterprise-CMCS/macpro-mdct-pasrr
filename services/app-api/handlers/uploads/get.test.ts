@@ -62,16 +62,16 @@ const mockGetUploadEvent: APIGatewayProxyEvent = {
   pathParameters: {
     state: "PA",
     reportType: "PASRR",
-    id: "mock-id",
-    fileId: "mock-id_test.pdf",
+    id: "mock-report-id",
+    fileId: "mockKsuId_mock-file-id.pdf",
   },
   headers: { "cognito-identity-id": "test" },
 };
 
 const mockUploadDocument = {
   uploadedState: "PA",
-  filename: "test.pdf",
-  fileId: "mock-id_test.pdf",
+  filename: "mock-file-id.pdf",
+  fileId: "mockKsuId_mock-file-id.pdf",
 };
 
 describe("Test get API methods", () => {
@@ -111,10 +111,10 @@ describe("Test get API methods", () => {
   });
 
   test("getUploadsByFileId returns presigned url when pdf content matches filename and fileId", async () => {
-    const fileId = "3GaXnRN9MXXW7TJebIzJu8ccwWe_report.pdf";
+    const fileId = "mockKsuId_mock-file-id.pdf";
     const uploadDocument = {
       uploadedState: "PA",
-      filename: "report.pdf",
+      filename: "mock-file-id.pdf",
       fileId,
     };
     const event: APIGatewayProxyEvent = {
@@ -132,12 +132,12 @@ describe("Test get API methods", () => {
     expect(res.statusCode).toBe(StatusCodes.Ok);
     expect(queryUpload).toHaveBeenCalledWith(fileId, "PA");
     expect(mockGetObject).toHaveBeenCalledWith({
-      Key: "PASRR/PA/mock-id/3GaXnRN9MXXW7TJebIzJu8ccwWe_report.pdf",
+      Key: "PASRR/PA/mock-report-id/mockKsuId_mock-file-id.pdf",
       Range: "bytes=0-4100",
     });
     expect(mockGetSignedDownloadUrl).toHaveBeenCalledWith({
-      Key: "PASRR/PA/mock-id/3GaXnRN9MXXW7TJebIzJu8ccwWe_report.pdf",
-      ResponseContentDisposition: "attachment; filename = report.pdf",
+      Key: "PASRR/PA/mock-report-id/mockKsuId_mock-file-id.pdf",
+      ResponseContentDisposition: "attachment; filename = mock-file-id.pdf",
     });
     expect(JSON.parse(res.body as string)).toEqual({
       psurl: "https://awstest.com/presigned",
@@ -149,8 +149,8 @@ describe("Test get API methods", () => {
       Items: [
         {
           ...mockUploadDocument,
-          filename: "test.png",
-          fileId: "mock-id_test.png",
+          filename: "mock-file-id.png",
+          fileId: "mockKsuId_mock-file-id.png",
         },
       ],
     });

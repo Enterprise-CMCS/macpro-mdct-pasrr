@@ -15,7 +15,7 @@ vi.mock("../../utils/authorization", () => ({
 
 vi.mock("../../utils/authentication");
 const mockAuthenticatedUser = vi.mocked(authenticatedUser);
-mockAuthenticatedUser.mockReturnValue({
+mockAuthenticatedUser.mockResolvedValue({
   role: UserRoles.STATE_USER,
   state: "PA",
   fullName: "Mock User",
@@ -31,7 +31,7 @@ const mockSendEmail = vi.mocked(sendEmail);
 const mockComment = {
   contextId: "mockContextId",
   created: 123456,
-  id: "mockId",
+  id: "mock_commentId",
   author: "Mock User",
   authorEmail: "mockuser@example.com",
   isInternal: false,

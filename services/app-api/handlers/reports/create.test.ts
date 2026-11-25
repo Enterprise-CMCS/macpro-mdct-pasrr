@@ -20,7 +20,7 @@ vi.mock("../../utils/authorization", () => ({
 }));
 
 vi.mock("../../utils/reports/buildReport", () => ({
-  buildReport: vi.fn().mockReturnValue({ id: "A report" }),
+  buildReport: vi.fn().mockReturnValue({ id: "mock-report-id" }),
 }));
 
 vi.mock("../../storage/reports", () => ({
@@ -36,7 +36,7 @@ const testEvent = {
   queryStringParameters: {},
   pathParameters: { reportType: "PASRR", state: "PA" },
   headers: { "cognito-identity-id": "test" },
-  body: JSON.stringify({}),
+  body: JSON.stringify({ reportingYear: 2026 }),
 };
 
 describe("Test create report handler", () => {
@@ -79,7 +79,7 @@ describe("Test create report handler", () => {
   test("Test cannot create next report if previous report is not submitted", async () => {
     (queryReportsForState as Mock).mockReturnValueOnce([
       {
-        id: "123",
+        id: "mock-report-id",
         subType: PasrrSubType.ANNUAL,
         subTypeKey: "A1",
         status: ReportStatus.IN_PROGRESS,
@@ -100,7 +100,7 @@ describe("Test create report handler", () => {
   test("Test cannot create report after Final report", async () => {
     (queryReportsForState as Mock).mockReturnValueOnce([
       {
-        id: "123",
+        id: "mock-report-id",
         subType: PasrrSubType.FINAL,
         subTypeKey: "A1",
         status: ReportStatus.SUBMITTED,
@@ -124,7 +124,7 @@ describe("Test create report handler", () => {
     vi.setSystemTime(date);
     (queryReportsForState as Mock).mockReturnValueOnce([
       {
-        id: "123",
+        id: "mock-report-id",
         subType: PasrrSubType.ANNUAL,
         subTypeKey: "A1",
         status: ReportStatus.SUBMITTED,
@@ -146,7 +146,7 @@ describe("Test create report handler", () => {
     vi.setSystemTime(date);
     (queryReportsForState as Mock).mockReturnValueOnce([
       {
-        id: "123",
+        id: "mock-report-id",
         subType: PasrrSubType.ANNUAL,
         subTypeKey: "A1",
         status: ReportStatus.SUBMITTED,

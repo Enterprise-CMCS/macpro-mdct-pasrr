@@ -24,9 +24,15 @@ const mockReport = {
   id: "mock-report-id",
   state: "CO",
   pages: [
-    { id: "root", childPageIds: ["pageA", "pageB"] },
-    { id: "pageA", elements: [{ type: ElementType.Header, text: "Page A" }] },
-    { id: "pageB", elements: [{ type: ElementType.Header, text: "Page B" }] },
+    { id: "root", childPageIds: ["mock-page-id", "mock-page-id-2"] },
+    {
+      id: "mock-page-id",
+      elements: [{ type: ElementType.Header, text: "Page A" }],
+    },
+    {
+      id: "mock-page-id-2",
+      elements: [{ type: ElementType.Header, text: "Page B" }],
+    },
   ],
 } as Report;
 
@@ -48,39 +54,45 @@ const mockStoredReport = [
     sortKey: "mock-report-id",
     pages: [
       "mock-report-id#root",
-      "mock-report-id#pageA",
-      "mock-report-id#pageB",
+      "mock-report-id#mock-page-id",
+      "mock-report-id#mock-page-id-2",
     ],
   },
   {
     id: "root",
-    childPageIds: ["pageA", "pageB"],
+    childPageIds: ["mock-page-id", "mock-page-id-2"],
     pKey: "PASRR#CO",
     sortKey: "mock-report-id#root",
   },
   {
-    id: "pageA",
+    id: "mock-page-id",
     elements: [{ type: ElementType.Header, text: "Page A" }],
     pKey: "PASRR#CO",
-    sortKey: "mock-report-id#pageA",
+    sortKey: "mock-report-id#mock-page-id",
   },
   {
-    id: "pageB",
+    id: "mock-page-id-2",
     elements: [{ type: ElementType.Header, text: "Page B" }],
     pKey: "PASRR#CO",
-    sortKey: "mock-report-id#pageB",
+    sortKey: "mock-report-id#mock-page-id-2",
   },
 ];
 
 const mockReport2 = {
   type: "PASRR",
   subTypeKey: "Q1",
-  id: "mock-report-id2",
+  id: "mock-report-id-2",
   state: "PA",
   pages: [
-    { id: "root", childPageIds: ["pageA", "pageB"] },
-    { id: "pageA", elements: [{ type: ElementType.Header, text: "Page A" }] },
-    { id: "pageB", elements: [{ type: ElementType.Header, text: "Page B" }] },
+    { id: "root", childPageIds: ["mock-page-id", "mock-page-id-2"] },
+    {
+      id: "mock-page-id",
+      elements: [{ type: ElementType.Header, text: "Page A" }],
+    },
+    {
+      id: "mock-page-id-2",
+      elements: [{ type: ElementType.Header, text: "Page B" }],
+    },
   ],
 } as Report;
 
@@ -88,33 +100,33 @@ const mockStoredReport2 = [
   {
     type: "PASRR",
     subTypeKey: "Q1",
-    id: "mock-report-id2",
+    id: "mock-report-id-2",
     state: "PA",
     pKey: "PASRR#PA",
-    sortKey: "mock-report-id2",
+    sortKey: "mock-report-id-2",
     pages: [
-      "mock-report-id2#root",
-      "mock-report-id2#pageA",
-      "mock-report-id2#pageB",
+      "mock-report-id-2#root",
+      "mock-report-id-2#mock-page-id",
+      "mock-report-id-2#mock-page-id-2",
     ],
   },
   {
     id: "root",
-    childPageIds: ["pageA", "pageB"],
+    childPageIds: ["mock-page-id", "mock-page-id-2"],
     pKey: "PASRR#PA",
-    sortKey: "mock-report-id2#root",
+    sortKey: "mock-report-id-2#root",
   },
   {
-    id: "pageA",
+    id: "mock-page-id",
     elements: [{ type: ElementType.Header, text: "Page A" }],
     pKey: "PASRR#PA",
-    sortKey: "mock-report-id2#pageA",
+    sortKey: "mock-report-id-2#mock-page-id",
   },
   {
-    id: "pageB",
+    id: "mock-page-id-2",
     elements: [{ type: ElementType.Header, text: "Page B" }],
     pKey: "PASRR#PA",
-    sortKey: "mock-report-id2#pageB",
+    sortKey: "mock-report-id-2#mock-page-id-2",
   },
 ];
 
@@ -206,12 +218,18 @@ describe("Report storage helpers", () => {
               },
               {
                 DeleteRequest: {
-                  Key: { pKey: "PASRR#CO", sortKey: "mock-report-id#pageA" },
+                  Key: {
+                    pKey: "PASRR#CO",
+                    sortKey: "mock-report-id#mock-page-id",
+                  },
                 },
               },
               {
                 DeleteRequest: {
-                  Key: { pKey: "PASRR#CO", sortKey: "mock-report-id#pageB" },
+                  Key: {
+                    pKey: "PASRR#CO",
+                    sortKey: "mock-report-id#mock-page-id-2",
+                  },
                 },
               },
             ],

@@ -44,15 +44,15 @@ export const TextField = (
 
   const textboxValidations = (value: string) => [
     {
-      match: textbox.id.includes("email") && !isEmail(value),
+      match: textbox.id.toLowerCase().includes("email") && !isEmail(value),
       message: ErrorMessages.mustBeAnEmail,
     },
     {
-      match: textbox.id.includes("phone") && !isPhone(value),
+      match: textbox.id.toLowerCase().includes("phone") && !isPhone(value),
       message: ErrorMessages.mustBeAPhone,
     },
     {
-      match: textbox.id.includes("zipcode") && !isZipCode(value),
+      match: textbox.id.toLowerCase().includes("zipcode") && !isZipCode(value),
       message: ErrorMessages.mustBeAZipCode,
     },
   ];
@@ -163,8 +163,31 @@ export const TextField = (
     return null;
   }
 
+  const getWidth = (id: string) => {
+    if (
+      id.toLowerCase().includes("phone") ||
+      id.toLowerCase().includes("zipcode")
+    ) {
+      return "14.5rem";
+    }
+
+    return "100%";
+  };
+
+  const sxOverride = {
+    container: {
+      ".ds-c-field": {
+        width: getWidth(textbox.id),
+      },
+    },
+  };
+
   return (
-    <Box width="100%">
+    <Box
+      className={textbox.fullWidth ? "full-width" : ""}
+      width="100%"
+      sx={sxOverride.container}
+    >
       <CmsdsTextField
         name={textbox.id}
         label={optionalTag(textbox)}

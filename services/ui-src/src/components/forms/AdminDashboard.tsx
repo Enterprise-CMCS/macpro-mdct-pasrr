@@ -11,24 +11,20 @@ import {
   Image,
   Box,
   Text,
+  UnorderedList,
+  ListItem,
 } from "@chakra-ui/react";
+import { Dropdown as CmsdsDropdownField } from "@cmsgov/design-system";
 import {
-  Dropdown as CmsdsDropdownField,
-  Dropdown,
-} from "@cmsgov/design-system";
-import {
-  AlertTypes,
-  dropdownEmptyOption,
   Report,
   ReportType,
   StateDropdownOptions,
   StateNames,
   UserRoles,
 } from "@pasrr/shared";
-import { PageTemplate, AccordionItem, Modal, Alert } from "components";
+import { PageTemplate, AccordionItem } from "components";
 import { ResponsiveTable, SORT_TYPE } from "components/tables/ResponsiveTable";
 import {
-  createReport,
   formatMonthDayYear,
   getReportByType,
   reportBasePath,
@@ -36,87 +32,12 @@ import {
 } from "utils";
 import { MultiSelect } from "./Multiselect";
 import closeTag from "assets/icons/close/icon_close_tag.svg";
-import { budgetPeriodFilterOptions } from "./../../constants";
 import { ReportCommentDrawer } from "components/drawers/ReportCommentDrawer";
 import { getStatus } from "utils/other/status";
 import { getAssignedStatesByEmail } from "utils/api/requestMethods/notificationRecipients";
-import { DropdownOptions } from "types";
 import { useFlags } from "launchdarkly-react-client-sdk";
 import { DevTools, ToolType } from "components/devTools/DevTools";
 
-const AdminCreateReportModal = ({
-  modalDisclosure,
-  reports,
-  reloadReports,
-}: any) => {
-  const [submitting, setSubmitting] = useState(false);
-  const [errorAlert, setErrorAlert] = useState();
-  const [selectedState, setSelectedState] = useState(dropdownEmptyOption.value);
-  const [dropdownOptions, setDropdownOptions] =
-    useState<DropdownOptions[]>(StateDropdownOptions);
-
-  const onClose = () => {
-    setErrorAlert(undefined);
-    setSelectedState(dropdownEmptyOption.value);
-    modalDisclosure.onClose();
-  };
-
-  const onSubmit = async () => {
-    setSubmitting(true);
-
-    try {
-      await createReport(ReportType.PASRR, selectedState);
-      await reloadReports(ReportType.PASRR);
-      onClose();
-    } catch (error: any) {
-      const errorMessage =
-        error.message?.split(" - ").at(-1) || "Unknown error";
-      setErrorAlert(errorMessage);
-    }
-
-    setSubmitting(false);
-  };
-
-  useEffect(() => {
-    const statesAlreadyCreated = reports.map((report: Report) => report.state);
-    const options = StateDropdownOptions.filter(
-      ({ value }) => !statesAlreadyCreated.includes(value)
-    );
-    setDropdownOptions([dropdownEmptyOption, ...options]);
-  }, [modalDisclosure.isOpen]);
-
-  return (
-    <Modal
-      modalDisclosure={{
-        isOpen: modalDisclosure.isOpen,
-        onClose: onClose,
-      }}
-      content={{
-        heading: "Start First Annual Report",
-        subheading:
-          "This will start the first annual report for the state selected below.",
-        actionButtonText: "Start",
-      }}
-      onConfirmHandler={onSubmit}
-      submitting={submitting}
-    >
-      {errorAlert !== undefined && (
-        <Alert status={AlertTypes.ERROR} title="Failed to create report">
-          {errorAlert}
-        </Alert>
-      )}
-      <Dropdown
-        label="State"
-        name="State"
-        onChange={(event) => setSelectedState(event.target.value)}
-        options={dropdownOptions}
-        value={selectedState}
-      />
-    </Modal>
-  );
-};
-
-const budgetPeriodValues = [1, 2, 3, 4, 5];
 const stateAbbr = Object.keys(StateNames);
 
 const getSavedStateFilter = () => {
@@ -124,6 +45,8 @@ const getSavedStateFilter = () => {
   if (!savedFilter) return [];
   return savedFilter.split(",");
 };
+
+const ALL_YEARS = "All";
 
 export const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -133,7 +56,6 @@ export const AdminDashboard = () => {
     (string | number | JSX.Element | undefined)[][]
   >([]);
   const navigate = useNavigate();
-  const [budgetValue, setBudgetValue] = useState("All");
   const [selectedStates, setSelectedStates] = useState<string[]>(
     getSavedStateFilter()
   );
@@ -144,7 +66,7 @@ export const AdminDashboard = () => {
 
   const [commentDrawerOpen, setCommentDrawerOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState<Report>();
-  const [createReportModalOpen, setCreateReportModalOpen] = useState(false);
+  const [reportingYearFilter, setReportingYearFilter] = useState(ALL_YEARS);
   const { email: userEmail, userRole } = useStore().user ?? {};
   const flags = useFlags();
   const userCanStartReport =
@@ -185,11 +107,10 @@ export const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
-    const filterBudgetPeriod =
-      budgetValue == null || budgetValue == "All"
-        ? budgetPeriodValues
-        : [parseInt(budgetValue)];
-
+    const filterReportingYear =
+      reportingYearFilter === ALL_YEARS
+        ? undefined
+        : parseInt(reportingYearFilter);
     const sessionStateFilter = localStorage.getItem("states");
     const filterStates = !sessionStateFilter
       ? stateAbbr
@@ -197,25 +118,41 @@ export const AdminDashboard = () => {
 
     const filtered = reports.filter(
       (report) =>
-        filterBudgetPeriod.includes(report.budgetPeriod) &&
+        (filterReportingYear === undefined ||
+          report.reportingYear === filterReportingYear) &&
         filterStates.includes(report.state)
     );
 
     setSortedReports(filtered);
-  }, [reports, selectedStates, budgetValue]);
+  }, [reports, selectedStates, reportingYearFilter]);
 
   //after reports are filtered, we apply the last saved sort
   useEffect(() => {
     sortRows(lastSorted.sort, lastSorted.type);
   }, [sortedReports]);
 
-  const handleBudgetPeriodChange = (evt: { target: { value: string } }) => {
-    setBudgetValue(evt.target.value);
+  const handleReportingYearChange = (evt: { target: { value: string } }) => {
+    setReportingYearFilter(evt.target.value);
   };
+
+  const reportingYears = [
+    ...new Set(
+      reports
+        .map((report) => report.reportingYear)
+        .filter((year) => typeof year === "number")
+    ),
+  ].toSorted((a, b) => b - a);
+  const reportingYearFilterOptions = [
+    { label: ALL_YEARS, value: ALL_YEARS },
+    ...reportingYears.map((year) => ({
+      label: year.toString(),
+      value: year.toString(),
+    })),
+  ];
 
   const clearFilter = () => {
     setStatesHandler([]);
-    setBudgetValue("All");
+    setReportingYearFilter(ALL_YEARS);
     setSortedReports(reports);
   };
 
@@ -262,7 +199,7 @@ export const AdminDashboard = () => {
       return [
         StateNames[report.state],
         report.name,
-        report.budgetPeriod,
+        report.reportingYear,
         formatMonthDayYear(report.lastEdited!),
         getStatus(report),
         report.submissionCount,
@@ -276,10 +213,10 @@ export const AdminDashboard = () => {
       switch (type) {
         case "State/Territory":
           return StateNames[answer.state] || "";
-        case "Report Name":
+        case "Submission name":
           return answer.name;
-        case "Budget Period":
-          return answer.budgetPeriod;
+        case "Reporting year":
+          return answer.reportingYear;
         case "Last Edited":
           return answer.lastEdited!;
         case "Status":
@@ -325,44 +262,54 @@ export const AdminDashboard = () => {
           defaultIndex={[-1]} // sets the accordion to closed by default
         >
           <AccordionItem label="Admin Instructions">
-            {" "}
             <Box sx={sx.accordionPanel}>
-              <ul>
-                <li>
-                  To view a state or territory's submission, select View Report.
-                </li>
-                <li>
-                  To allow a state or territory to edit a submission, select
-                  Comment/Status and change the status to Unlock.
-                </li>
-                <li>
-                  The # column shows the submission count. This increases by 1
-                  each time a state updates and resubmits a previous report.
-                </li>
-                <li>
-                  To “Accept” a report, select Comment/Status and choose
-                  “Accept” once all the report information has been reviewed and
-                  verified.
-                </li>
-              </ul>
+              <Text fontWeight="bold" marginBottom="spacer1">
+                Reviewing submissions
+              </Text>
+              <UnorderedList spacing="spacer1" marginStart="spacer4">
+                <ListItem>
+                  To view a state or territory’s submission, select “View”.
+                </ListItem>
+                <ListItem>
+                  After you finish your review, update the status to “Completed”
+                  on the dashboard.
+                </ListItem>
+              </UnorderedList>
+              <Text fontWeight="bold" marginBottom="spacer1">
+                Filtering state submissions
+              </Text>
+              <Text marginBottom="spacer1">
+                The table below lists PASRR reports for all states.
+              </Text>
+              <UnorderedList spacing="spacer1" marginStart="spacer4">
+                <ListItem>
+                  Select an option from the “State” or “Reporting year” dropdown
+                  to update the table immediately.
+                </ListItem>
+                <ListItem>
+                  Search and select multiple states to add them to your view, or
+                  select “Clear filters” to reset the table.
+                </ListItem>
+              </UnorderedList>
+              <Text fontWeight="bold" marginBottom="spacer1">
+                Reopening submissions for revision
+              </Text>
+              <UnorderedList spacing="spacer1" marginStart="spacer4">
+                <ListItem>
+                  To allow a state or territory to make corrections or edits to
+                  a submission, select “Update status” to unlock and release the
+                  submission. The status will change to “In revision”.
+                </ListItem>
+                <ListItem>
+                  Submission count is shown in the # column. Any submissions
+                  started and submitted once have a count of 1. When a state or
+                  territory resubmits a previous submission, the count increases
+                  by 1.
+                </ListItem>
+              </UnorderedList>
             </Box>
           </AccordionItem>
         </Accordion>
-        {userCanStartReport && (
-          <Box>
-            <Text mb="spacer2">
-              To begin the first annual report for a state, select Start First
-              Annual Report. Note, this function will no longer be available
-              after the first Annual Report.
-            </Text>
-            <Button
-              variant="outline"
-              onClick={() => setCreateReportModalOpen(true)}
-            >
-              Start First Annual Report
-            </Button>
-          </Box>
-        )}
         <Heading as="h2" variant="h2">
           State Submissions
         </Heading>
@@ -384,11 +331,11 @@ export const AdminDashboard = () => {
             onChange={(selected) => setStatesHandler(selected)}
           />
           <CmsdsDropdownField
-            name="budgetPeriodFilter"
-            label="Filter by Budget Period"
-            value={budgetValue}
-            onChange={handleBudgetPeriodChange}
-            options={budgetPeriodFilterOptions}
+            name="reportingYearFilter"
+            label="Filter by reporting year"
+            value={reportingYearFilter}
+            onChange={handleReportingYearChange}
+            options={reportingYearFilterOptions}
           />
           <Button
             onClick={clearFilter}
@@ -420,20 +367,19 @@ export const AdminDashboard = () => {
             <Spinner size="md" />
           </Flex>
         ) : (
-          ResponsiveTable(
-            [
+          ResponsiveTable({
+            headers: [
               { label: "State/Territory", sortable: true },
-              { label: "Report Name", sortable: true },
-              { label: "Budget Period", sortable: true },
+              { label: "Submission name", sortable: true },
+              { label: "Reporting year", sortable: true },
               { label: "Last Edited", sortable: true },
               { label: "Status", sortable: true },
               { label: "#" },
               { label: "Actions" },
             ],
-            tableRows,
-            "",
-            sortRows
-          )
+            rows: tableRows,
+            sorting: sortRows,
+          })
         )}
       </Stack>
       {selectedReport && (
@@ -445,14 +391,6 @@ export const AdminDashboard = () => {
           selectedReport={selectedReport}
         />
       )}
-      <AdminCreateReportModal
-        modalDisclosure={{
-          isOpen: createReportModalOpen,
-          onClose: () => setCreateReportModalOpen(false),
-        }}
-        reports={reports}
-        reloadReports={reloadReports}
-      />
     </PageTemplate>
   );
 };
@@ -475,6 +413,10 @@ const sx = {
     },
   },
   accordionPanel: {
+    // zero the last list's bottom margin so the page's gap is the only space
+    "& > :last-child": {
+      marginBottom: 0,
+    },
     ".mobile &": {
       paddingTop: "spacer2",
     },

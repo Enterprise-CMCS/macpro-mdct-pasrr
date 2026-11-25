@@ -14,7 +14,7 @@ const mockedUseElementIsHidden = useElementIsHidden as MockedFunction<
 mockedUseElementIsHidden.mockReturnValue(false);
 
 const mockedTextAreaElement: TextAreaBoxTemplate = {
-  id: "mock-textarea-id",
+  id: "mock_textAreaFieldId",
   type: ElementType.TextAreaField,
   label: "test label",
   helperText: "helper text",

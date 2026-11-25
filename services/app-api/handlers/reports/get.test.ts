@@ -20,10 +20,10 @@ vi.mock("../../utils/authorization", () => ({
 }));
 
 vi.mock("../../storage/reports", () => ({
-  getReport: vi.fn().mockReturnValue({ id: "A report" }),
-  queryReportsByType: vi.fn().mockReturnValue({ id: "A report" }),
-  queryReportsForState: vi.fn().mockReturnValue([{ id: "A report" }]),
-  scanLiteReports: vi.fn().mockReturnValue([{ id: "A report" }]),
+  getReport: vi.fn().mockReturnValue({ id: "mock-report-id" }),
+  queryReportsByType: vi.fn().mockReturnValue({ id: "mock-report-id" }),
+  queryReportsForState: vi.fn().mockReturnValue([{ id: "mock-report-id" }]),
+  scanLiteReports: vi.fn().mockReturnValue([{ id: "mock-report-id" }]),
 }));
 
 const testEvent: APIGatewayProxyEvent = {
@@ -31,7 +31,7 @@ const testEvent: APIGatewayProxyEvent = {
   pathParameters: {
     reportType: "PASRR",
     state: "PA",
-    id: "myVeryFavoriteReport",
+    id: "mock-report-id",
   },
   headers: { "cognito-identity-id": "test" },
 };

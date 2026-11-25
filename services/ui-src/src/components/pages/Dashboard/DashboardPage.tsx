@@ -36,7 +36,8 @@ import { getReportsForState } from "utils/api/requestMethods/report";
 import { Dropdown as CmsdsDropdownField } from "@cmsgov/design-system";
 import { DevTools, ToolType } from "components/devTools/DevTools";
 import { activeBannerSelector } from "utils/state/selectors";
-import { budgetPeriodFilterOptions } from "./../../../constants";
+
+const ALL_YEARS = "All";
 
 export const DashboardPage = () => {
   const { reportType, state } = useParams();
@@ -45,13 +46,27 @@ export const DashboardPage = () => {
   const [reports, setReports] = useState<LiteReport[]>([]);
   const [canCreateReport, setCanCreateReport] = useState(false);
   const [filteredReports, setFilteredReports] = useState<LiteReport[]>([]);
-  const [budgetPeriodFilter, setBudgetPeriodFilter] = useState("All");
+  const [reportingYearFilter, setReportingYearFilter] = useState(ALL_YEARS);
 
   const fullStateName = isStateAbbr(state) ? StateNames[state] : "";
   const reportName = getReportName(reportType);
   const hasSubmittedReport = reports.some((report) =>
     isCompleteStatus(report.status)
   );
+  const reportingYears = [
+    ...new Set(
+      reports
+        .map((report) => report.reportingYear)
+        .filter((year) => typeof year === "number")
+    ),
+  ].toSorted((a, b) => b - a);
+  const reportingYearFilterOptions = [
+    { label: ALL_YEARS, value: ALL_YEARS },
+    ...reportingYears.map((year) => ({
+      label: year.toString(),
+      value: year.toString(),
+    })),
+  ];
 
   useEffect(() => {
     if (!isReportType(reportType) || !isStateAbbr(state)) {
@@ -61,16 +76,16 @@ export const DashboardPage = () => {
   }, [reportType, state]);
 
   useEffect(() => {
-    if (budgetPeriodFilter === "All") {
+    if (reportingYearFilter === ALL_YEARS) {
       setFilteredReports(reports);
     } else {
       setFilteredReports(
         reports.filter(
-          (report) => report.budgetPeriod === parseInt(budgetPeriodFilter)
+          (report) => report.reportingYear === Number(reportingYearFilter)
         )
       );
     }
-  }, [reports, budgetPeriodFilter]);
+  }, [reports, reportingYearFilter]);
 
   useEffect(() => {
     const noReports = reports.length === 0;
@@ -96,12 +111,12 @@ export const DashboardPage = () => {
     onClose: createReportModalOnCloseHandler,
   } = useDisclosure();
 
-  const handleBudgetPeriodChange = (evt: { target: { value: string } }) => {
-    setBudgetPeriodFilter(evt.target.value);
+  const handleReportingYearChange = (evt: { target: { value: string } }) => {
+    setReportingYearFilter(evt.target.value);
   };
 
   const clearFilter = () => {
-    setBudgetPeriodFilter("All");
+    setReportingYearFilter(ALL_YEARS);
   };
 
   return (
@@ -129,9 +144,8 @@ export const DashboardPage = () => {
             and monitor its status.
           </Text>
           <Text>
-            While this tool will not prevent you from creating multiple reports
-            for the same reporting period, you should only submit{" "}
-            <strong>one</strong> report per reporting period.
+            You can submit one report per year. You’ll be able to create your
+            next report at the start of the new year.
           </Text>
         </Box>
         <Accordion
@@ -210,11 +224,11 @@ export const DashboardPage = () => {
       <Flex sx={sx.bodyBox} gap="2rem" flexDirection="column">
         <Flex alignItems="flex-end" gap="spacer3">
           <CmsdsDropdownField
-            name="budgetPeriodFilter"
-            label="Filter by Budget Period"
-            value={budgetPeriodFilter}
-            onChange={handleBudgetPeriodChange}
-            options={budgetPeriodFilterOptions}
+            name="reportingYearFilter"
+            label="Filter by reporting year"
+            value={reportingYearFilter}
+            onChange={handleReportingYearChange}
+            options={reportingYearFilterOptions}
           />
           <Button
             onClick={clearFilter}
